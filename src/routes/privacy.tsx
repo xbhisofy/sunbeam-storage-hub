@@ -1,37 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { LegalPage } from "@/components/LegalPage";
-
+import { pageHead, site } from "@/lib/site";
 export const Route = createFileRoute("/privacy")({
-  head: () => ({
-    meta: [
-      { title: "Privacy Policy — TenBox" },
-      { name: "description", content: "How TenBox collects, uses and protects your data." },
-      { property: "og:title", content: "Privacy Policy — TenBox" },
-      { property: "og:description", content: "How TenBox collects, uses and protects your data." },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: () => (
-    <LegalPage title="Privacy Policy">
-      <p>TenBox ("we", "us") provides a website and an Android app that let you upload files, share them through links and earn rewards. This policy explains what data we collect and how we use it.</p>
-      <h2>Information we collect</h2>
-      <p><b>Account data:</b> email address, display name and sign-in details (email/password or Google).</p>
-      <p><b>Content you upload:</b> videos, audio, PDFs and other files, plus links you convert.</p>
-      <p><b>Usage data:</b> view counts of shared files, referral relationships and earnings balance.</p>
-      <p><b>Advertising data:</b> our ad partners (such as Google AdMob/AdSense) may collect device identifiers and usage data to show and measure ads.</p>
-      <h2>How we use your data</h2>
-      <p>To run your account, store and deliver your files, count views, calculate earnings and referral rewards, prevent fraud and abuse, and show ads.</p>
-      <h2>Sharing</h2>
-      <p>We do not sell your personal data. Files you share are visible to anyone who has the link. We use trusted service providers for hosting, storage and advertising.</p>
-      <h2>Security</h2>
-      <p>Data is sent over encrypted connections (HTTPS) and stored with access controls.</p>
-      <h2>Data retention and deletion</h2>
-      <p>We keep your data while your account is active. You can delete your account and all your files anytime from Profile → Delete account in the app or website. See our <a className="text-primary underline" href="/delete-account">account deletion page</a>.</p>
-      <h2>Children</h2>
-      <p>TenBox is not intended for children under 13 and we do not knowingly collect their data.</p>
-      <h2>Contact</h2>
-      <p>Questions? Email us at support@tenbox.app.</p>
-    </LegalPage>
-  ),
+  head: () => pageHead('Privacy Policy', 'How Tanyora handles account information, files, usage data and privacy requests.', "/privacy"),
+  component: () => <LegalPage title='Privacy Policy'><p>Tanyora is operated by {site.operator}, based in {site.location}. This policy covers the website and the Android app when released. Both use the same account and storage service.</p>
+<h2>Information processed</h2><p>We process your email address, display name, authentication information, uploaded videos, audio, documents and file metadata. Google sign-in supplies account information needed to sign in; we do not receive your Google password. File metadata includes names, sizes, formats, share identifiers and upload times. We store view counters, referral relationships, selected earning plans and account balances.</p>
+<p>Hosting and authentication providers may process connection information and operational logs to deliver and secure the service. We do not claim end-to-end encryption: a share link is not a private vault.</p>
+<h2>Why information is used</h2><p>Information is used to authenticate you, show your profile, store and deliver files, generate share links, calculate displayed rewards, diagnose problems and respond to support or lawful requests. Do not upload personal information about others without the necessary rights and permission.</p>
+<h2>Shared files and recipients</h2><p>Anyone who obtains a share link may be able to access the linked content. Links can be forwarded and downloaded copies may remain with recipients after deletion. Hosting, storage and sign-in providers process information for these services. Information may also be disclosed where legally required. We do not sell personal information.</p>
+<h2>Advertising and cookies</h2><p>The current file-opening screen contains an advertisement placeholder, not a configured advertising network. This policy does not claim that AdMob or AdSense is active. If an ad or analytics service is added, its data collection, purposes, consent choices and Play Store disclosures must be updated before activation. Essential browser storage keeps sign-in sessions active; clearing it signs you out.</p>
+<h2>Security and storage location</h2><p>Use the service over HTTPS. Access controls restrict account changes, but no online service is completely secure. Do not share confidential files through public links. We do not promise India-only hosting or a verified geographic storage location.</p>
+<h2>Retention and deletion</h2><p>Account information and files are kept to provide your account until deleted. Profile offers a permanent account deletion action; see <Link className="text-primary underline" to="/delete-account">Account deletion</Link>. Downloaded copies held by recipients are outside our control. Any legally required record retention and provider backup schedules must be established and disclosed by the operator; no fixed backup-erasure period is promised here.</p>
+<h2>Your choices</h2><p>You can edit your display name in Profile, delete uploaded files in My Content, and initiate account deletion from the website without reinstalling the app. Contact us to request access, correction or clarification about your information. Requests may require identity verification. Applicable statutory rights are not waived by this policy.</p>
+<h2>Children and regional requirements</h2><p>The service is not intended for children under 13. This statement does not replace applicable child-consent requirements, including those in India; the operator must establish a suitable age and consent process before accepting children where legally required.</p>
+<h2>Changes and contact</h2><p>Material changes will be reflected in this policy. Operator: {site.operator}, {site.location}. Privacy enquiries: <a className="text-primary underline" href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>. See <Link className="text-primary underline" to="/contact">Contact</Link> for current operator details.</p></LegalPage>,
 });

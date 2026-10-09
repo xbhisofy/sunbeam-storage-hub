@@ -1,32 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { LegalPage } from "@/components/LegalPage";
-
+import { pageHead, site } from "@/lib/site";
 export const Route = createFileRoute("/terms")({
-  head: () => ({
-    meta: [
-      { title: "Terms of Service — TenBox" },
-      { name: "description", content: "Rules for using TenBox file sharing and earnings." },
-      { property: "og:title", content: "Terms of Service — TenBox" },
-      { property: "og:description", content: "Rules for using TenBox file sharing and earnings." },
-      { property: "og:type", content: "article" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: () => (
-    <LegalPage title="Terms of Service">
-      <p>By using TenBox you agree to these terms.</p>
-      <h2>Your content</h2>
-      <p>You own the files you upload. You must have the rights to every file you upload or share. Do not upload pirated, adult, violent, hateful or illegal content.</p>
-      <h2>Copyright complaints</h2>
-      <p>If you believe content on TenBox infringes your copyright, email support@tenbox.app with the share link. We remove infringing content and may close repeat offenders' accounts.</p>
-      <h2>Earnings</h2>
-      <p>Rewards are paid only for genuine views and signups. Fake traffic, bots or self-referrals lead to cancelled earnings and account suspension. Minimum withdrawal is shown on the Earnings page.</p>
-      <h2>Termination</h2>
-      <p>We may suspend accounts that break these terms. You may delete your account at any time.</p>
-      <h2>Disclaimer</h2>
-      <p>The service is provided "as is" without warranties.</p>
-      <h2>Contact</h2>
-      <p>support@tenbox.app</p>
-    </LegalPage>
-  ),
+  head: () => pageHead('Terms & Conditions', 'Rules governing Tanyora accounts, uploads, share links and rewards.', "/terms"),
+  component: () => <LegalPage title='Terms & Conditions'><p>These terms govern Tanyora, operated by {site.operator} in {site.location}. Read them together with our <Link className="text-primary underline" to="/privacy">Privacy Policy</Link> and <Link className="text-primary underline" to="/community-guidelines">Community Guidelines</Link>. Using the service does not waive rights provided by applicable law.</p>
+<h2>Accounts and responsibility</h2><p>Provide accurate account information, protect your credentials and use the service only where you can lawfully agree to these terms. Do not impersonate another person, misuse their account, bypass security or automate fraudulent traffic.</p>
+<h2>Content ownership and permission</h2><p>You retain ownership of your content. By uploading, you permit Tanyora to store, process and deliver it as necessary to operate your account and the links you create. You must own the relevant rights or have permission to share it. This permission does not grant us ownership of your files.</p>
+<h2>Prohibited use</h2><p>Do not upload or link to unlawful content, child sexual abuse material, non-consensual intimate material, pirated works, malware, scams, threats, hateful abuse or material violating another person's privacy. Do not sell access to prohibited material or encourage illegal conduct.</p>
+<h2>Links and availability</h2><p>A link may be forwarded to others. Third-party converted links are controlled by their destinations; Tanyora does not own or guarantee those sites. Keep your own backups. Upload limits, availability and app installation requirements apply as displayed in the service.</p>
+<h2>Rewards and payments</h2><p>Current displayed plans are $3.00 per 1,000 views or $0.10 per referral signup, with three plan switches, a 10% referral commission on view earnings, and a displayed $5.00 withdrawal minimum. These are prototype settings, not a promise of income. Withdrawal processing is not operational yet: a displayed balance is not evidence of an approved or paid withdrawal. No three-day release schedule is implemented. Payment methods, verification, fraud review, tax handling and operational payout terms must be finalised before payouts launch.</p>
+<h2>Complaints and lawful requests</h2><p>Use the <Link className="text-primary underline" to="/copyright">Copyright & Safety</Link> page for complaint information. The operator must assess valid requests under applicable law; this website does not claim automatic moderation or a staffed grievance service. Accounts or content that violate these terms may be restricted following review.</p>
+<h2>Account closure</h2><p>You may initiate permanent account deletion through Profile. Deletion removes access to account data and displayed balances; contact support beforehand about any disputed balance. See <Link className="text-primary underline" to="/delete-account">Account deletion</Link> for the scope and limitations.</p>
+<h2>Disclaimers and applicable law</h2><p>To the extent permitted by applicable law, the service is provided as available without a guarantee of uninterrupted access, income or error-free storage. Nothing excludes liability or consumer remedies that cannot legally be excluded. Applicable Indian law and any mandatory protections in your location continue to apply.</p>
+<h2>Operator and contact</h2><p>{site.operator} · {site.location}. Contact: <a className="text-primary underline" href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>.</p></LegalPage>,
 });
