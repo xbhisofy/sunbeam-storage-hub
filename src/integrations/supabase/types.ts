@@ -72,7 +72,10 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          plan: string
+          plan_switches: number
           referral_code: string
+          referral_earnings: number
           referred_by: string | null
         }
         Insert: {
@@ -81,7 +84,10 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id: string
+          plan?: string
+          plan_switches?: number
           referral_code?: string
+          referral_earnings?: number
           referred_by?: string | null
         }
         Update: {
@@ -90,7 +96,10 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          plan?: string
+          plan_switches?: number
           referral_code?: string
+          referral_earnings?: number
           referred_by?: string | null
         }
         Relationships: []
