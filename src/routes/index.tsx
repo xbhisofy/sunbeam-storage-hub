@@ -11,7 +11,21 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Upload files, share links and earn money from every view." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "/" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "TenBox",
+        applicationCategory: "UtilitiesApplication",
+        operatingSystem: "Web, Android",
+        description: "Upload videos, audio and PDFs, get a share link, and earn from every view.",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      }),
+    }],
   }),
   component: Home,
 });

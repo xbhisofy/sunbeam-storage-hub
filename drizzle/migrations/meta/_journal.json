@@ -29,6 +29,13 @@
       "when": 1791574489512,
       "tag": "0003_add_earning_plans",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791575666152,
+      "tag": "0004_perf_indexes",
+      "breakpoints": true
     }
   ]
 }
