@@ -5,7 +5,7 @@ import { Capacitor } from "@capacitor/core";
 export function setupDeepLinks(go: (path: string) => void) {
   if (!Capacitor.isNativePlatform()) return;
   App.addListener("appUrlOpen", ({ url }) => {
-    const m = url.match(/\/s\/([^/?#]+)/) ?? url.match(/^tenbox:\/\/s\/([^/?#]+)/);
+    const m = url.match(/\/s\/([^/?#]+)/) ?? url.match(/^tanyora:\/\/s\/([^/?#]+)/);
     if (m) go(`/s/${m[1]}`);
   });
 }

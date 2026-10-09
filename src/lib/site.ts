@@ -3,7 +3,7 @@ export const site = {
   // Switch only after custom-domain verification; no unverified canonical host.
   publicUrl: "https://sunbeam-storage-hub.lovable.app",
   operator: "Abhishek kumar", location: "Vadodara, Gujarat, India",
-  supportEmail: "tanyora@support.com", updated: "October 10, 2026",
+  supportEmail: "tanyora@support.com", updated: "October 9, 2026",
   appId: "com.tanyora.app", appScheme: "tanyora",
 } as const;
 export function pageHead(title: string, description: string, path?: string, privatePage = false) {
