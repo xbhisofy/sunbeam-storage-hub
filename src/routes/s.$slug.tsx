@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Cloud, Download } from "lucide-react";
+import { Cloud, Download, Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatSize } from "@/lib/format";
 
 const AD_SECONDS = 5;
+const APP_ID = "com.tenbox.app";
+const PLAY_URL = (slug: string) => `https://play.google.com/store/apps/details?id=${APP_ID}&referrer=${encodeURIComponent("slug=" + slug)}`;
+const isNativeApp = () => typeof window !== "undefined" && !!(window as any).Capacitor?.isNativePlatform?.();
 
 export const Route = createFileRoute("/s/$slug")({
   ssr: false,
@@ -27,6 +30,7 @@ function SharePage() {
   const { slug } = Route.useParams();
   const [left, setLeft] = useState(AD_SECONDS);
   const [open, setOpen] = useState(false);
+  const [isApp] = useState(isNativeApp);
 
   const { data, isLoading } = useQuery({
     queryKey: ["share", slug],
@@ -60,7 +64,17 @@ function SharePage() {
         <Button size="sm" asChild><Link to="/auth" search={{ mode: "signup" }}>Share & earn</Link></Button>
       </header>
       <main className="mx-auto max-w-4xl px-4 py-8">
-        {isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
+        {!isApp ? (
+          <div className="rounded-2xl border bg-card p-8 text-center">
+            <Smartphone className="mx-auto h-12 w-12 text-primary" />
+            <h1 className="mt-4 text-xl font-semibold">Open this file in the TenBox app</h1>
+            <p className="mt-2 text-sm text-muted-foreground">Videos, audio and files open only in our Android app.</p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Button size="lg" asChild><a href={PLAY_URL(slug)}>Get it on Play Store</a></Button>
+              <Button size="lg" variant="outline" asChild><a href={`intent://s/${slug}#Intent;scheme=tenbox;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`}>Already installed? Open app</a></Button>
+            </div>
+          </div>
+        ) : isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
           <p className="text-center text-muted-foreground">This file doesn't exist or was deleted.</p>
         ) : !open ? (
           <div className="rounded-2xl border bg-card p-6 text-center">
