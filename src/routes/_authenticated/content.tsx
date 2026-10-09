@@ -55,7 +55,7 @@ function Content() {
     const { data: u } = await supabase.auth.getUser();
     const arr = Array.from(list);
     for (let i = 0; i < arr.length; i++) {
-      const f = arr[i];
+      const f = arr[i]!;
       if (f.size > 50 * 1024 * 1024) { toast.error(`${f.name} is bigger than 50 MB`); continue; }
       setUploading({ name: f.name, pct: Math.round((i / arr.length) * 100) + 10 });
       const path = `${u.user!.id}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
