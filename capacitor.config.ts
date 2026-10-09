@@ -1,12 +1,12 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
-// App loads the live TenBox website, so website + app share the same database.
+// App loads the live Tanyora website, so website + app share the same database.
 const config: CapacitorConfig = {
-  appId: "com.tenbox.app",
-  appName: "TenBox",
+  appId: "com.tanyora.app",
+  appName: "Tanyora",
   webDir: "dist/client",
   server: {
-    url: "https://id-preview--27b885ad-6120-4d04-a5e6-077528851761.lovable.app",
+    url: "https://sunbeam-storage-hub.lovable.app",
     cleartext: false,
   },
 };

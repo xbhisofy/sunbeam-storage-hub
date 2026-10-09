@@ -1,28 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Cloud, Download, Smartphone } from "lucide-react";
+import { Download, Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Brand } from "@/components/Brand";
+import { LegalFooter } from "@/components/LegalFooter";
+import { pageHead, site } from "@/lib/site";
 import { formatSize } from "@/lib/format";
 
 const AD_SECONDS = 5;
-const APP_ID = "com.tenbox.app";
+const APP_ID = site.appId;
 const PLAY_URL = (slug: string) => `https://play.google.com/store/apps/details?id=${APP_ID}&referrer=${encodeURIComponent("slug=" + slug)}`;
 const isNativeApp = () => typeof window !== "undefined" && !!(window as any).Capacitor?.isNativePlatform?.();
 
 export const Route = createFileRoute("/s/$slug")({
   ssr: false,
-  head: () => ({
-    meta: [
-      { title: "Shared file — TenBox" },
-      { name: "description", content: "Watch or open this shared file on TenBox." },
-      { property: "og:title", content: "Shared file — TenBox" },
-      { property: "og:description", content: "Watch or open this shared file on TenBox." },
-      { property: "og:type", content: "video.other" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
+  head: () => pageHead("Shared file", "Open shared Tanyora content in the Android app.", undefined, true),
   component: SharePage,
 });
 
@@ -34,6 +28,8 @@ function SharePage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["share", slug],
+    enabled: isApp,
+    staleTime: 60_000,
     queryFn: async () => {
       const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text").eq("slug", slug).maybeSingle();
       if (!f) return null;
@@ -44,10 +40,10 @@ function SharePage() {
   });
 
   useEffect(() => {
-    if (left <= 0) return;
+    if (!isApp || left <= 0) return;
     const t = setTimeout(() => setLeft((l) => l - 1), 1000);
     return () => clearTimeout(t);
-  }, [left]);
+  }, [left, isApp]);
 
   function play() {
     supabase.rpc("record_view", { _slug: slug });
@@ -59,7 +55,7 @@ function SharePage() {
     <div className="min-h-screen bg-background">
       <header className="flex items-center justify-between border-b bg-card px-5 py-3">
         <Link to="/" className="flex items-center gap-2 font-semibold">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground"><Cloud className="h-4 w-4" /></span> TenBox
+          <Brand />
         </Link>
         <Button size="sm" asChild><Link to="/auth" search={{ mode: "signup" }}>Share & earn</Link></Button>
       </header>
@@ -67,11 +63,11 @@ function SharePage() {
         {!isApp ? (
           <div className="rounded-2xl border bg-card p-8 text-center">
             <Smartphone className="mx-auto h-12 w-12 text-primary" />
-            <h1 className="mt-4 text-xl font-semibold">Open this file in the TenBox app</h1>
+            <h1 className="mt-4 text-xl font-semibold">Open this file in the Tanyora app</h1>
             <p className="mt-2 text-sm text-muted-foreground">Videos, audio and files open only in our Android app.</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Button size="lg" asChild><a href={PLAY_URL(slug)}>Get it on Play Store</a></Button>
-              <Button size="lg" variant="outline" asChild><a href={`intent://s/${slug}#Intent;scheme=tenbox;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`}>Already installed? Open app</a></Button>
+              <Button size="lg" variant="outline" asChild><a href={`intent://s/${slug}#Intent;scheme=tanyora;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`}>Already installed? Open app</a></Button>
             </div>
           </div>
         ) : isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
@@ -102,7 +98,9 @@ function SharePage() {
             </Button>
           </div>
         )}
+        <p className="mt-6 text-center text-sm"><Link className="text-primary underline" to="/copyright">Copyright & safety complaints</Link></p>
       </main>
+      <LegalFooter />
     </div>
   );
 }

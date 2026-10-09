@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CommunityGuidelinesRouteImport } from './routes/community-guidelines'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CopyrightRouteImport } from './routes/copyright'
 import { Route as DeleteAccountRouteImport } from './routes/delete-account'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -34,6 +37,21 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityGuidelinesRoute = CommunityGuidelinesRouteImport.update({
+  id: '/community-guidelines',
+  path: '/community-guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CopyrightRoute = CopyrightRouteImport.update({
+  id: '/copyright',
+  path: '/copyright',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeleteAccountRoute = DeleteAccountRouteImport.update({
@@ -85,6 +103,9 @@ const SSlugRoute = SSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/community-guidelines': typeof CommunityGuidelinesRoute
+  '/contact': typeof ContactRoute
+  '/copyright': typeof CopyrightRoute
   '/delete-account': typeof DeleteAccountRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -98,6 +119,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/community-guidelines': typeof CommunityGuidelinesRoute
+  '/contact': typeof ContactRoute
+  '/copyright': typeof CopyrightRoute
   '/delete-account': typeof DeleteAccountRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -113,6 +137,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/community-guidelines': typeof CommunityGuidelinesRoute
+  '/contact': typeof ContactRoute
+  '/copyright': typeof CopyrightRoute
   '/delete-account': typeof DeleteAccountRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -128,6 +155,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/community-guidelines'
+    | '/contact'
+    | '/copyright'
     | '/delete-account'
     | '/privacy'
     | '/terms'
@@ -141,6 +171,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/community-guidelines'
+    | '/contact'
+    | '/copyright'
     | '/delete-account'
     | '/privacy'
     | '/terms'
@@ -155,6 +188,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/community-guidelines'
+    | '/contact'
+    | '/copyright'
     | '/delete-account'
     | '/privacy'
     | '/terms'
@@ -170,6 +206,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CommunityGuidelinesRoute: typeof CommunityGuidelinesRoute
+  ContactRoute: typeof ContactRoute
+  CopyrightRoute: typeof CopyrightRoute
   DeleteAccountRoute: typeof DeleteAccountRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -197,6 +236,27 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community-guidelines': {
+      id: '/community-guidelines'
+      path: '/community-guidelines'
+      fullPath: '/community-guidelines'
+      preLoaderRoute: typeof CommunityGuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/copyright': {
+      id: '/copyright'
+      path: '/copyright'
+      fullPath: '/copyright'
+      preLoaderRoute: typeof CopyrightRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/delete-account': {
@@ -288,6 +348,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CommunityGuidelinesRoute: CommunityGuidelinesRoute,
+  ContactRoute: ContactRoute,
+  CopyrightRoute: CopyrightRoute,
   DeleteAccountRoute: DeleteAccountRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,

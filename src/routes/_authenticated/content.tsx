@@ -1,3 +1,4 @@
+import { pageHead, site } from "@/lib/site";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
@@ -13,7 +14,7 @@ import { fileKind, formatSize } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/content")({
   validateSearch: z.object({ tab: z.enum(["all", "convert"]).optional() }),
-  head: () => ({ meta: [{ title: "My Content — TenBox" }, { name: "description", content: "Upload and manage your shared files." }] }),
+  head: () => pageHead("My Content", "Upload and manage your shared files.", undefined, true),
   component: Content,
 });
 
@@ -158,7 +159,7 @@ function Content() {
               </div>
               <span className="flex items-center gap-1 text-sm text-muted-foreground"><Eye className="h-4 w-4" />{f.views}</span>
               <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium capitalize">{f.source}</span>
-              <Button variant="outline" onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/s/${f.slug}`); toast.success("Link copied"); }}>
+              <Button variant="outline" onClick={() => { navigator.clipboard.writeText(`${site.publicUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
                 <Copy className="h-4 w-4" /> Copy Link
               </Button>
               <Button size="icon" variant="ghost" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>

@@ -1,10 +1,10 @@
-# Play Store Listing — TenBox
+# Play Store Listing — Tanyora
 
-**App name:** TenBox – Share Videos & Earn
-**Short description (80 chars):** Upload videos, audio & PDFs, share links and earn from every view.
+**App name:** Tanyora – Share Videos & Earn
+**Short description (80 chars):** Upload videos, audio & PDFs, share links and track your content.
 
 **Full description:**
-TenBox is a simple and secure way to store and share your videos, audio and documents.
+Tanyora is a way way to store and share your videos, audio and documents.
 
 Features:
 • Upload videos, music, PDFs and more
@@ -20,8 +20,12 @@ Your files are protected with encrypted connections. You can delete your account
 Please upload only content you own or have permission to share.
 
 **Category:** Tools (or Video Players & Editors)
-**Privacy policy URL:** https://YOUR-PUBLISHED-URL/privacy
-**Account deletion URL:** https://YOUR-PUBLISHED-URL/delete-account
+**Privacy policy URL:** https://sunbeam-storage-hub.lovable.app/privacy
+**Account deletion URL:** https://sunbeam-storage-hub.lovable.app/delete-account
 **Data safety:** Collects email, name, user files, app activity; data encrypted in transit; users can request deletion; ads use device ID (if AdMob added).
-**Content rating:** Fill the questionnaire honestly (user-generated content: Yes, with reporting via email).
-**Ads:** Contains ads — Yes.
+**Content rating:** Fill the questionnaire honestly (user-generated content: Yes). In-app report/block controls and an operational moderation process are release blockers..
+**Ads:** Select based on the actual shipped SDKs. Current screen is a placeholder, not an active ad network.
+
+## Operator and release checks
+Operator: Abhishek kumar, Vadodara, Gujarat, India. Support: tanyora@support.com (verify mailbox). Intended domain: tanyora.com (not verified/connected).
+Review every SDK for Data Safety; do not declare device ID collection without an installed SDK. Test account deletion, complete address and grievance officer, operational UGC moderation/report/block, child-consent policy, app signing, current target SDK, testing eligibility and Play review are still required. No approval is guaranteed.

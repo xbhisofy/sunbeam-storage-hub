@@ -1,6 +1,8 @@
 import { createFileRoute, redirect, Outlet, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Cloud, Home, FolderOpen, Wallet, Users, User, LogOut } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut } from "lucide-react";
+import { Brand } from "@/components/Brand";
+import { LegalFooter } from "@/components/LegalFooter";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -38,8 +40,7 @@ function Shell() {
     <div className="flex min-h-screen flex-col bg-background md:flex-row">
       <aside className="flex shrink-0 flex-col border-b bg-card md:sticky md:top-0 md:h-screen md:w-64 md:border-b-0 md:border-r">
         <div className="flex items-center gap-2 px-6 py-5 font-semibold text-lg">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary text-primary-foreground"><Cloud className="h-5 w-5" /></span>
-          TenBox
+          <Brand />
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col">
           {nav.map((n) => (<div key={n.to} className="contents">
@@ -69,9 +70,10 @@ function Shell() {
           </button>
         </div>
       </aside>
-      <main className="flex-1 px-5 py-8 md:px-12">
-        <Outlet />
-      </main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <main className="flex-1 px-5 py-8 md:px-12"><Outlet /></main>
+        <LegalFooter />
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { pageHead, site } from "@/lib/site";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Copy, Link2, Wallet, CalendarDays, Users, Clock, CheckCircle2 } from "lucide-react";
@@ -9,7 +10,7 @@ import { useProfile } from "./route";
 import { money } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/referrals")({
-  head: () => ({ meta: [{ title: "Referrals — TenBox" }, { name: "description", content: "Invite friends and earn." }] }),
+  head: () => pageHead("Referrals", "Invite friends and earn.", undefined, true),
   component: Referrals,
 });
 
@@ -19,7 +20,7 @@ function Referrals() {
     queryKey: ["refcount"],
     queryFn: async () => (await supabase.rpc("my_referral_count")).data ?? 0,
   });
-  const link = p ? `${typeof window !== "undefined" ? window.location.origin : ""}/auth?mode=signup&ref=${p.referral_code}` : "";
+  const link = p ? `${site.publicUrl}/auth?mode=signup&ref=${p.referral_code}` : "";
   const refEarn = Number(p?.referral_earnings ?? 0);
 
   const cards = [

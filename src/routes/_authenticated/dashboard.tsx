@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/site";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Share2, Upload, Wallet, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { useProfile } from "./route";
 import { money } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — TenBox" }, { name: "description", content: "Your TenBox overview." }] }),
+  head: () => pageHead("Dashboard", "Your Tanyora overview.", undefined, true),
   component: Dashboard,
 });
 

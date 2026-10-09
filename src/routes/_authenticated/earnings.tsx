@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/site";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,7 +10,7 @@ import { useProfile } from "./route";
 import { money } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/earnings")({
-  head: () => ({ meta: [{ title: "Earnings — TenBox" }, { name: "description", content: "Your balance and payouts." }] }),
+  head: () => pageHead("Earnings", "Your balance and payouts.", undefined, true),
   component: Earnings,
 });
 
