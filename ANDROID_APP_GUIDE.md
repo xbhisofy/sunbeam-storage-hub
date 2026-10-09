@@ -1,6 +1,6 @@
-# TenBox Android App (Capacitor)
+# Tanyora Android App (Capacitor)
 
-App ID: `com.tenbox.app` — the app loads the live website (`server.url` in capacitor.config.ts), so website and app share one database.
+App ID: `com.tanyora.app` — the app loads the live website (`server.url` in capacitor.config.ts), so website and app share one database.
 
 1. Export project to GitHub, clone it, run `npm install`.
 2. Publish the website and put the published URL in `capacitor.config.ts` → `server.url`.
@@ -11,7 +11,7 @@ App ID: `com.tenbox.app` — the app loads the live website (`server.url` in cap
   <action android:name="android.intent.action.VIEW" />
   <category android:name="android.intent.category.DEFAULT" />
   <category android:name="android.intent.category.BROWSABLE" />
-  <data android:scheme="tenbox" android:host="s" />
+  <data android:scheme="tanyora" android:host="s" />
 </intent-filter>
 ```
 5. `npx cap open android` → Android Studio → Build → Generate Signed Bundle (AAB) → upload to Play Console.

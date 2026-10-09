@@ -6,3 +6,6 @@ Disallow: /earnings
 Disallow: /referrals
 Disallow: /profile
 Disallow: /s/
+
+Disallow: /auth
+Sitemap: https://sunbeam-storage-hub.lovable.app/sitemap.xml

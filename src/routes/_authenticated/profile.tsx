@@ -1,3 +1,4 @@
+import { pageHead } from "@/lib/site";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { deleteMyAccount } from "@/lib/account.functions";
 
 export const Route = createFileRoute("/_authenticated/profile")({
-  head: () => ({ meta: [{ title: "Profile — TenBox" }, { name: "description", content: "Your account settings." }] }),
+  head: () => pageHead("Profile", "Your account settings.", undefined, true),
   component: Profile,
 });
 
