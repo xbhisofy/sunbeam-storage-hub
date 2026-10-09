@@ -14,13 +14,82 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      files: {
+        Row: {
+          created_at: string
+          file_type: string
+          id: string
+          mime: string | null
+          name: string
+          owner_id: string
+          size: number
+          slug: string
+          storage_path: string
+          views: number
+        }
+        Insert: {
+          created_at?: string
+          file_type: string
+          id?: string
+          mime?: string | null
+          name: string
+          owner_id: string
+          size?: number
+          slug?: string
+          storage_path: string
+          views?: number
+        }
+        Update: {
+          created_at?: string
+          file_type?: string
+          id?: string
+          mime?: string | null
+          name?: string
+          owner_id?: string
+          size?: number
+          slug?: string
+          storage_path?: string
+          views?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          balance: number
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          referral_code: string
+          referred_by: string | null
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          referral_code?: string
+          referred_by?: string | null
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          referral_code?: string
+          referred_by?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      my_referral_count: { Args: never; Returns: number }
+      record_view: { Args: { _slug: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
