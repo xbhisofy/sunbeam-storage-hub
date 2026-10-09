@@ -42,13 +42,19 @@ function Shell() {
           TenBox
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col">
-          {nav.map((n) => (
-            <Link key={n.to} to={n.to}
+          {nav.map((n) => (<div key={n.to} className="contents">
+            <Link to={n.to}
               className="flex items-center gap-3 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm text-foreground hover:bg-muted"
               activeProps={{ className: "bg-accent text-accent-foreground font-medium" }}>
               <n.icon className="h-5 w-5" /> {n.label}
             </Link>
-          ))}
+            {n.to === "/content" && (
+              <div className="ml-6 hidden flex-col border-l pl-3 md:flex">
+                <Link to="/content" search={{ tab: "all" }} className="py-1.5 text-sm text-muted-foreground" activeOptions={{ includeSearch: true }} activeProps={{ className: "text-primary font-medium" }}>All Content</Link>
+                <Link to="/content" search={{ tab: "convert" }} className="py-1.5 text-sm text-muted-foreground" activeOptions={{ includeSearch: true }} activeProps={{ className: "text-primary font-medium" }}>Convert Link</Link>
+              </div>
+            )}
+          </div>))}
         </nav>
         <div className="mt-auto hidden items-center gap-3 border-t px-5 py-4 md:flex">
           <span className="grid h-10 w-10 place-items-center rounded-full bg-accent font-medium text-accent-foreground">

@@ -31,8 +31,9 @@ function SharePage() {
   const { data, isLoading } = useQuery({
     queryKey: ["share", slug],
     queryFn: async () => {
-      const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views").eq("slug", slug).maybeSingle();
+      const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text").eq("slug", slug).maybeSingle();
       if (!f) return null;
+      if (!f.storage_path) return { ...f, url: f.external_url ?? "" };
       const { data: s } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 60 * 60 * 3);
       return { ...f, url: s?.signedUrl ?? "" };
     },
@@ -45,8 +46,9 @@ function SharePage() {
   }, [left]);
 
   function play() {
-    setOpen(true);
     supabase.rpc("record_view", { _slug: slug });
+    if (data?.source === "converted" && data.url) { window.location.href = data.url; return; }
+    setOpen(true);
   }
 
   return (
@@ -62,21 +64,24 @@ function SharePage() {
           <p className="text-center text-muted-foreground">This file doesn't exist or was deleted.</p>
         ) : !open ? (
           <div className="rounded-2xl border bg-card p-6 text-center">
+            {data.header_text && <p className="mb-4 whitespace-pre-line text-sm">{data.header_text}</p>}
             <div className="text-xs uppercase tracking-wider text-muted-foreground">Advertisement</div>
             <div className="mt-3 grid aspect-video place-items-center rounded-xl bg-muted text-muted-foreground">
               Your ad appears here
             </div>
             <h1 className="mt-6 truncate text-xl font-semibold">{data.name}</h1>
-            <p className="text-sm text-muted-foreground">{formatSize(data.size)} · {data.views} views</p>
+            <p className="text-sm text-muted-foreground">{data.source === "converted" ? "Link" : formatSize(data.size)} · {data.views} views</p>
             <Button size="lg" className="mt-5" disabled={left > 0} onClick={play}>
               {left > 0 ? `Open in ${left}s` : "Open file"}
             </Button>
+            {data.footer_text && <p className="mt-4 whitespace-pre-line text-sm text-muted-foreground">{data.footer_text}</p>}
           </div>
         ) : (
           <div>
             <h1 className="mb-4 truncate text-xl font-semibold">{data.name}</h1>
             {data.file_type === "video" && <video src={data.url} controls autoPlay className="w-full rounded-xl bg-foreground" />}
             {data.file_type === "audio" && <audio src={data.url} controls autoPlay className="w-full" />}
+            {data.file_type === "other" && <p className="rounded-xl border bg-card p-6 text-muted-foreground">Preview not available. Use Download below.</p>}
             {data.file_type === "pdf" && <iframe src={data.url} title={data.name} className="h-[80vh] w-full rounded-xl border" />}
             <Button variant="outline" className="mt-4" asChild>
               <a href={data.url} target="_blank" rel="noreferrer"><Download className="h-4 w-4" /> Download</a>
