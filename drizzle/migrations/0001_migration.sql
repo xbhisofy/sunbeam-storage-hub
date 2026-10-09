@@ -1,0 +1,3 @@
+create policy "files read all" on storage.objects for select to anon, authenticated using (bucket_id = 'files');
+create policy "files upload own" on storage.objects for insert to authenticated with check (bucket_id = 'files' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "files delete own" on storage.objects for delete to authenticated using (bucket_id = 'files' and (storage.foldername(name))[1] = auth.uid()::text);
