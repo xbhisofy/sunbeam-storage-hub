@@ -2,6 +2,7 @@ export function fileKind(mime: string): "video" | "audio" | "pdf" | "other" {
   if (mime.startsWith("video/")) return "video";
   if (mime.startsWith("audio/")) return "audio";
   if (mime === "application/pdf") return "pdf";
+  if (!mime) return "other";
   return "other";
 }
 

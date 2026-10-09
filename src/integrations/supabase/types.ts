@@ -17,38 +17,50 @@ export type Database = {
       files: {
         Row: {
           created_at: string
+          external_url: string | null
           file_type: string
+          footer_text: string | null
+          header_text: string | null
           id: string
           mime: string | null
           name: string
           owner_id: string
           size: number
           slug: string
-          storage_path: string
+          source: string
+          storage_path: string | null
           views: number
         }
         Insert: {
           created_at?: string
+          external_url?: string | null
           file_type: string
+          footer_text?: string | null
+          header_text?: string | null
           id?: string
           mime?: string | null
           name: string
           owner_id: string
           size?: number
           slug?: string
-          storage_path: string
+          source?: string
+          storage_path?: string | null
           views?: number
         }
         Update: {
           created_at?: string
+          external_url?: string | null
           file_type?: string
+          footer_text?: string | null
+          header_text?: string | null
           id?: string
           mime?: string | null
           name?: string
           owner_id?: string
           size?: number
           slug?: string
-          storage_path?: string
+          source?: string
+          storage_path?: string | null
           views?: number
         }
         Relationships: []

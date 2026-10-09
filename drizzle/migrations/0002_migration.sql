@@ -1,0 +1,2 @@
+alter table public.files add column source text not null default 'original', add column external_url text, add column header_text text, add column footer_text text;
+alter table public.files alter column storage_path drop not null;
