@@ -8,9 +8,11 @@ export const site = {
   // Installed Android package (PWABuilder TWA); Play Store links must use this.
   androidPackage: "app.lovable.sunbeam_storage_hub.twa",
   // Share links live on the main domain (opens app); the dashboard lives on the web subdomain.
-  // Testing: second Lovable address stands in for app.tanyora.com until the domain is bought.
+  // While both are the same host the split is inert (hostRedirect returns null) and everything
+  // runs on one address. When app.tanyora.com is connected, set webUrl to it — the split turns
+  // on by itself. The second Lovable address cannot be used: it serves 403 to visitors.
   shareUrl: "https://tanyora.lovable.app",
-  webUrl: "https://project--27b885ad-6120-4d04-a5e6-077528851761.lovable.app",
+  webUrl: "https://tanyora.lovable.app",
 } as const;
 export function pageHead(title: string, description: string, path?: string, privatePage = false) {
   const fullTitle = `${title} — ${site.name}`;
