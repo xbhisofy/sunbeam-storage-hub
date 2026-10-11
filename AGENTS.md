@@ -14,3 +14,5 @@
 - Use Brand and LegalFooter for shared branding and legal navigation; legal claims must match shipped functionality.
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
 - Fetch shared-file details and start countdowns only inside the native app because browser share links only offer installation.
+- The Android app is a separate Expo (React Native) codebase in `mobile/` sharing the same Lovable Cloud backend; keep mobile code out of `src/` and never import it into the website.
+- Public API routes under `src/routes/api/public/*` must verify callers with `requireBearerUserId`; account-deletion logic lives only in `src/lib/delete-account.ts` so the web server function and the mobile-app route stay identical.
