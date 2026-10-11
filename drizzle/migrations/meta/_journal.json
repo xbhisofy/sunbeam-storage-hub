@@ -43,6 +43,13 @@
       "when": 1791708585715,
       "tag": "0005_scale_view_counting",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791708726359,
+      "tag": "0006_admin_panel_withdrawals",
+      "breakpoints": true
     }
   ]
 }
