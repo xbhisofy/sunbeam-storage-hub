@@ -4,8 +4,9 @@
     "target": {
       "namespace": "android_app",
       "package_name": "app.lovable.tanyora.twa",
-      "sha256_cert_fingerprints": [
-        "41:33:2E:56:37:4E:93:9C:0E:94:D8:20:1D:01:F4:17:E9:60:D6:50:3A:16:D6:D2:F0:70:0C:B6:BE:E8:DF:AB"
+"sha256_cert_fingerprints": [
+        "41:33:2E:56:37:4E:93:9C:0E:94:D8:20:1D:01:F4:17:E9:60:D6:50:3A:16:D6:D2:F0:70:0C:B6:BE:E8:DF:AB",
+        "E7:36:02:0B:AA:C5:C9:A1:74:4A:6D:CD:75:60:D6:3B:BA:93:C8:87:64:A0:7A:58:D2:CA:5E:C8:DB:0E:F8:52"
       ]
     }
   }
