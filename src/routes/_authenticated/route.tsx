@@ -2,7 +2,7 @@ import { createFileRoute, redirect, Outlet, Link, useNavigate, useRouterState } 
 import { useState } from "react";
 import { currentUserId } from "@/lib/session";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2 } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2, Crown } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
@@ -21,6 +21,7 @@ const nav = [
   { to: "/earnings", label: "Earnings", icon: Wallet },
   { to: "/referrals", label: "Referrals", icon: Users },
   { to: "/profile", label: "Profile", icon: User },
+  { to: "/plans", label: "Premium", icon: Crown },
 ] as const;
 export function useProfile() {
   return useQuery({ queryKey: ["profile"], queryFn: async () => {
@@ -60,7 +61,7 @@ function Shell() {
       <main className="app-main mx-auto max-w-6xl px-5 py-6 md:px-10 md:py-10"><Outlet /></main>
       <div className="hidden md:block"><LegalFooter /></div>
       <nav aria-label="Bottom navigation" className="app-bottom fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-center border-t bg-card px-3 pt-2 md:hidden">
-        {nav.filter(n => n.to !== "/referrals").map((n, i) => <div key={n.to} className={i === 2 ? "col-start-4" : undefined}><Button variant="ghost" asChild className="h-14 w-full flex-col gap-1 px-0 text-muted-foreground"><Link to={n.to} activeProps={{ className: "text-primary" }}><n.icon className="h-6 w-6" /><span className="text-[11px]">{n.label}</span></Link></Button></div>)}
+        {nav.filter(n => n.to !== "/referrals" && n.to !== "/plans").map((n, i) => <div key={n.to} className={i === 2 ? "col-start-4" : undefined}><Button variant="ghost" asChild className="h-14 w-full flex-col gap-1 px-0 text-muted-foreground"><Link to={n.to} activeProps={{ className: "text-primary" }}><n.icon className="h-6 w-6" /><span className="text-[11px]">{n.label}</span></Link></Button></div>)}
         <Button className="absolute left-1/2 top-2 h-14 w-14 -translate-x-1/2 rounded-full" size="icon" aria-label="Add files" onClick={() => setUpload(true)}><Plus className="h-7 w-7" /></Button>
       </nav>
     </div>
