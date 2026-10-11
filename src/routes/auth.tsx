@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Eye, EyeOff, Loader2, MailCheck } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import logoImg from "@/assets/tanyora-logo.jpg"; void logoImg;
+import { toast } from "sonner";
 import { pageHead } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -39,13 +40,14 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { if (data.session) navigate({ to: "/dashboard" }); });
-    const { data } = supabase.auth.onAuthStateChange((e, s) => { if (e === "SIGNED_IN" && s) navigate({ to: "/dashboard" }); });
+    const { data } = supabase.auth.onAuthStateChange((e, s) => { if (e === "SIGNED_IN" && s) setTimeout(() => navigate({ to: "/dashboard", replace: true }), 0); });
     return () => data.subscription.unsubscribe();
   }, [navigate]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setErr(null);
+    try {
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(), password,
@@ -53,13 +55,14 @@ function AuthPage() {
       });
       if (error) setErr(friendly(error.message));
       else if (data.user && data.user.identities?.length === 0) setErr(friendly("already registered"));
-      else if (data.session) navigate({ to: "/dashboard" });
+      else if (data.session) { toast.success("Account created", { description: "Welcome to Tanyora!" }); navigate({ to: "/dashboard", replace: true }); }
       else setSent(true);
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (error) setErr(friendly(error.message)); else navigate({ to: "/dashboard" });
+      if (error) setErr(friendly(error.message)); else navigate({ to: "/dashboard", replace: true });
     }
-    setBusy(false);
+    } catch (x) { setErr(x instanceof Error ? x.message : "Something went wrong. Please try again."); }
+    finally { setBusy(false); }
   }
 
 
@@ -107,7 +110,7 @@ function AuthPage() {
               </div>
               {err && <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">{err}</p>}
               <Button className="h-12 w-full rounded-xl text-base shadow-lg shadow-primary/30" disabled={busy}>
-                {busy && <Loader2 className="h-4 w-4 animate-spin" />}{mode === "login" ? "Log in" : "Create account"}
+                {busy && <Loader2 className="h-4 w-4 animate-spin" />}{busy ? (mode === "login" ? "Logging in…" : "Creating account…") : mode === "login" ? "Log in" : "Create account"}
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-muted-foreground">

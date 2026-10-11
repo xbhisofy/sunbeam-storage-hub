@@ -2,7 +2,7 @@ import { createFileRoute, redirect, Outlet, Link, useNavigate, useRouterState } 
 import { useState } from "react";
 import { currentUserId } from "@/lib/session";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2, Crown } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2, Crown, Video, Music, FileText, Image as ImageIcon } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
@@ -66,6 +66,21 @@ function Shell() {
       </nav>
     </div>
     <Sheet open={drawer} onOpenChange={setDrawer}><SheetContent side="left" onOpenAutoFocus={(e) => e.preventDefault()} className="w-[80vw] max-w-[300px] overflow-y-auto p-0"><div className="border-b px-4 pb-4 pt-5"><div className="mb-4 pr-8"><Brand /></div><div className="flex min-w-0 items-center gap-3 rounded-xl bg-accent/60 p-2.5"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-base font-bold text-primary-foreground">{p?.display_name?.[0]?.toUpperCase() ?? "T"}</span><div className="min-w-0"><SheetTitle className="truncate text-sm">{p?.display_name ?? "Tanyora"}</SheetTitle><SheetDescription className="truncate text-xs">{p?.email}</SheetDescription></div></div></div>{menu}</SheetContent></Sheet>
-    <Sheet open={upload} onOpenChange={setUpload}><SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-xl"><SheetTitle>Add to your files</SheetTitle><SheetDescription>50 MB per file</SheetDescription><div className="mt-5 space-y-2">{[{ label: "Upload videos", kind: "video", icon: Upload }, { label: "Upload audio", kind: "audio", icon: Upload }, { label: "Upload documents", kind: "document", icon: FolderOpen }].map(item => <Button key={item.kind} variant="ghost" className="h-14 w-full justify-start gap-4" onClick={() => { setUpload(false); navigate({ to: "/content", search: { upload: item.kind as "video" | "audio" | "document" } }); }}><item.icon className="h-5 w-5 text-primary" />{item.label}</Button>)}<Button variant="ghost" asChild className="h-14 w-full justify-start gap-4"><Link to="/content" search={{ tab: "convert" }} onClick={() => setUpload(false)}><Link2 className="h-5 w-5 text-primary" />Convert link</Link></Button></div></SheetContent></Sheet>
+    <Sheet open={upload} onOpenChange={setUpload}><SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-3xl border-0 px-5 pb-8 pt-3">
+      <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-muted" />
+      <SheetTitle className="text-lg font-bold">Add to your files</SheetTitle>
+      <SheetDescription className="text-sm">Choose what you want to upload · up to 50 MB per file</SheetDescription>
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        {([{ label: "Videos", hint: "MP4, MOV, MKV", kind: "video", icon: Video }, { label: "Images", hint: "JPG, PNG, WEBP", kind: "image", icon: ImageIcon }, { label: "Audio", hint: "MP3, WAV, M4A", kind: "audio", icon: Music }, { label: "Documents", hint: "PDF, DOC, ZIP", kind: "document", icon: FileText }] as const).map(item =>
+          <button key={item.kind} type="button" onClick={() => { setUpload(false); navigate({ to: "/content", search: { upload: item.kind } }); }} className="flex flex-col items-start gap-3 rounded-2xl bg-accent/50 p-4 text-left transition-colors active:bg-accent">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground"><item.icon className="h-5 w-5" /></span>
+            <span><span className="block text-[15px] font-semibold">{item.label}</span><span className="block text-xs text-muted-foreground">{item.hint}</span></span>
+          </button>)}
+      </div>
+      <Link to="/content" search={{ tab: "convert" }} onClick={() => setUpload(false)} className="mt-3 flex items-center gap-3 rounded-2xl bg-accent/50 p-4 active:bg-accent">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground"><Link2 className="h-5 w-5" /></span>
+        <span className="min-w-0"><span className="block text-[15px] font-semibold">Convert a link</span><span className="block text-xs text-muted-foreground">Turn any URL into a monetized share link</span></span>
+      </Link>
+    </SheetContent></Sheet>
   </div>;
 }

@@ -1,4 +1,5 @@
-export function fileKind(mime: string): "video" | "audio" | "pdf" | "other" {
+export function fileKind(mime: string): "video" | "audio" | "image" | "pdf" | "other" {
+  if (mime.startsWith("image/")) return "image";
   if (mime.startsWith("video/")) return "video";
   if (mime.startsWith("audio/")) return "audio";
   if (mime === "application/pdf") return "pdf";

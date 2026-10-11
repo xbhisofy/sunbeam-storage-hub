@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { fileKind, formatSize } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/content")({
-  validateSearch: z.object({ tab: z.enum(["all", "convert"]).optional(), kind: z.enum(["pdf", "video", "audio", "link"]).optional(), upload: z.enum(["video", "audio", "document"]).optional() }),
+  validateSearch: z.object({ tab: z.enum(["all", "convert"]).optional(), kind: z.enum(["pdf", "video", "audio", "image", "link"]).optional(), upload: z.enum(["video", "audio", "image", "document"]).optional() }),
   head: () => pageHead("My Content", "Upload and manage your shared files.", undefined, true),
   component: Content,
 });
@@ -62,15 +62,17 @@ function Content() {
     for (let i = 0; i < arr.length; i++) {
       const f = arr[i];
       if (!f) continue;
-      if (f.size > 50 * 1024 * 1024) { toast.error(`${f.name} is bigger than 50 MB`); continue; }
-      setUploading({ name: f.name, pct: Math.round((i / arr.length) * 100) + 10 });
+      if (f.size > 50 * 1024 * 1024) { toast.error("File too large", { description: `${f.name} is over the 50 MB limit` }); continue; }
+      setUploading({ name: arr.length > 1 ? `${f.name} (${i + 1}/${arr.length})` : f.name, pct: Math.round((i / arr.length) * 100) + 10 });
+      const tid = toast.loading(`Uploading ${f.name}`, { description: `${formatSize(f.size)} · please keep the app open` });
       const path = `${uid}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
       const { error } = await supabase.storage.from("files").upload(path, f, { contentType: f.type || "application/octet-stream" });
-      if (error) { toast.error(error.message); continue; }
+      if (error) { toast.error("Upload failed", { id: tid, description: error.message }); continue; }
       const { error: e2 } = await supabase.from("files").insert({
         owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
-      if (e2) toast.error(e2.message); else toast.success(`${f.name} uploaded`);
+      if (e2) toast.error("Upload failed", { id: tid, description: e2.message });
+      else toast.success("Upload complete", { id: tid, description: `${f.name} is ready to share` });
     }
     setUploading(null);
     if (input.current) input.current.value = "";
@@ -89,7 +91,7 @@ function Content() {
       header_text: header.trim().slice(0, 500) || null, footer_text: footer.trim().slice(0, 500) || null,
     });
     if (error) { toast.error(error.message); return; }
-    toast.success("Link converted");
+    toast.success("Share link created", { description: "Copy it from your files below." });
     setUrl(""); setTitle(""); setHeader(""); setFooter("");
     qc.invalidateQueries({ queryKey: ["files"] });
   }
@@ -154,7 +156,7 @@ function Content() {
         </form>
       ) : (
         <div className="mt-5">
-          <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : undefined} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
+          <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
           <button type="button" onClick={() => input.current?.click()} disabled={!!uploading}
             className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed bg-card p-5 text-left transition-colors hover:border-primary/50 hover:bg-accent/40 disabled:opacity-60">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground"><Upload className="h-5 w-5" /></span>
