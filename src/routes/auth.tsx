@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Eye, EyeOff, Loader2, MailCheck } from "lucide-react";
 import { Brand } from "@/components/Brand";
-import logoImg from "@/assets/tanyora-logo.jpg";
+import logoImg from "@/assets/tanyora-logo.jpg"; void logoImg;
 import { pageHead } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -94,12 +94,12 @@ function AuthPage() {
             {search.ref && mode === "signup" && <p className="mt-2 rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">Invite code: {search.ref}</p>}
 
             <form onSubmit={submit} className="mt-6 space-y-3">
-              {mode === "signup" && <Input className="h-12 rounded-xl" required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
+              {mode === "signup" && <Input className="h-12 rounded-xl border-transparent bg-muted/60 focus-visible:bg-background" required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
               <label className="sr-only" htmlFor="auth-email">Email</label>
-              <Input id="auth-email" className="h-12 rounded-xl" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input id="auth-email" className="h-12 rounded-xl border-transparent bg-muted/60 focus-visible:bg-background" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               <label className="sr-only" htmlFor="auth-password">Password</label>
               <div className="relative">
-                <Input id="auth-password" className="h-12 rounded-xl pr-10" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
+                <Input id="auth-password" className="h-12 rounded-xl border-transparent bg-muted/60 pr-10 focus-visible:bg-background" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
                   autoComplete={mode === "login" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} />
                 <Button variant="ghost" size="icon" type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)} className="absolute right-0 top-0 h-12 w-12 text-muted-foreground">
                   {show ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
