@@ -98,12 +98,12 @@ function AuthPage() {
               <div className="relative">
                 <Input id="auth-password" className="h-12 rounded-xl pr-10" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
                   autoComplete={mode === "login" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} />
-                <Button variant="ghost" size="icon" type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)} className="absolute right-0 top-0 h-11 w-11 text-muted-foreground">
+                <Button variant="ghost" size="icon" type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)} className="absolute right-0 top-0 h-12 w-12 text-muted-foreground">
                   {show ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </Button>
               </div>
               {err && <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">{err}</p>}
-              <Button className="h-11 w-full" disabled={busy}>
+              <Button className="h-12 w-full rounded-xl text-base shadow-lg shadow-primary/30" disabled={busy}>
                 {busy && <Loader2 className="h-4 w-4 animate-spin" />}{mode === "login" ? "Log in" : "Create account"}
               </Button>
             </form>
