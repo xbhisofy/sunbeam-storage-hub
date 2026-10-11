@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.lovable.sunbeam_storage_hub.twa",
+      "sha256_cert_fingerprints": [
+        "79:A5:B1:BF:6C:42:2C:62:23:D9:E4:38:FA:66:96:5B:6B:7D:70:4E:E0:19:9E:D7:EB:9D:0D:8F:B9:0F:EE:98"
+      ]
+    }
+  }
+]
