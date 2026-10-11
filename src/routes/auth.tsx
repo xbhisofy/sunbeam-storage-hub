@@ -63,10 +63,21 @@ function AuthPage() {
 
 
   return (
-    <div className="grid min-h-dvh bg-background">
+    <div className="grid min-h-dvh bg-background lg:grid-cols-2">
+      <aside className="landing landing-glow hidden flex-col justify-between p-12 lg:flex">
+        <Brand />
+        <div>
+          <h2 className="text-4xl font-extrabold leading-tight">Upload once.<br /><span className="landing-text">Earn from every view.</span></h2>
+          <p className="mt-4 max-w-md text-muted-foreground">Share videos, audio and PDFs with a single link. Track views, referrals and payouts from one dashboard.</p>
+          <ul className="mt-8 space-y-3 text-sm">
+            <li>$3.00 per 1,000 views</li><li>10% referral commission</li><li>Withdraw from $5 via UPI, PayPal or bank</li>
+          </ul>
+        </div>
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Tanyora</p>
+      </aside>
       <div className="grid place-items-center px-4 py-10">
         <div className="w-full max-w-sm">
-          <div className="mb-10 flex justify-center"><Brand /></div>
+          <div className="mb-10 flex justify-center lg:hidden"><Brand /></div>
           {sent ? (
             <div className="rounded-2xl border bg-card p-8 text-center">
               <MailCheck className="mx-auto h-12 w-12 text-primary" />
