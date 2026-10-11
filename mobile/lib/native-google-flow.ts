@@ -9,16 +9,16 @@ type NativeGoogleDependencies = {
 };
 export async function nativeGoogleFlow(deps: NativeGoogleDependencies): Promise<"signed-in" | "cancelled"> {
   if (!deps.webClientId.endsWith(".apps.googleusercontent.com")) {
-    throw new Error("Google login ka setup abhi poora nahi hua hai.");
+    throw new Error("Google sign-in is not configured yet.");
   }
   deps.configure({ webClientId: deps.webClientId });
   await deps.hasPlayServices();
   const result = await deps.signIn();
   if (result.type !== "success") return "cancelled";
   const token = result.data.idToken;
-  if (!token) throw new Error("Google se login confirmation nahi mila. Dobara try karo.");
+  if (!token) throw new Error("Google did not confirm the sign-in. Please try again.");
   const session = await deps.exchange(token);
   if (session.error) throw new Error(session.error.message);
-  if (!session.hasSession) throw new Error("Login complete nahi hua. Dobara try karo.");
+  if (!session.hasSession) throw new Error("Sign-in could not be completed. Please try again.");
   return "signed-in";
 }

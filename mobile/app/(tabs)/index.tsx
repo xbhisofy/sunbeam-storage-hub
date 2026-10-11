@@ -82,11 +82,11 @@ export default function Home() {
         <Text style={styles.actionText}>＋ Upload ya Convert Link</Text>
       </Pressable>
       <Pressable style={[styles.action, styles.secondary]} onPress={() => router.push("/(tabs)/earnings")}>
-        <Text style={[styles.actionText, { color: theme.primary }]}>Earnings dekho</Text>
+        <Text style={[styles.actionText, { color: theme.primary }]}>View earnings</Text>
       </Pressable>
 
       <Text style={styles.note}>
-        Share link par jitne views aayenge, utni earning hogi — website aur app dono me same account chalta hai.
+        Earn from every view on your share links. Your account works on both the website and the app.
       </Text>
     </ScrollView>
   );

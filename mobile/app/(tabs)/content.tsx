@@ -70,7 +70,7 @@ export default function Content() {
     if (result.canceled) return;
     const file = result.assets[0];
     if ((file.size ?? 0) > MAX_SIZE) {
-      Alert.alert("File badi hai", "50 MB tak ki file upload kar sakte ho (website jaisa hi rule).");
+      Alert.alert("File too large", "You can upload files up to 50 MB.");
       return;
     }
     setBusy(true);
@@ -96,10 +96,10 @@ export default function Content() {
         source: "original",
       });
       if (dbErr) throw dbErr;
-      Alert.alert("Ho gaya ✅", "File upload ho gayi — Copy Link karke share karo.");
+      Alert.alert("Uploaded", "Your file is ready. Copy the link to share it.");
       load();
     } catch (e) {
-      Alert.alert("Upload fail", e instanceof Error ? e.message : "Dobara koshish karo");
+      Alert.alert("Upload failed", e instanceof Error ? e.message : "Please try again");
     } finally {
       setBusy(false);
     }
@@ -108,7 +108,7 @@ export default function Content() {
   async function convertLink() {
     const url = linkUrl.trim();
     if (!/^https?:\/\//.test(url)) {
-      Alert.alert("Sahi link daalo", "Link https:// ya http:// se shuru hona chahiye.");
+      Alert.alert("Invalid link", "The link must start with https:// or http://.");
       return;
     }
     setBusy(true);
@@ -127,10 +127,10 @@ export default function Content() {
       setConvertOpen(false);
       setLinkUrl("");
       setLinkTitle("");
-      Alert.alert("Ho gaya ✅", "Link convert ho gaya — share link taiyar hai.");
+      Alert.alert("Converted", "Your share link is ready.");
       load();
     } catch (e) {
-      Alert.alert("Convert fail", e instanceof Error ? e.message : "Dobara koshish karo");
+      Alert.alert("Conversion failed", e instanceof Error ? e.message : "Please try again");
     } finally {
       setBusy(false);
     }
@@ -138,14 +138,14 @@ export default function Content() {
 
   async function copyLink(slug: string) {
     await Clipboard.setStringAsync(`${SITE_URL}/s/${slug}`);
-    Alert.alert("Link copy ho gaya 📋", "Kahin bhi paste karke share karo.");
+    Alert.alert("Link copied", "Paste it anywhere to share.");
   }
 
   async function remove(file: FileRow) {
-    Alert.alert("Delete karna hai?", file.name, [
-      { text: "Nahi", style: "cancel" },
+    Alert.alert("Delete file?", file.name, [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "Haan, delete",
+        text: "Delete",
         style: "destructive",
         onPress: async () => {
           await supabase.from("files").delete().eq("id", file.id);
@@ -183,7 +183,7 @@ export default function Content() {
           keyExtractor={(f) => f.id}
           contentContainerStyle={{ paddingBottom: 24, gap: 10 }}
           ListEmptyComponent={
-            <Text style={styles.empty}>Abhi kuch nahi hai — upload ya link convert karo.</Text>
+            <Text style={styles.empty}>No files yet. Upload a file or convert a link to get started.</Text>
           }
           renderItem={({ item }) => (
             <View style={styles.fileCard}>
@@ -225,7 +225,7 @@ export default function Content() {
             <Text style={[styles.title, { fontSize: 18 }]}>Convert Link</Text>
             <TextInput
               style={styles.input}
-              placeholder="Video ka link paste karo (https://...)"
+              placeholder="Paste a video link (https://...)"
               placeholderTextColor={theme.muted}
               autoCapitalize="none"
               value={linkUrl}

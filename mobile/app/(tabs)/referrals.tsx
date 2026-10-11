@@ -47,7 +47,7 @@ export default function Referrals() {
             await Clipboard.setStringAsync(link);
           }}
         >
-          <Text style={styles.buttonText}>📋 Referral Link Copy karo</Text>
+          <Text style={styles.buttonText}>Copy referral link</Text>
         </Pressable>
       </View>
 
@@ -63,12 +63,12 @@ export default function Referrals() {
       </View>
 
       <View style={styles.card}>
-        <Text style={[styles.label, { marginBottom: 8 }]}>Kaise kaam karta hai</Text>
+        <Text style={[styles.label, { marginBottom: 8 }]}>How it works</Text>
         <Text style={styles.desc}>
-          1. Apna referral link dosto ko bhejo.{"\n"}
-          2. Woh link kholke naya account banayenge.{"\n"}
-          3. Har successful signup par aapko reward milega (agar aapka plan Referral hai).{"\n"}
-          4. Aapke referred users ki view earnings ka 10% commission bhi milta hai.
+          1. Share your referral link with friends.{"\n"}
+          2. They sign up using your link.{"\n"}
+          3. You earn a reward for every signup on the Referral plan.{"\n"}
+          4. You also earn 10% of your referred users' view earnings.
         </Text>
       </View>
     </ScrollView>

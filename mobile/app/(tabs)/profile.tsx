@@ -47,7 +47,7 @@ export default function Profile() {
   async function saveName() {
     setSaving(true);
     const { error } = await supabase.from("profiles").update({ display_name: name.trim() }).eq("id", uid!);
-    Alert.alert(error ? "Save fail" : "Save ho gaya ✅", error ? error.message : undefined);
+    Alert.alert(error ? "Save failed" : "Saved", error ? error.message : undefined);
     setSaving(false);
   }
 
@@ -58,12 +58,12 @@ export default function Profile() {
 
   async function deleteAccount() {
     Alert.alert(
-      "Account delete karna hai?",
-      "Aapki saari files aur account PERMANENT delete ho jayenge. Yeh wapas nahi aayega.",
+      "Delete account?",
+      "All your files and your account will be permanently deleted. This cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
         {
-          text: "Haan, delete karo",
+          text: "Delete permanently",
           style: "destructive",
           onPress: async () => {
             setDeleting(true);
@@ -78,10 +78,10 @@ export default function Profile() {
                 throw new Error(body.error ?? "Account deletion failed");
               }
               await supabase.auth.signOut();
-              Alert.alert("Delete ho gaya", "Aapka account permanently delete ho gaya.");
+              Alert.alert("Account deleted", "Your account has been permanently deleted.");
               router.replace("/login");
             } catch (e) {
-              Alert.alert("Delete fail", e instanceof Error ? e.message : "Dobara koshish karo");
+              Alert.alert("Delete failed", e instanceof Error ? e.message : "Please try again");
             } finally {
               setDeleting(false);
             }
@@ -101,7 +101,7 @@ export default function Profile() {
         <Text style={styles.label}>Email</Text>
         <Text style={styles.email}>{email || "..."}</Text>
         <Pressable style={[styles.button, saving && { opacity: 0.6 }]} onPress={saveName} disabled={saving}>
-          {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Save karo</Text>}
+          {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Save</Text>}
         </Pressable>
       </View>
 

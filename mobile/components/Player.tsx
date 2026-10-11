@@ -72,8 +72,8 @@ export function PlayerScreen({ slug }: { slug: string }) {
   if (missing) {
     return (
       <View style={[styles.center, styles.screen]}>
-        <Text style={styles.title}>Link nahi mila</Text>
-        <Text style={styles.muted}>Yeh share link delete ho chuka hai ya galat hai.</Text>
+        <Text style={styles.title}>Link not found</Text>
+        <Text style={styles.muted}>This share link was removed or is invalid.</Text>
       </View>
     );
   }
@@ -101,12 +101,12 @@ export function PlayerScreen({ slug }: { slug: string }) {
             <Text style={styles.muted}>File {seconds} second me khulegi…</Text>
           </>
         ) : !url ? (
-          <Text style={styles.muted}>File load nahi ho payi — dobara kholo.</Text>
+          <Text style={styles.muted}>The file could not be loaded. Please try again.</Text>
         ) : file.file_type === "video" && player ? (
           <VideoView player={player} style={styles.video} contentFit="contain" />
         ) : (
           <Pressable style={styles.button} onPress={() => Linking.openURL(url)}>
-            <Text style={styles.buttonText}>File kholo</Text>
+            <Text style={styles.buttonText}>Open file</Text>
           </Pressable>
         )}
       </View>
