@@ -17,3 +17,5 @@
 - The Android app is a separate Expo (React Native) codebase in `mobile/` sharing the same Lovable Cloud backend; keep mobile code out of `src/` and never import it into the website.
 - Public API routes under `src/routes/api/public/*` must verify callers with `requireBearerUserId`; account-deletion logic lives only in `src/lib/delete-account.ts` so the web server function and the mobile-app route stay identical.
 - Signed-in UI reads the local session via `currentUserId()` in src/lib/session.ts instead of `auth.getUser()`; a network auth check on every click made navigation slow, and the backend still verifies each request.
+
+- PWABuilder uses the web screens with a responsive app shell; preserve the Expo code separately and never hide external identity-provider browser controls.

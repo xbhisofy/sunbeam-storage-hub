@@ -2,7 +2,7 @@ import { pageHead, site } from "@/lib/site";
 import { currentUserId } from "@/lib/session";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Upload, Search, FolderOpen, Copy, Trash2, Film, Music, FileText, Eye, Link2 } from "lucide-react";
@@ -14,7 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { fileKind, formatSize } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/content")({
-  validateSearch: z.object({ tab: z.enum(["all", "convert"]).optional() }),
+  validateSearch: z.object({ tab: z.enum(["all", "convert"]).optional(), kind: z.enum(["pdf", "video", "audio", "link"]).optional(), upload: z.enum(["video", "audio", "document"]).optional() }),
   head: () => pageHead("My Content", "Upload and manage your shared files.", undefined, true),
   component: Content,
 });
@@ -32,9 +32,10 @@ function ago(d: string) {
 const urlSchema = z.string().trim().url().max(2000);
 
 function Content() {
-  const { tab = "all" } = Route.useSearch();
+  const { tab = "all", kind, upload } = Route.useSearch();
   const qc = useQueryClient();
   const input = useRef<HTMLInputElement>(null);
+  useEffect(() => { if (upload) input.current?.click(); }, [upload]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "original" | "converted">("all");
   const [uploading, setUploading] = useState<{ name: string; pct: number } | null>(null);
@@ -47,7 +48,8 @@ function Content() {
     queryKey: ["files"],
     queryFn: async () => {
       const uid = await currentUserId();
-      const { data } = await supabase.from("files").select("*").eq("owner_id", uid!).order("created_at", { ascending: false });
+      if (!uid) return [];
+      const { data } = await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false });
       return data ?? [];
     },
   });
@@ -55,16 +57,18 @@ function Content() {
   async function onFiles(list: FileList | null) {
     if (!list) return;
     const uid = await currentUserId();
+    if (!uid) return;
     const arr = Array.from(list);
     for (let i = 0; i < arr.length; i++) {
-      const f = arr[i]!;
+      const f = arr[i];
+      if (!f) continue;
       if (f.size > 50 * 1024 * 1024) { toast.error(`${f.name} is bigger than 50 MB`); continue; }
       setUploading({ name: f.name, pct: Math.round((i / arr.length) * 100) + 10 });
-      const path = `${uid!}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
+      const path = `${uid}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
       const { error } = await supabase.storage.from("files").upload(path, f, { contentType: f.type || "application/octet-stream" });
       if (error) { toast.error(error.message); continue; }
       const { error: e2 } = await supabase.from("files").insert({
-        owner_id: uid!, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
+        owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
       if (e2) toast.error(e2.message); else toast.success(`${f.name} uploaded`);
     }
@@ -78,8 +82,9 @@ function Content() {
     const parsed = urlSchema.safeParse(url);
     if (!parsed.success) { toast.error("Enter a valid link starting with https://"); return; }
     const uid = await currentUserId();
+    if (!uid) return;
     const { error } = await supabase.from("files").insert({
-      owner_id: uid!, name: title.trim().slice(0, 200) || parsed.data, file_type: "link", size: 0,
+      owner_id: uid, name: title.trim().slice(0, 200) || parsed.data, file_type: "link", size: 0,
       source: "converted", external_url: parsed.data,
       header_text: header.trim().slice(0, 500) || null, footer_text: footer.trim().slice(0, 500) || null,
     });
@@ -95,12 +100,12 @@ function Content() {
     qc.invalidateQueries({ queryKey: ["files"] });
   }
 
-  const shown = files.filter((f) => (filter === "all" || f.source === filter) && f.name.toLowerCase().includes(q.toLowerCase()));
+  const shown = files.filter((f) => (filter === "all" || f.source === filter) && (!kind || f.file_type === kind) && f.name.toLowerCase().includes(q.toLowerCase()));
 
   return (
     <div className="max-w-6xl">
-      <h1 className="text-3xl font-bold">My Content</h1>
-      <p className="mt-1 text-muted-foreground">Everything in your account with a shareable link. Upload a file and get a link back instantly.</p>
+      <h1 className="hidden text-3xl font-bold md:block">My Files</h1>
+      {kind && <div className="flex items-center justify-between"><h2 className="font-semibold capitalize">{kind === "pdf" ? "Documents" : kind}</h2><Button variant="link" asChild><Link to="/content">All files</Link></Button></div>}
 
       <div className="mt-6 flex gap-1 rounded-xl border bg-card p-1">
         <Link to="/content" search={{ tab: "all" }} className={`rounded-lg px-4 py-2 text-sm ${tab === "all" ? "bg-primary text-primary-foreground" : ""}`}>All Content</Link>
@@ -108,7 +113,7 @@ function Content() {
       </div>
 
       {tab === "convert" ? (
-        <form onSubmit={convert} className="mt-6 space-y-3 rounded-2xl border bg-card p-5">
+        <form onSubmit={convert} className="mt-6 space-y-3 rounded-lg border bg-card p-5">
           <div className="font-semibold">Convert any link</div>
           <p className="text-sm text-muted-foreground">Paste a link and get your own share link with an ad screen and custom header/footer.</p>
           <Input required placeholder="https://..." value={url} onChange={(e) => setUrl(e.target.value)} />
@@ -118,8 +123,8 @@ function Content() {
           <Button><Link2 className="h-4 w-4" /> Convert link</Button>
         </form>
       ) : (
-        <div className="mt-6 rounded-2xl border bg-card p-5">
-          <input ref={input} type="file" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
+        <div className="mt-5 border-b pb-5">
+          <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : undefined} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
           <Button size="lg" onClick={() => input.current?.click()} disabled={!!uploading}>
             <Upload className="h-4 w-4" /> Upload files
           </Button>
@@ -134,34 +139,34 @@ function Content() {
         </div>
         <div className="flex rounded-xl border bg-card p-1">
           {(["all", "original", "converted"] as const).map((k) => (
-            <button key={k} onClick={() => setFilter(k)}
-              className={`rounded-lg px-4 py-1.5 text-sm capitalize ${filter === k ? "bg-primary text-primary-foreground" : ""}`}>{k}</button>
+            <Button variant="ghost" key={k} onClick={() => setFilter(k)}
+              className={`rounded-lg px-4 py-1.5 text-sm capitalize ${filter === k ? "bg-primary text-primary-foreground" : ""}`}>{k}</Button>
           ))}
         </div>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">{shown.length} items</p>
       <div className="mt-3 space-y-3">
         {shown.length === 0 ? (
-          <div className="rounded-2xl border bg-card py-20 text-center">
+          <div className="rounded-lg border bg-card py-20 text-center">
             <FolderOpen className="mx-auto h-14 w-14 text-muted-foreground" />
             <p className="mt-3 font-semibold">No content yet</p>
-            <p className="text-sm text-muted-foreground">Upload a file above to get your first shareable link.</p>
+
           </div>
         ) : shown.map((f) => {
           const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;
           return (
-            <div key={f.id} className="flex flex-wrap items-center gap-4 rounded-2xl border bg-card p-4">
+            <div key={f.id} className="flex flex-wrap items-center gap-4 rounded-lg border bg-card p-4">
               <span className="grid h-11 w-11 place-items-center rounded-full bg-accent text-accent-foreground"><Icon className="h-5 w-5" /></span>
               <div className="min-w-0 flex-1">
-                <Link to="/s/$slug" params={{ slug: f.slug }} className="block truncate font-medium hover:text-primary">{f.name}</Link>
+                <p className="truncate font-medium">{f.name}</p>
                 <div className="text-xs text-muted-foreground">
                   {f.source === "converted" ? "Link" : formatSize(f.size)} · {ago(f.created_at)}
                 </div>
               </div>
               <span className="flex items-center gap-1 text-sm text-muted-foreground"><Eye className="h-4 w-4" />{f.views}</span>
               <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium capitalize">{f.source}</span>
-              <Button variant="outline" onClick={() => { navigator.clipboard.writeText(`${site.publicUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
-                <Copy className="h-4 w-4" /> Copy Link
+              <Button aria-label="Copy share link" variant="outline" onClick={() => { navigator.clipboard.writeText(`${site.publicUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
+                <Copy className="h-4 w-4" /><span className="hidden sm:inline">Copy Link</span>
               </Button>
               <Button size="icon" variant="ghost" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>
             </div>

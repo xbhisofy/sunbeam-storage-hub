@@ -1,6 +1,10 @@
 # Tanyora project status
 
 ## Website
+- [x] Restyle PWABuilder phone screens using supplied TenBox references; visual fixture checks cover home, bottom navigation, upload menu, convert link, drawer and profile editing; six existing tests pass.
+- [x] Diagnose app address bar separately from external Google login; published app-link association returns HTTP 200 JSON matching the supplied APK package and certificate.
+- [ ] Verify redesigned screens on the installed APK after website publication — waiting on user publication and device check; external Google login browser controls remain visible by design.
+- [ ] Verify real authenticated upload and profile save — requesting user has no matching app account for automated sign-in; needs user preview sign-in.
 - [x] Replace prior branding with Tanyora and the supplied blue T logo; derive favicon.
 - [x] Rewrite privacy, terms and deletion information using supplied operator/contact details; add linked community/copyright/contact pages.
 - [x] Update route metadata, crawl discovery and Android/listing documentation without claiming the custom domain is connected.

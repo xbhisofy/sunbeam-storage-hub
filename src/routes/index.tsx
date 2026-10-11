@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { currentUserId } from "@/lib/session";
 import { Upload, Share2, Wallet, Users, Film } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
@@ -41,6 +43,12 @@ const features = [
 ];
 
 function Home() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Installed web apps retain the existing start URL; route to the actual experience.
+    if (!window.matchMedia("(display-mode: standalone)").matches && !document.referrer.startsWith("android-app://")) return;
+    currentUserId().then(uid => navigate({ to: uid ? "/dashboard" : "/auth", replace: true }));
+  }, [navigate]);
   return (
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">

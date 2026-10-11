@@ -71,18 +71,10 @@ function AuthPage() {
   }
 
   return (
-    <div className="grid min-h-screen bg-background lg:grid-cols-2">
-      <div className="hidden flex-col justify-between bg-gradient-to-br from-primary to-primary/70 p-12 text-primary-foreground lg:flex">
-        <Brand />
-        <div>
-          <h2 className="text-4xl font-bold leading-tight">Share files.<br />Earn from every view.</h2>
-          <p className="mt-4 max-w-md text-primary-foreground/80">Upload videos, PDFs and links, get a share link and grow with the referral program.</p>
-        </div>
-        <p className="text-sm text-primary-foreground/70">© Tanyora</p>
-      </div>
+    <div className="grid min-h-dvh bg-background">
       <div className="grid place-items-center px-4 py-10">
         <div className="w-full max-w-sm">
-          <div className="mb-8 lg:hidden"><Brand /></div>
+          <div className="mb-10 flex justify-center"><Brand /></div>
           {sent ? (
             <div className="rounded-2xl border bg-card p-8 text-center">
               <MailCheck className="mx-auto h-12 w-12 text-primary" />
@@ -103,13 +95,15 @@ function AuthPage() {
 
             <form onSubmit={submit} className="space-y-3">
               {mode === "signup" && <Input className="h-11" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
-              <Input className="h-11" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <label className="sr-only" htmlFor="auth-email">Email</label>
+              <Input id="auth-email" className="h-12" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <label className="sr-only" htmlFor="auth-password">Password</label>
               <div className="relative">
-                <Input className="h-11 pr-10" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
+                <Input id="auth-password" className="h-11 pr-10" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
                   autoComplete={mode === "login" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} />
-                <button type="button" aria-label="Show password" onClick={() => setShow(!show)} className="absolute right-3 top-3 text-muted-foreground">
+                <Button variant="ghost" size="icon" type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)} className="absolute right-0 top-0 h-11 w-11 text-muted-foreground">
                   {show ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
+                </Button>
               </div>
               {err && <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">{err}</p>}
               <Button className="h-11 w-full" disabled={busy}>
@@ -118,9 +112,9 @@ function AuthPage() {
             </form>
             <p className="mt-6 text-center text-sm text-muted-foreground">
               {mode === "login" ? "Account nahi hai? " : "Account pehle se hai? "}
-              <button className="font-medium text-primary" onClick={() => { setErr(null); setMode(mode === "login" ? "signup" : "login"); }}>
+              <Button variant="link" className="px-1 font-medium text-primary" onClick={() => { setErr(null); setMode(mode === "login" ? "signup" : "login"); }}>
                 {mode === "login" ? "Sign up" : "Log in"}
-              </button>
+              </Button>
             </p>
             <p className="mt-6 text-center text-xs text-muted-foreground">Continue karke aap hamari <Link className="underline" to="/terms">Terms</Link>, <Link className="underline" to="/privacy">Privacy Policy</Link> aur <Link className="underline" to="/community-guidelines">Guidelines</Link> maante ho.</p>
           </>)}

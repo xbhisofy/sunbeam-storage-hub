@@ -142,3 +142,20 @@
     color: var(--color-foreground);
   }
 }
+
+/* App presentation shares the website's functional screens. */
+@theme inline {
+  --color-file-document: var(--file-document);
+  --color-file-link: var(--file-link);
+  --color-file-video: var(--file-video);
+  --color-file-audio: var(--file-audio);
+}
+:root { --file-document: oklch(0.47 0.19 262); --file-link: oklch(0.43 0.12 163); --file-video: oklch(0.49 0.18 20); --file-audio: oklch(0.47 0.12 70); }
+.dark { --file-document: oklch(0.8 0.1 262); --file-link: oklch(0.8 0.1 163); --file-video: oklch(0.8 0.1 20); --file-audio: oklch(0.8 0.1 70); }
+.category-document { color: var(--file-document); background: color-mix(in oklab, var(--file-document) 8%, var(--card)); }
+.category-link { color: var(--file-link); background: color-mix(in oklab, var(--file-link) 8%, var(--card)); }
+.category-video { color: var(--file-video); background: color-mix(in oklab, var(--file-video) 8%, var(--card)); }
+.category-audio { color: var(--file-audio); background: color-mix(in oklab, var(--file-audio) 8%, var(--card)); }
+.app-bottom { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+@media (max-width: 767px) { .app-main { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } .app-topbar { padding-top: env(safe-area-inset-top); height: calc(64px + env(safe-area-inset-top)); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
