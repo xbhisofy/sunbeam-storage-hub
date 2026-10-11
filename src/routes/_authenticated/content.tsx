@@ -157,17 +157,17 @@ function Content() {
         <div className="flex rounded-xl border bg-card p-1">
           {(["all", "original", "converted"] as const).map((k) => (
             <Button variant="ghost" key={k} onClick={() => setFilter(k)}
-              className={`rounded-lg px-4 py-1.5 text-sm capitalize ${filter === k ? "bg-primary text-primary-foreground" : ""}`}>{k}</Button>
+              className={`rounded-lg px-4 py-1.5 text-sm font-medium capitalize transition-colors ${filter === k ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary" : "text-muted-foreground"}`}>{k}</Button>
           ))}
         </div>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">{shown.length} items</p>
       <div className="mt-3 space-y-3">
         {shown.length === 0 ? (
-          <div className="rounded-lg border bg-card py-20 text-center">
-            <FolderOpen className="mx-auto h-14 w-14 text-muted-foreground" />
-            <p className="mt-3 font-semibold">No content yet</p>
-
+          <div className="rounded-2xl border border-dashed bg-card py-16 text-center">
+            <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-accent"><FolderOpen className="h-8 w-8 text-muted-foreground" /></span>
+            <p className="mt-4 font-semibold">No content yet</p>
+            <p className="mt-1 text-sm text-muted-foreground">Upload a file or convert a link to get started.</p>
           </div>
         ) : shown.map((f) => {
           const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;
