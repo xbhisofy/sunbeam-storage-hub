@@ -91,19 +91,19 @@ function AuthPage() {
             {search.ref && mode === "signup" && <p className="mt-2 rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">Invite code: {search.ref}</p>}
 
             <form onSubmit={submit} className="mt-6 space-y-3">
-              {mode === "signup" && <Input className="h-11" required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
+              {mode === "signup" && <Input className="h-12 rounded-xl" required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
               <label className="sr-only" htmlFor="auth-email">Email</label>
-              <Input id="auth-email" className="h-12" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input id="auth-email" className="h-12 rounded-xl" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               <label className="sr-only" htmlFor="auth-password">Password</label>
               <div className="relative">
-                <Input id="auth-password" className="h-11 pr-10" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
+                <Input id="auth-password" className="h-12 rounded-xl pr-10" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
                   autoComplete={mode === "login" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} />
-                <Button variant="ghost" size="icon" type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)} className="absolute right-0 top-0 h-11 w-11 text-muted-foreground">
+                <Button variant="ghost" size="icon" type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)} className="absolute right-0 top-0 h-12 w-12 text-muted-foreground">
                   {show ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </Button>
               </div>
               {err && <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">{err}</p>}
-              <Button className="h-11 w-full" disabled={busy}>
+              <Button className="h-12 w-full rounded-xl text-base shadow-lg shadow-primary/30" disabled={busy}>
                 {busy && <Loader2 className="h-4 w-4 animate-spin" />}{mode === "login" ? "Log in" : "Create account"}
               </Button>
             </form>
