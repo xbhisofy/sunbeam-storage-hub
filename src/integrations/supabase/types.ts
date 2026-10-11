@@ -104,6 +104,24 @@ export type Database = {
         }
         Relationships: []
       }
+      view_events: {
+        Row: {
+          day: string
+          file_slug: string
+          viewer_id: string
+        }
+        Insert: {
+          day?: string
+          file_slug: string
+          viewer_id: string
+        }
+        Update: {
+          day?: string
+          file_slug?: string
+          viewer_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
