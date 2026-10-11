@@ -1,4 +1,3 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { createFileRoute } from "@tanstack/react-start";
 import { requireBearerUserId } from "@/lib/api-auth";
 import { deleteAccountData } from "@/lib/delete-account";
