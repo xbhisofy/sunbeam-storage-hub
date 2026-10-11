@@ -3,7 +3,7 @@
   "short_name": "Tanyora",
   "description": "Upload files, get share links, and earn from views and referrals.",
   "id": "/",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "scope": "/",
 "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
