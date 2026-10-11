@@ -1,11 +1,13 @@
 import { pageHead } from "@/lib/site";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Wallet, Clock, CheckCircle2, Eye, UserPlus, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { StatusBadge } from "@/components/StatusBadge";
 import { useProfile } from "./route";
 import { money } from "@/lib/format";
 
@@ -34,6 +36,13 @@ function Earnings() {
   const qc = useQueryClient();
   const [changing, setChanging] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [method, setMethod] = useState("upi");
+  const [details, setDetails] = useState("");
+  const { data: wd } = useQuery({
+    queryKey: ["my-withdrawals"],
+    queryFn: async () => (await supabase.from("withdrawals").select("*").order("created_at", { ascending: false }).limit(50)).data ?? [],
+  });
   const bal = Number(p?.balance ?? 0);
   const plan = p?.plan ?? "view";
   const switches = p?.plan_switches ?? 3;
@@ -135,10 +144,24 @@ function Earnings() {
       </div>
 
       <h2 className="mt-8 font-semibold">Payout history</h2>
-      <div className="mt-3 rounded-2xl border bg-card py-16 text-center">
-        <Wallet className="mx-auto h-12 w-12 text-muted-foreground" />
-        <p className="mt-3 font-semibold">No payouts yet</p>
-      </div>
+      {(wd ?? []).length === 0 ? (
+        <div className="mt-3 rounded-2xl border bg-card py-16 text-center">
+          <Wallet className="mx-auto h-12 w-12 text-muted-foreground" />
+          <p className="mt-3 font-semibold">No payouts yet</p>
+        </div>
+      ) : (
+        <div className="mt-3 divide-y rounded-2xl border bg-card">
+          {wd!.map((w) => (
+            <div key={w.id} className="flex items-center justify-between gap-4 p-4 text-sm">
+              <div>
+                <div className="font-semibold">{money(Number(w.amount))} · {w.method.toUpperCase()}</div>
+                <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()}{w.admin_note ? ` · ${w.admin_note}` : ""}</div>
+              </div>
+              <StatusBadge status={w.status} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
