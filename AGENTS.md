@@ -21,3 +21,5 @@
 - PWABuilder uses the web screens with a responsive app shell; preserve the Expo code separately and never hide external identity-provider browser controls.
 - Native Android Google login uses the platform Google Sign-In SDK and exchanges its ID token with the existing auth backend; require owner-configured OAuth clients and signing certificates rather than falling back to a browser redirect.
 - Preserve the existing distributed Android application ID when replacing the PWABuilder shell; an upgrade also requires compatible signing and a higher versionCode.
+
+- Share links use `site.shareUrl` (main domain, opens the app) and the dashboard uses `site.webUrl` (web subdomain); installed-app detection lives in src/lib/app-mode.ts so browsers get the Play Store page while the TWA plays files.
