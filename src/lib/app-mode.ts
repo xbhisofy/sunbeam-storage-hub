@@ -9,3 +9,15 @@ export function isInstalledApp(): boolean {
   if (yes) sessionStorage.setItem("tanyora_app", "1");
   return yes;
 }
+
+const MAIN_ONLY = ["/privacy", "/terms", "/community-guidelines", "/copyright", "/contact", "/delete-account"];
+/** Where a path belongs when main (landing + share links) and web (login/dashboard) hosts differ. null = stay. */
+export function hostRedirect(host: string, path: string, mainUrl: string, webUrl: string): string | null {
+  const main = new URL(mainUrl).host, web = new URL(webUrl).host;
+  if (main === web) return null;
+  const mainPath = path === "/" || path.startsWith("/s/") || MAIN_ONLY.includes(path);
+  if (host === main && !mainPath) return webUrl + path;
+  if (host === web && path.startsWith("/s/")) return mainUrl + path;
+  if (host === web && path === "/") return webUrl + "/dashboard";
+  return null;
+}
