@@ -14,7 +14,7 @@ import * as Clipboard from "expo-clipboard";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { decode } from "base64-arraybuffer";
-import { useSession } from "./_layout";
+import { useSession } from "../_layout";
 import { supabase } from "../../lib/supabase";
 import { SITE_URL } from "../../lib/config";
 import { theme } from "../../lib/theme";

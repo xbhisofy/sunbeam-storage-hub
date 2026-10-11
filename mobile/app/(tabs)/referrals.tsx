@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { useSession } from "./_layout";
+import { useSession } from "../_layout";
 import { supabase } from "../../lib/supabase";
 import { SITE_URL } from "../../lib/config";
 import { theme } from "../../lib/theme";

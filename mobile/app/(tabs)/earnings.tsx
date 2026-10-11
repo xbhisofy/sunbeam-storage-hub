@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useSession } from "./_layout";
+import { useSession } from "../_layout";
 import { supabase } from "../../lib/supabase";
 import { RATES } from "../../lib/config";
 import { theme } from "../../lib/theme";
