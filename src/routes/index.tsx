@@ -110,7 +110,7 @@ function Home() {
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-background/60"><div className="h-full w-4/5 rounded-full" style={{ backgroundImage: "var(--landing-text)" }} /></div>
               </div>
             </div>
-            <div className="landing-glass landing-float-slow absolute -left-4 -top-6 flex items-center gap-3 rounded-2xl p-3 pr-5 shadow-xl sm:-left-10">
+            <div className="landing-glass landing-float-slow absolute -left-4 -top-14 flex items-center gap-3 rounded-2xl p-3 pr-5 shadow-xl sm:-left-10">
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-accent-foreground"><Link2 className="h-5 w-5" /></span>
               <div><p className="text-sm font-semibold">Share link created</p><p className="text-[11px] uppercase tracking-wider text-muted-foreground">tanyora · /s/xy92p</p></div>
             </div>
