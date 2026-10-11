@@ -16,8 +16,8 @@ export async function requireBearerUserId(request: Request): Promise<string> {
       headers: { "Content-Type": "application/json" },
     });
   }
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+  const url = process.env["SUPABASE_URL"];
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"] ?? process.env["SUPABASE_ANON_KEY"];
   if (!url || !key) {
     throw new Response(JSON.stringify({ error: "Server not configured" }), {
       status: 500,
