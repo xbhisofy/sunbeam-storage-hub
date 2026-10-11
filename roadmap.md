@@ -25,3 +25,4 @@
 - [ ] Play Console publishing ($25 account, forms, 12 testers / 14 days) — user steps.
 - [ ] Native Google sign-in on a real device — waiting on owner OAuth configuration, compatible signing and first native APK build.
 - [ ] App Links verification (assetlinks.json on the site) after Play Store listing.
+- [x] Test main/subdomain split using two Lovable addresses until tanyora.com is bought

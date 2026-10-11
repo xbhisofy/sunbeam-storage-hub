@@ -124,6 +124,14 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useEffect(() => {
+    // Main domain = landing + share links; web subdomain = login/dashboard. Installed app stays put.
+    Promise.all([import("@/lib/app-mode"), import("@/lib/site")]).then(([m, { site }]) => {
+      if (m.isInstalledApp()) return;
+      const to = m.hostRedirect(location.host, location.pathname, site.shareUrl, site.webUrl);
+      if (to) location.replace(to + location.search + location.hash);
+    });
+  }, []);
+  useEffect(() => {
     import("@/lib/deep-links").then((m) => m.setupDeepLinks((path) => router.navigate({ to: path })));
   }, [router]);
   useEffect(() => {
