@@ -195,3 +195,8 @@
 .landing-float { animation: landing-float 6s ease-in-out infinite; }
 .landing-float-slow { animation: landing-float 8s ease-in-out infinite 1s; }
 @media (prefers-reduced-motion: reduce) { .landing-float, .landing-float-slow { animation: none; } }
+.app-shell { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+.app-shell button, .app-shell a { touch-action: manipulation; }
+.app-hero-card { background: linear-gradient(135deg, var(--primary), oklch(0.5 0.2 285)); color: var(--primary-foreground); box-shadow: 0 16px 40px -18px color-mix(in oklab, var(--primary) 70%, transparent); }
+.app-bottom { backdrop-filter: blur(14px); background: color-mix(in oklab, var(--card) 92%, transparent); }
+@media (max-width: 767px) { .app-main { padding-left: 16px; padding-right: 16px; } }
