@@ -138,14 +138,14 @@ function Home() {
 
       <section id="rates" className="relative scroll-mt-20 py-20">
         <div className="mx-auto max-w-5xl px-5">
-          <h2 className="text-center text-4xl font-extrabold md:text-5xl">Plans & Earnings</h2>
+          <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Plans & Earnings</h2>
           <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Choose the monetization model that fits your audience. Switch plans up to 3 times.</p>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             {[
               { icon: Users, name: "Signup Referral", sub: "Maximize referral growth", price: "$0.10", unit: "per new signup", focus: "User growth" },
               { icon: Eye, name: "View-Based", sub: "Scale high-traffic links", price: "$3.00", unit: "per 1,000 views", focus: "Views & scaling" },
             ].map((p) => (
-              <div key={p.name} className="rounded-3xl border bg-card/80 p-7">
+              <div key={p.name} className="landing-card rounded-3xl p-6 sm:p-7">
                 <div className="flex items-center gap-4">
                   <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent text-accent-foreground"><p.icon className="h-6 w-6" /></span>
                   <div><h3 className="text-2xl font-bold">Plan: {p.name}</h3><p className="text-sm text-muted-foreground">{p.sub}</p></div>
@@ -161,7 +161,7 @@ function Home() {
               </div>
             ))}
           </div>
-          <div id="referral" className="mt-6 scroll-mt-24 rounded-3xl border bg-card/80 p-7">
+          <div id="referral" className="mt-6 scroll-mt-24 landing-card rounded-3xl p-6 sm:p-7">
             <div className="flex items-center gap-4">
               <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent text-accent-foreground"><Share2 className="h-6 w-6" /></span>
               <div><h3 className="text-2xl font-bold">Referral Program</h3><p className="text-sm text-muted-foreground">Earn from the users you invite</p></div>
@@ -173,18 +173,18 @@ function Home() {
       </section>
 
       <section id="app" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-20">
-        <h2 className="text-center text-4xl font-extrabold md:text-5xl">Why Tanyora</h2>
+        <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Why Tanyora</h2>
         <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Everything you need to monetize your content, in one platform.</p>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {why.map((f) => (
-            <div key={f.title} className="rounded-2xl border bg-card p-7">
+            <div key={f.title} className="landing-card rounded-2xl p-7">
               <span className="grid h-12 w-12 place-items-center rounded-xl bg-accent text-accent-foreground"><f.icon className="h-5 w-5" /></span>
               <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
               <p className="mt-2 text-muted-foreground">{f.text}</p>
             </div>
           ))}
         </div>
-        <div className="landing-glow mt-12 flex flex-col items-center gap-5 rounded-3xl border p-10 text-center">
+        <div className="landing-glow mt-12 flex flex-col items-center gap-5 rounded-3xl border p-8 sm:p-12 text-center">
           <h3 className="text-3xl font-bold">Start earning today</h3>
           <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><Link to="/auth" search={{ mode: "signup" }}>Create free account <ArrowRight className="h-4 w-4" /></Link></Button>
         </div>
