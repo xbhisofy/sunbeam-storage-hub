@@ -50,6 +50,13 @@
       "when": 1791708726359,
       "tag": "0006_admin_panel_withdrawals",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791708882705,
+      "tag": "0007_admin_storage_delete",
+      "breakpoints": true
     }
   ]
 }

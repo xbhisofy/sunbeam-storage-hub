@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, Outlet, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield } from "lucide-react";
+import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,6 +37,7 @@ export function useProfile() {
 
 function Shell() {
   const { data: p } = useProfile();
+  const { data: isAdmin } = useIsAdmin();
   const navigate = useNavigate();
   return (
     <div className="flex min-h-screen flex-col bg-background md:flex-row">
@@ -57,6 +59,12 @@ function Shell() {
               </div>
             )}
           </div>))}
+          {isAdmin && (
+            <Link to="/admin" className="flex items-center gap-3 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm text-foreground hover:bg-muted"
+              activeProps={{ className: "bg-accent text-accent-foreground font-medium" }}>
+              <Shield className="h-5 w-5" /> Admin
+            </Link>
+          )}
         </nav>
         <div className="mt-auto hidden items-center gap-3 border-t px-5 py-4 md:flex">
           <span className="grid h-10 w-10 place-items-center rounded-full bg-accent font-medium text-accent-foreground">
