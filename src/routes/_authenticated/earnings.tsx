@@ -1,11 +1,13 @@
 import { pageHead } from "@/lib/site";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Wallet, Clock, CheckCircle2, Eye, UserPlus, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { StatusBadge } from "@/components/StatusBadge";
 import { useProfile } from "./route";
 import { money } from "@/lib/format";
 
@@ -34,6 +36,13 @@ function Earnings() {
   const qc = useQueryClient();
   const [changing, setChanging] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [method, setMethod] = useState("upi");
+  const [details, setDetails] = useState("");
+  const { data: wd } = useQuery({
+    queryKey: ["my-withdrawals"],
+    queryFn: async () => (await supabase.from("withdrawals").select("*").order("created_at", { ascending: false }).limit(50)).data ?? [],
+  });
   const bal = Number(p?.balance ?? 0);
   const plan = p?.plan ?? "view";
   const switches = p?.plan_switches ?? 3;
@@ -42,10 +51,7 @@ function Earnings() {
     if (!p || next === plan) return;
     if (switches <= 0) { toast.error("No plan switches remaining"); return; }
     setBusy(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ plan: next, plan_switches: switches - 1 })
-      .eq("id", p.id);
+    const { error } = await supabase.rpc("switch_plan", { _plan: next });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Plan changed");
@@ -53,11 +59,24 @@ function Earnings() {
     qc.invalidateQueries({ queryKey: ["profile"] });
   }
 
+  const pendingAmt = (wd ?? []).filter((w) => w.status === "pending" || w.status === "approved").reduce((s, w) => s + Number(w.amount), 0);
   const stats = [
-    { icon: Clock, label: "On hold", value: 0, note: "Released after 3 days" },
+    { icon: Clock, label: "Pending withdrawal", value: pendingAmt },
     { icon: Wallet, label: "Available to withdraw", value: bal },
-    { icon: CheckCircle2, label: "Paid", value: 0 },
+    { icon: CheckCircle2, label: "Paid", value: Number(p?.paid_total ?? 0) },
   ];
+
+  async function withdraw(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.rpc("request_withdrawal", { _amount: Number(amount), _method: method, _details: details.trim() });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Withdrawal request bhej di gayi");
+    setAmount(""); setDetails("");
+    qc.invalidateQueries({ queryKey: ["profile"] });
+    qc.invalidateQueries({ queryKey: ["my-withdrawals"] });
+  }
   return (
     <div className="max-w-5xl">
       <h1 className="text-3xl font-bold">Earnings</h1>
@@ -69,16 +88,22 @@ function Earnings() {
             <div>
               <div className="text-sm text-muted-foreground">{s.label}</div>
               <div className="text-2xl font-bold">{money(s.value)}</div>
-              {s.note && <div className="text-xs text-muted-foreground">{s.note}</div>}
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-6 rounded-2xl border bg-card p-5">
+      <form onSubmit={withdraw} className="mt-6 rounded-2xl border bg-card p-5">
         <div className="font-semibold">Withdraw</div>
-        <div className="text-sm text-muted-foreground">Minimum withdrawal is $5.00</div>
-        <Button className="mt-4" disabled={bal < 5}>Request Withdrawal</Button>
-      </div>
+        <div className="text-sm text-muted-foreground">Minimum withdrawal is $5.00. Admin approve karke payment bhejega.</div>
+        <div className="mt-4 grid gap-3 md:grid-cols-[140px_160px_1fr_auto]">
+          <Input type="number" step="0.01" min={5} max={bal} required placeholder="Amount $" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <select value={method} onChange={(e) => setMethod(e.target.value)} className="h-9 rounded-md border bg-background px-3 text-sm">
+            <option value="upi">UPI</option><option value="paypal">PayPal</option><option value="bank">Bank transfer</option>
+          </select>
+          <Input required maxLength={300} placeholder={method === "upi" ? "UPI ID (name@bank)" : method === "paypal" ? "PayPal email" : "Account no, IFSC, name"} value={details} onChange={(e) => setDetails(e.target.value)} />
+          <Button disabled={busy || bal < 5}>Request</Button>
+        </div>
+      </form>
 
       <div className="mt-6 rounded-2xl border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
@@ -119,10 +144,24 @@ function Earnings() {
       </div>
 
       <h2 className="mt-8 font-semibold">Payout history</h2>
-      <div className="mt-3 rounded-2xl border bg-card py-16 text-center">
-        <Wallet className="mx-auto h-12 w-12 text-muted-foreground" />
-        <p className="mt-3 font-semibold">No payouts yet</p>
-      </div>
+      {(wd ?? []).length === 0 ? (
+        <div className="mt-3 rounded-2xl border bg-card py-16 text-center">
+          <Wallet className="mx-auto h-12 w-12 text-muted-foreground" />
+          <p className="mt-3 font-semibold">No payouts yet</p>
+        </div>
+      ) : (
+        <div className="mt-3 divide-y rounded-2xl border bg-card">
+          {wd!.map((w) => (
+            <div key={w.id} className="flex items-center justify-between gap-4 p-4 text-sm">
+              <div>
+                <div className="font-semibold">{money(Number(w.amount))} · {w.method.toUpperCase()}</div>
+                <div className="text-xs text-muted-foreground">{new Date(w.created_at).toLocaleString()}{w.admin_note ? ` · ${w.admin_note}` : ""}</div>
+              </div>
+              <StatusBadge status={w.status} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

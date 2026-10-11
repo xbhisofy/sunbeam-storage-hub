@@ -37,10 +37,7 @@ export default function Earnings() {
       {
         text: "Haan",
         onPress: async () => {
-          const { error } = await supabase
-            .from("profiles")
-            .update({ plan, plan_switches: profile.plan_switches - 1 })
-            .eq("id", uid!);
+          const { error } = await supabase.rpc("switch_plan", { _plan: plan });
           if (error) Alert.alert("Fail", error.message);
           else {
             Alert.alert("Plan badal gaya ✅");

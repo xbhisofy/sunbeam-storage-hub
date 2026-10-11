@@ -68,10 +68,12 @@ export type Database = {
       profiles: {
         Row: {
           balance: number
+          blocked: boolean
           created_at: string
           display_name: string | null
           email: string | null
           id: string
+          paid_total: number
           plan: string
           plan_switches: number
           referral_code: string
@@ -80,10 +82,12 @@ export type Database = {
         }
         Insert: {
           balance?: number
+          blocked?: boolean
           created_at?: string
           display_name?: string | null
           email?: string | null
           id: string
+          paid_total?: number
           plan?: string
           plan_switches?: number
           referral_code?: string
@@ -92,15 +96,35 @@ export type Database = {
         }
         Update: {
           balance?: number
+          blocked?: boolean
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          paid_total?: number
           plan?: string
           plan_switches?: number
           referral_code?: string
           referral_earnings?: number
           referred_by?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -122,16 +146,73 @@ export type Database = {
         }
         Relationships: []
       }
+      withdrawals: {
+        Row: {
+          account_details: string
+          admin_note: string | null
+          amount: number
+          created_at: string
+          id: string
+          method: string
+          processed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          account_details: string
+          admin_note?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          method: string
+          processed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          account_details?: string
+          admin_note?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          method?: string
+          processed_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      admin_set_withdrawal: {
+        Args: { _id: string; _note: string; _status: string }
+        Returns: undefined
+      }
+      admin_stats: { Args: never; Returns: Json }
+      admin_update_user: {
+        Args: { _balance_delta: number; _blocked: boolean; _id: string }
+        Returns: undefined
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       my_referral_count: { Args: never; Returns: number }
       record_view: { Args: { _slug: string }; Returns: undefined }
+      request_withdrawal: {
+        Args: { _amount: number; _details: string; _method: string }
+        Returns: undefined
+      }
+      switch_plan: { Args: { _plan: string }; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -258,6 +339,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
