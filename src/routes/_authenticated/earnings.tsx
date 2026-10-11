@@ -92,16 +92,37 @@ function Earnings() {
           </div>
         ))}
       </div>
-      <form onSubmit={withdraw} className="mt-6 rounded-2xl border bg-card p-5">
-        <div className="font-semibold">Withdraw</div>
-        <div className="text-sm text-muted-foreground">Minimum withdrawal is $5.00. Payouts are sent after admin review.</div>
-        <div className="mt-4 grid gap-3 md:grid-cols-[140px_160px_1fr_auto]">
-          <Input type="number" step="0.01" min={5} max={bal} required placeholder="Amount $" value={amount} onChange={(e) => setAmount(e.target.value)} />
-          <select value={method} onChange={(e) => setMethod(e.target.value)} className="h-9 rounded-md border bg-background px-3 text-sm">
-            <option value="upi">UPI</option><option value="paypal">PayPal</option><option value="bank">Bank transfer</option>
-          </select>
-          <Input required maxLength={300} placeholder={method === "upi" ? "UPI ID (name@bank)" : method === "paypal" ? "PayPal email" : "Account no, IFSC, name"} value={details} onChange={(e) => setDetails(e.target.value)} />
-          <Button disabled={busy || bal < 5}>Request</Button>
+      <form onSubmit={withdraw} className="mt-6 rounded-2xl border bg-card p-5 shadow-sm">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="text-lg font-semibold">Withdraw</div>
+            <div className="text-sm text-muted-foreground">Minimum $5.00 · Paid after admin review</div>
+          </div>
+          <span className="shrink-0 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">{money(bal)} available</span>
+        </div>
+        <div className="mt-5 space-y-4">
+          <div>
+            <label htmlFor="wd-amount" className="mb-1.5 block text-sm font-medium">Amount</label>
+            <div className="relative">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+              <Input id="wd-amount" inputMode="decimal" type="number" step="0.01" min={5} max={bal} required placeholder="5.00" value={amount} onChange={(e) => setAmount(e.target.value)} className="h-12 rounded-xl pl-8 text-base" />
+            </div>
+          </div>
+          <div>
+            <span className="mb-1.5 block text-sm font-medium">Payout method</span>
+            <div role="radiogroup" className="grid grid-cols-3 gap-2">
+              {[{ v: "upi", l: "UPI" }, { v: "paypal", l: "PayPal" }, { v: "bank", l: "Bank" }].map((o) => (
+                <button key={o.v} type="button" role="radio" aria-checked={method === o.v} onClick={() => setMethod(o.v)}
+                  className={`h-12 rounded-xl border text-sm font-semibold transition-colors ${method === o.v ? "border-primary bg-primary/10 text-primary" : "bg-background text-muted-foreground"}`}>{o.l}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label htmlFor="wd-details" className="mb-1.5 block text-sm font-medium">{method === "upi" ? "UPI ID" : method === "paypal" ? "PayPal email" : "Bank details"}</label>
+            <Input id="wd-details" required maxLength={300} className="h-12 rounded-xl text-base" placeholder={method === "upi" ? "name@bank" : method === "paypal" ? "you@example.com" : "Account no, IFSC, account name"} value={details} onChange={(e) => setDetails(e.target.value)} />
+          </div>
+          <Button className="h-12 w-full rounded-xl text-base" disabled={busy || bal < 5}>{busy ? "Submitting..." : "Request withdrawal"}</Button>
+          {bal < 5 && <p className="text-center text-xs text-muted-foreground">You need at least $5.00 to withdraw. Keep sharing to earn more.</p>}
         </div>
       </form>
 
