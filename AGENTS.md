@@ -19,3 +19,4 @@
 - Signed-in UI reads the local session via `currentUserId()` in src/lib/session.ts instead of `auth.getUser()`; a network auth check on every click made navigation slow, and the backend still verifies each request.
 
 - PWABuilder uses the web screens with a responsive app shell; preserve the Expo code separately and never hide external identity-provider browser controls.
+- Native Android Google login uses the platform Google Sign-In SDK and exchanges its ID token with the existing auth backend; require owner-configured OAuth clients and signing certificates rather than falling back to a browser redirect.
