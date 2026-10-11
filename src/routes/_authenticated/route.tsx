@@ -58,7 +58,7 @@ function Shell() {
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card md:flex"><div className="p-6"><Brand /></div>{menu}<div className="mt-auto border-t p-5"><p className="truncate font-medium">{p?.display_name}</p><p className="truncate text-sm text-muted-foreground">{p?.email}</p></div></aside>
     <div className="min-w-0 flex-1">
       <header className="app-topbar sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-card px-4 md:hidden"><Button size="icon" variant="ghost" className="h-12 w-12" aria-label="Open menu" onClick={() => setDrawer(true)}><Menu className="h-6 w-6" /></Button><span className="text-lg font-bold">{pathname === "/dashboard" ? "Tanyora" : title}</span><Button size="icon" variant="ghost" className="h-12 w-12 text-primary" aria-label="Upload menu" onClick={() => setUpload(true)}><Cloud className="h-6 w-6" /></Button></header>
-      <main className="app-main mx-auto max-w-6xl px-5 py-6 md:px-10 md:py-10"><Outlet /></main>
+      <main className="app-main mx-auto max-w-6xl px-5 pb-32 pt-6 md:px-10 md:py-10"><Outlet /></main>
       <div className="hidden md:block"><LegalFooter /></div>
       <nav aria-label="Bottom navigation" className="app-bottom fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-center border-t bg-card px-3 pt-2 md:hidden">
         {nav.filter(n => n.to !== "/referrals" && n.to !== "/plans").map((n, i) => <div key={n.to} className={i === 2 ? "col-start-4" : undefined}><Button variant="ghost" asChild className="h-14 w-full flex-col gap-1 px-0 text-muted-foreground"><Link to={n.to} activeProps={{ className: "text-primary" }}><n.icon className="h-6 w-6" /><span className="text-[11px]">{n.label}</span></Link></Button></div>)}
