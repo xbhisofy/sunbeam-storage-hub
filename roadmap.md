@@ -15,7 +15,7 @@
 - [ ] Connect intended domain — waiting on domain ownership and connection.
 
 ## Mobile app (React Native / Expo — `mobile/`)
-- [ ] Add native Google account chooser and shared-backend login; verify cancellation and failure handling.
+- [x] Add native Google account chooser and shared-backend login code; five isolated flow tests cover token exchange, cancellation, missing configuration/token and backend rejection; Expo configuration validates.
 - [ ] Configure owner's Google OAuth clients and native signing certificates — waiting on owner Google setup and signing identity.
 - [x] Full Expo app: login/signup, Home, My Content (upload + convert link + copy share link), Earnings (2 plans + switching), Referrals, Profile (edit name, sign out, delete account), share-link player with 5s countdown.
 - [x] Same Lovable Cloud backend (database + auth) as the website.
@@ -23,5 +23,5 @@
 - [x] 0-to-hero setup and Play Store publishing guide (mobile/MOBILE_APP_GUIDE.md).
 - [ ] First successful build — waiting on user to run `npm install` + `eas build` per the guide.
 - [ ] Play Console publishing ($25 account, forms, 12 testers / 14 days) — user steps.
-- [ ] Google sign-in inside the app — deferred until first build succeeds.
+- [ ] Native Google sign-in on a real device — waiting on owner OAuth configuration, compatible signing and first native APK build.
 - [ ] App Links verification (assetlinks.json on the site) after Play Store listing.

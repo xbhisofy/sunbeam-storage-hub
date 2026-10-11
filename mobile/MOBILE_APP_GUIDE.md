@@ -12,6 +12,10 @@ Website par jo bhi account/files/earnings hain, wahi app me dikhenge.
 
 ## Step 0 — Pehle phone par FREE me test karo (koi computer nahi chahiye)
 
+**Naya update:** Native Google login ab code mein hai. Iske liye
+`NATIVE_GOOGLE_SETUP.md` wala owner setup aur nayi APK chahiye; Expo Go mein
+ye native package nahi chalega. Purani PWABuilder APK isse update nahi hoti.
+
 1. Apne phone me **Expo Go** app install karo (Play Store me "Expo Go" search karo).
 2. Aapke phone me Android 6 ya naya hona chahiye (aajkal ke sab phones me hota hai).
 3. Jab maine (ya tumne) app ka dev server chalaya hoga, tab QR code scan karke app turant chalegi.
@@ -98,7 +102,7 @@ Yeh **AAB** file banata hai — Play Store sirf yehi leta hai (APK nahi).
 |---|---|
 | `npm install` error | `npx expo install --fix` chalao, phir dobara |
 | Build fail hui | Expo dashboard (expo.dev) par logs dekho ya mujhe error bhejo |
-| Google sign-in app me nahi hai | Abhi email/password auth hai — Google sign-in agle update me add karenge |
+| Google sign-in setup message | `NATIVE_GOOGLE_SETUP.md` ke owner OAuth client, certificate aur build setup poore karo |
 | Share link app me nahi khulta | Play Store listing ke baad "App Links" verification setup karenge (assetlinks.json) |
 
 ## Ek line me safar
