@@ -102,12 +102,8 @@ export function PlayerScreen({ slug }: { slug: string }) {
           </>
         ) : !url ? (
           <Text style={styles.muted}>File load nahi ho payi — dobara kholo.</Text>
-        ) : file.file_type === "video" ? (
-          <VideoView
-            player={useVideoPlayer(url, (player) => player.play())}
-            style={styles.video}
-            contentFit="contain"
-          />
+        ) : file.file_type === "video" && player ? (
+          <VideoView player={player} style={styles.video} contentFit="contain" />
         ) : (
           <Pressable style={styles.button} onPress={() => Linking.openURL(url)}>
             <Text style={styles.buttonText}>File kholo</Text>
