@@ -207,7 +207,7 @@ function Content() {
               <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>
             </li>
           );
-        })}
+        })}</ul>}
       </div>
     </div>
   );
