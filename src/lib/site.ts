@@ -5,6 +5,12 @@ export const site = {
   operator: "Abhishek kumar", location: "Vadodara, Gujarat, India",
   supportEmail: "tanyora@support.com", updated: "October 9, 2026",
   appId: "com.tanyora.app", appScheme: "tanyora",
+  // Installed Android package (PWABuilder TWA); Play Store links must use this.
+  androidPackage: "app.lovable.sunbeam_storage_hub.twa",
+  // Share links live on the main domain (opens app); the dashboard lives on the web subdomain.
+  // Both point to publicUrl until tanyora.com + app.tanyora.com are connected.
+  shareUrl: "https://sunbeam-storage-hub.lovable.app",
+  webUrl: "https://sunbeam-storage-hub.lovable.app",
 } as const;
 export function pageHead(title: string, description: string, path?: string, privatePage = false) {
   const fullTitle = `${title} — ${site.name}`;

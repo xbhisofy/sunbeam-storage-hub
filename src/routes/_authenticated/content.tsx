@@ -165,7 +165,7 @@ function Content() {
               </div>
               <span className="flex items-center gap-1 text-sm text-muted-foreground"><Eye className="h-4 w-4" />{f.views}</span>
               <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium capitalize">{f.source}</span>
-              <Button aria-label="Copy share link" variant="outline" onClick={() => { navigator.clipboard.writeText(`${site.publicUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
+              <Button aria-label="Copy share link" variant="outline" onClick={() => { navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
                 <Copy className="h-4 w-4" /><span className="hidden sm:inline">Copy Link</span>
               </Button>
               <Button size="icon" variant="ghost" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>

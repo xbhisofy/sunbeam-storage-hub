@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { currentUserId } from "@/lib/session";
+import { isInstalledApp } from "@/lib/app-mode";
 import { Upload, Share2, Wallet, Users, UserPlus, Smartphone, BarChart3, ShieldCheck, Gift, Headphones, ArrowRight, CheckCircle2, Link2, DollarSign, Eye, Zap } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
@@ -53,7 +54,7 @@ function Home() {
   const navigate = useNavigate();
   useEffect(() => {
     // Installed web apps retain the existing start URL; route to the actual experience.
-    if (!window.matchMedia("(display-mode: standalone)").matches && !document.referrer.startsWith("android-app://")) return;
+    if (!isInstalledApp()) return;
     currentUserId().then(uid => navigate({ to: uid ? "/dashboard" : "/auth", replace: true }));
   }, [navigate]);
   return (
