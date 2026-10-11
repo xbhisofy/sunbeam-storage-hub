@@ -21,6 +21,18 @@ export function PlayerScreen({ slug }: { slug: string }) {
   const [seconds, setSeconds] = useState(5);
   const [url, setUrl] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
+  // Created unconditionally (hooks can never be conditional); source is
+  // swapped in once the signed URL resolves.
+  const player = useVideoPlayer(url, (p) => {
+    if (url) p.play();
+  });
+
+  useEffect(() => {
+    if (url && player) {
+      player.replace(url);
+      player.play();
+    }
+  }, [url, player]);
 
   useEffect(() => {
     (async () => {
