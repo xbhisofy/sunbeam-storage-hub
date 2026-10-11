@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Eye, EyeOff, Loader2, MailCheck } from "lucide-react";
 import { Brand } from "@/components/Brand";
+import logoImg from "@/assets/tanyora-logo.jpg";
 import { pageHead } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -75,9 +76,12 @@ function AuthPage() {
         </div>
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Tanyora</p>
       </aside>
-      <div className="grid place-items-center px-4 py-10">
+      <div className="landing landing-glow grid place-items-center px-5 py-10 lg:bg-none">
         <div className="w-full max-w-sm">
-          <div className="mb-10 flex justify-center lg:hidden"><Brand /></div>
+          <div className="mb-8 flex flex-col items-center text-center lg:hidden">
+            <img src={logoImg} alt="" width={72} height={72} className="splash-logo h-[72px] w-[72px] rounded-[1.25rem] object-cover" />
+            <p className="mt-3 text-xl font-extrabold tracking-[0.16em]">TANYORA</p>
+          </div>
           {sent ? (
             <div className="rounded-2xl border bg-card p-8 text-center">
               <MailCheck className="mx-auto h-12 w-12 text-primary" />
@@ -85,8 +89,11 @@ function AuthPage() {
               <p className="mt-2 text-sm text-muted-foreground">We sent a confirmation link to <b>{email}</b>. Open it to activate your account.</p>
               <Button variant="outline" className="mt-6 w-full" onClick={() => { setSent(false); setMode("login"); }}>Back to log in</Button>
             </div>
-          ) : (<>
-            <h1 className="text-3xl font-bold">{mode === "login" ? "Welcome back" : "Create account"}</h1>
+          ) : (<div className="rounded-3xl border bg-card/70 p-6 shadow-2xl backdrop-blur sm:p-8">
+            <div className="mb-6 grid grid-cols-2 rounded-xl bg-accent p-1 text-sm font-semibold">
+              {(["login", "signup"] as const).map((m) => <button key={m} type="button" onClick={() => { setErr(null); setMode(m); }} className={`h-10 rounded-lg transition ${mode === m ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground"}`}>{m === "login" ? "Log in" : "Sign up"}</button>)}
+            </div>
+            <h1 className="text-2xl font-bold">{mode === "login" ? "Welcome back" : "Create your account"}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{mode === "login" ? "Log in to manage your files and earnings" : "Start sharing and earning in under a minute"}</p>
             {search.ref && mode === "signup" && <p className="mt-2 rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">Invite code: {search.ref}</p>}
 
@@ -114,7 +121,7 @@ function AuthPage() {
               </Button>
             </p>
             <p className="mt-6 text-center text-xs text-muted-foreground">By continuing you agree to our <Link className="underline" to="/terms">Terms</Link>, <Link className="underline" to="/privacy">Privacy Policy</Link> and <Link className="underline" to="/community-guidelines">Guidelines</Link>.</p>
-          </>)}
+          </div>)}
         </div>
       </div>
     </div>
