@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { router } from "expo-router";
-import { useSession } from "./_layout";
+import { useSession } from "../_layout";
 import { supabase } from "../../lib/supabase";
 import { BRAND, SITE_URL } from "../../lib/config";
 import { theme } from "../../lib/theme";

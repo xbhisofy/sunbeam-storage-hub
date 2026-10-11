@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { Stack, router } from "expo-router";
+import { Stack, router, useSegments } from "expo-router";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { theme } from "../lib/theme";
@@ -12,21 +12,25 @@ export const useSession = () => useContext(SessionContext);
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
+  const segments = useSegments();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setReady(true);
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => { setSession(s); setReady(true); });
     return () => sub.subscription.unsubscribe();
   }, []);
 
   // Signed-out users always land on /login; signed-in users go to the app.
   useEffect(() => {
     if (!ready) return;
-    router.replace(session ? "/(tabs)" : "/login");
-  }, [ready, session]);
+    const atLogin = segments[0] === "(auth)";
+    if (!session && !atLogin) router.replace("/login");
+    else if (session && atLogin) router.replace("/(tabs)");
+    else if (session && segments.length === 0) router.replace("/(tabs)");
+  }, [ready, session, segments]);
 
   if (!ready) {
     return (

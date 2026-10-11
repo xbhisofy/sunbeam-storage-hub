@@ -9,9 +9,10 @@ import {
   View,
 } from "react-native";
 import { router } from "expo-router";
-import { supabase } from "../lib/supabase";
-import { BRAND } from "../lib/config";
-import { theme } from "../lib/theme";
+import { supabase } from "../../lib/supabase";
+import { BRAND } from "../../lib/config";
+import { theme } from "../../lib/theme";
+import { signInWithNativeGoogle } from "../../lib/native-google";
 
 export default function Login() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -21,6 +22,20 @@ export default function Login() {
   const [ref, setRef] = useState("");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
+
+  async function google() {
+    if (busy) return;
+    setBusy(true);
+    setNotice("");
+    try {
+      const result = await signInWithNativeGoogle();
+      if (result === "signed-in") router.replace("/(tabs)");
+    } catch (error) {
+      Alert.alert("Google login", error instanceof Error ? error.message : "Dobara try karo");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function submit() {
     if (!email.trim() || !password) {
@@ -74,6 +89,10 @@ export default function Login() {
       <Text style={styles.subtitle}>
         Files share karo, views kamao — {mode === "signin" ? "sign in karo" : "naya account banao"}
       </Text>
+
+      <Pressable accessibilityRole="button" accessibilityLabel="Continue with Google" style={[styles.googleButton, busy && styles.buttonDisabled]} onPress={google} disabled={busy}>
+        <Text style={styles.googleText}>Continue with Google</Text>
+      </Pressable>
 
       {mode === "signup" && (
         <>
@@ -166,6 +185,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   buttonDisabled: { opacity: 0.6 },
+  googleButton: { minHeight: 48, borderColor: theme.border, borderWidth: 1, borderRadius: 8, alignItems: "center", justifyContent: "center", marginBottom: 20, backgroundColor: theme.card },
+  googleText: { color: theme.text, fontWeight: "700", fontSize: 16 },
   buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
   switchText: { color: theme.primary, textAlign: "center", marginTop: 18 },
 });
