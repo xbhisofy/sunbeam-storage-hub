@@ -29,18 +29,18 @@ export default function Earnings() {
   async function switchPlan(plan: "view" | "referral") {
     if (!profile || plan === profile.plan) return;
     if (profile.plan_switches <= 0) {
-      Alert.alert("Limit ho gayi", `Sirf ${RATES.maxPlanSwitches} baar plan badal sakte ho.`);
+      Alert.alert("Limit reached", `You can switch plans only ${RATES.maxPlanSwitches} times.`);
       return;
     }
-    Alert.alert("Plan badalna hai?", plan === "view" ? "View-Based Plan par jaoge" : "Referral Plan par jaoge", [
-      { text: "Nahi", style: "cancel" },
+    Alert.alert("Switch plan?", plan === "view" ? "You will move to the View-Based plan." : "You will move to the Referral plan.", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "Haan",
+        text: "Confirm",
         onPress: async () => {
           const { error } = await supabase.rpc("switch_plan", { _plan: plan });
           if (error) Alert.alert("Fail", error.message);
           else {
-            Alert.alert("Plan badal gaya ✅");
+            Alert.alert("Plan updated");
             load();
           }
         },
@@ -56,7 +56,7 @@ export default function Earnings() {
         <Text style={styles.balanceLabel}>Available Balance</Text>
         <Text style={styles.balance}>${(profile?.balance ?? 0).toFixed(2)}</Text>
         <Text style={styles.balanceNote}>
-          Withdrawal ke liye minimum ${RATES.minWithdrawal} chahiye. Withdrawal system jald aa raha hai.
+          Minimum withdrawal is ${RATES.minWithdrawal}. Request payouts from the website dashboard.
         </Text>
       </View>
 
@@ -66,13 +66,13 @@ export default function Earnings() {
         <Text style={styles.planName}>1. View-Based Plan</Text>
         <Text style={styles.planRate}>${RATES.viewPer1000} per 1000 views</Text>
         <Text style={styles.planDesc}>
-          Aapki file ka share link jitni baar khulega, utne views ginenge — har 1000 views par ${RATES.viewPer1000}.
+          Earn ${RATES.viewPer1000} for every 1,000 views on your share links.
         </Text>
         {profile?.plan === "view" ? (
           <Text style={styles.currentBadge}>Current Plan ✓</Text>
         ) : (
           <Pressable style={styles.switchButton} onPress={() => switchPlan("view")}>
-            <Text style={styles.switchButtonText}>Is par switch karo</Text>
+            <Text style={styles.switchButtonText}>Switch to this plan</Text>
           </Pressable>
         )}
       </View>
@@ -81,21 +81,21 @@ export default function Earnings() {
         <Text style={styles.planName}>2. Signup Referral Plan</Text>
         <Text style={styles.planRate}>${RATES.referralSignup} per signup</Text>
         <Text style={styles.planDesc}>
-          Aapka referral link use karke jo naya account banega, har signup par ${RATES.referralSignup} milega.
+          Earn ${RATES.referralSignup} for every new account created with your referral link.
         </Text>
         {profile?.plan === "referral" ? (
           <Text style={styles.currentBadge}>Current Plan ✓</Text>
         ) : (
           <Pressable style={styles.switchButton} onPress={() => switchPlan("referral")}>
-            <Text style={styles.switchButtonText}>Is par switch karo</Text>
+            <Text style={styles.switchButtonText}>Switch to this plan</Text>
           </Pressable>
         )}
       </View>
 
       <Text style={styles.note}>
         Plan switches bache: {profile?.plan_switches ?? RATES.maxPlanSwitches} (maximum {RATES.maxPlanSwitches}).{"\n"}
-        Referral commission: referred user ki view earnings ka {RATES.commission * 100}%.{"\n"}
-        Earnings prototype settings par hain — yeh income ki guarantee nahi hai.
+        Referral commission: {RATES.commission * 100}% of referred users' view earnings.{"\n"}
+        Earnings are not guaranteed and depend on genuine views.
       </Text>
     </ScrollView>
   );

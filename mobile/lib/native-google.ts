@@ -18,8 +18,8 @@ export async function signInWithNativeGoogle() {
   } catch (error) {
     if (isErrorWithCode(error)) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) return "cancelled";
-      if (error.code === statusCodes.IN_PROGRESS) throw new Error("Google login pehle se chal raha hai.");
-      if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) throw new Error("Phone mein Google Play Services update karo.");
+      if (error.code === statusCodes.IN_PROGRESS) throw new Error("Google sign-in is already in progress.");
+      if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) throw new Error("Please update Google Play Services on your phone.");
     }
     throw error;
   }

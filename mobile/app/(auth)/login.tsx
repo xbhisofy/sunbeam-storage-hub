@@ -31,7 +31,7 @@ export default function Login() {
       const result = await signInWithNativeGoogle();
       if (result === "signed-in") router.replace("/(tabs)");
     } catch (error) {
-      Alert.alert("Google login", error instanceof Error ? error.message : "Dobara try karo");
+      Alert.alert("Google login", error instanceof Error ? error.message : "Please try again");
     } finally {
       setBusy(false);
     }
@@ -68,13 +68,13 @@ export default function Login() {
           router.replace("/(tabs)");
         } else {
           setNotice(
-            "Account ban gaya! Ab apni email kholo aur verification link par click karo, phir sign in karo.",
+            "Account created. You can now sign in.",
           );
           setMode("signin");
         }
       }
     } catch (e) {
-      Alert.alert("Problem", e instanceof Error ? e.message : "Kuch galat ho gaya");
+      Alert.alert("Problem", e instanceof Error ? e.message : "Something went wrong");
     } finally {
       setBusy(false);
     }
@@ -87,7 +87,7 @@ export default function Login() {
       </View>
       <Text style={styles.title}>{BRAND.name}</Text>
       <Text style={styles.subtitle}>
-        Files share karo, views kamao — {mode === "signin" ? "sign in karo" : "naya account banao"}
+        Share files and earn from every view — {mode === "signin" ? "sign in to continue" : "create your account"}
       </Text>
 
       <Pressable accessibilityRole="button" accessibilityLabel="Continue with Google" style={[styles.googleButton, busy && styles.buttonDisabled]} onPress={google} disabled={busy}>
@@ -144,8 +144,8 @@ export default function Login() {
       <Pressable onPress={() => setMode(mode === "signin" ? "signup" : "signin")}>
         <Text style={styles.switchText}>
           {mode === "signin"
-            ? "Naya account hai? Sign up karo"
-            : "Pehle se account hai? Sign in karo"}
+            ? "New here? Create an account"
+            : "Already have an account? Sign in"}
         </Text>
       </Pressable>
     </View>
