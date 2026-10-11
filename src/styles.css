@@ -201,10 +201,10 @@
 .app-bottom { backdrop-filter: blur(14px); background: color-mix(in oklab, var(--card) 92%, transparent); }
 @media (max-width: 767px) { .app-main { padding-left: 16px; padding-right: 16px; } }
 
-/* App-open splash — wordmark only, same flat colour as the Android launch screen (#0f172a) */
-.splash { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: #0f172a; transition: opacity .45s ease; }
+/* App-open splash — wordmark only, same flat light colour as the Android launch screen (#ffffff) */
+.splash { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: #ffffff; transition: opacity .45s ease; }
 .splash-leave { opacity: 0; pointer-events: none; }
-.splash-word { font-size: clamp(26px, 8vw, 36px); font-weight: 800; letter-spacing: .28em; text-indent: .28em; color: oklch(0.96 0.01 255); }
+.splash-word { font-size: clamp(26px, 8vw, 36px); font-weight: 800; letter-spacing: .28em; text-indent: .28em; color: oklch(0.25 0.02 255); }
 .splash-word span { display: inline-block; opacity: 0; animation: splash-letter .55s cubic-bezier(.2,.8,.2,1) forwards; }
 @keyframes splash-letter { from { transform: translateY(14px); opacity: 0; filter: blur(5px); } to { transform: none; opacity: 1; filter: none; } }
 @media (prefers-reduced-motion: reduce) { .splash-word span { animation: none; opacity: 1; } }
