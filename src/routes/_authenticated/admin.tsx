@@ -77,7 +77,7 @@ function Admin() {
     </div>
   );
 
-  const tabs: { id: Tab; label: string; icon: ComponentType<{ className?: string }>; badge?: number }[] = [
+  const tabs: { id: Tab; label: string; icon: ComponentType<{ className?: string }>; badge?: number | undefined }[] = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "withdrawals", label: "Payouts", icon: CreditCard, badge: s?.pending_count },
     { id: "users", label: "Users", icon: Users },
@@ -131,7 +131,7 @@ function Kpi({ icon: Icon, label, value, sub, loading }: { icon: ComponentType<{
   );
 }
 
-function Overview({ s, goto }: { s?: Stats; goto: (t: Tab) => void }) {
+function Overview({ s, goto }: { s: Stats | undefined; goto: (t: Tab) => void }) {
   const loading = !s;
   const liability = (s?.balance_total ?? 0) + (s?.pending_amount ?? 0);
   return (
