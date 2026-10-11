@@ -39,7 +39,7 @@ function Admin() {
     <div className="rounded-2xl border bg-card p-10 text-center">
       <ShieldAlert className="mx-auto h-10 w-10 text-destructive" />
       <p className="mt-3 font-semibold">Sirf admin ke liye</p>
-      <Link to="/dashboard" className="mt-2 inline-block text-sm text-primary">Dashboard par jao</Link>
+      <Link to="/dashboard" className="mt-2 inline-block text-sm text-primary">Go to dashboard</Link>
     </div>
   );
   const tabs: [Tab, string][] = [["overview", "Overview"], ["withdrawals", "Payments"], ["users", "Users"], ["files", "Activity / Files"]];
@@ -71,7 +71,7 @@ function Overview() {
     { icon: FileText, label: "Total files", value: s?.files ?? 0, sub: `+${s?.files_today ?? 0} aaj` },
     { icon: Eye, label: "Total views", value: s?.views ?? 0 },
     { icon: Clock, label: "Pending payments", value: money(s?.pending_amount ?? 0), sub: `${s?.pending_count ?? 0} requests` },
-    { icon: Wallet, label: "Users ka total balance", value: money(s?.balance_total ?? 0) },
+    { icon: Wallet, label: "Total user balances", value: money(s?.balance_total ?? 0) },
     { icon: CheckCircle2, label: "Total paid", value: money(s?.paid_total ?? 0) },
   ];
   return (
@@ -112,7 +112,7 @@ function Withdrawals() {
   });
   const { data: who } = useProfilesMap([...new Set((data ?? []).map((w) => w.user_id))]);
   async function act(id: string, s: "approved" | "paid" | "rejected") {
-    const note = s === "rejected" ? (prompt("Reject karne ka reason (user ko dikhega):") ?? "") : null;
+    const note = s === "rejected" ? (prompt("Reason for rejection (shown to the user):") ?? "") : null;
     if (s === "rejected" && note === "") return;
     const { error } = await supabase.rpc("admin_set_withdrawal", { _id: id, _status: s, _note: note ?? "" });
     if (error) { toast.error(error.message); return; }
@@ -128,7 +128,7 @@ function Withdrawals() {
         ))}
       </div>
       <div className="mt-4 divide-y rounded-2xl border bg-card">
-        {(data ?? []).length === 0 && <p className="p-10 text-center text-muted-foreground">Koi request nahi</p>}
+        {(data ?? []).length === 0 && <p className="p-10 text-center text-muted-foreground">No requests</p>}
         {(data ?? []).map((w) => (
           <div key={w.id} className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="min-w-0">
@@ -146,7 +146,7 @@ function Withdrawals() {
           </div>
         ))}
       </div>
-      <p className="mt-3 text-xs text-muted-foreground">Cancel karne par paisa user ke balance me wapas aa jata hai. Payment UPI/PayPal/Bank se aap khud bhejte ho, phir "Mark paid".</p>
+      <p className="mt-3 text-xs text-muted-foreground">Rejecting a request refunds the amount to the user's balance. Send the payment via UPI, PayPal or bank, then select "Mark paid".</p>
     </div>
   );
 }
@@ -175,7 +175,7 @@ function UsersTab() {
     <div>
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input className="pl-9" placeholder="Email, naam ya referral code se dhundo" value={q} onChange={(e) => { setQ(e.target.value); setPage(0); }} />
+        <Input className="pl-9" placeholder="Search by email, name or referral code" value={q} onChange={(e) => { setQ(e.target.value); setPage(0); }} />
       </div>
       <div className="mt-4 overflow-x-auto rounded-2xl border bg-card">
         <table className="w-full text-sm">
@@ -193,7 +193,7 @@ function UsersTab() {
                 <td className="p-3">
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={() => {
-                      const v = prompt("Balance me kitna add karna hai? (minus ke liye -1.5 jaisa likho)");
+                      const v = prompt("Amount to add to balance (use a negative value such as -1.5 to deduct)");
                       const n = Number(v); if (v && !Number.isNaN(n)) update(u.id, null, n);
                     }}>Balance</Button>
                     <Button size="sm" variant={u.blocked ? "outline" : "destructive"} onClick={() => update(u.id, !u.blocked, null)}>{u.blocked ? "Unblock" : "Block"}</Button>
@@ -220,7 +220,7 @@ function FilesTab() {
   });
   const { data: who } = useProfilesMap([...new Set((data ?? []).map((f) => f.owner_id))]);
   async function remove(id: string, path: string | null) {
-    if (!confirm("Yeh file hamesha ke liye delete karni hai?")) return;
+    if (!confirm("Permanently delete this file?")) return;
     if (path) await supabase.storage.from("files").remove([path]);
     const { error } = await supabase.from("files").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
@@ -229,7 +229,7 @@ function FilesTab() {
   }
   return (
     <div>
-      <p className="text-sm text-muted-foreground">Latest uploads aur links (har 30 second me refresh).</p>
+      <p className="text-sm text-muted-foreground">Latest uploads and links, refreshed every 30 seconds.</p>
       <div className="mt-4 divide-y rounded-2xl border bg-card">
         {(data ?? []).map((f) => (
           <div key={f.id} className="flex items-center justify-between gap-4 p-4 text-sm">

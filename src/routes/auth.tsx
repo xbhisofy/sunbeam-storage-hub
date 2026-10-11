@@ -16,11 +16,11 @@ export const Route = createFileRoute("/auth")({
 
 function friendly(msg: string) {
   const m = msg.toLowerCase();
-  if (m.includes("weak") || m.includes("pwned")) return "Yeh password bahut common hai. Koi strong password rakho (8+ letters, number aur symbol).";
-  if (m.includes("invalid login")) return "Email ya password galat hai.";
-  if (m.includes("email not confirmed")) return "Pehle apna email confirm karo — inbox/spam me link dekho.";
-  if (m.includes("already registered")) return "Is email se account pehle se hai. Log in karo.";
-  if (m.includes("rate limit")) return "Bahut zyada try ho gaye. Thodi der baad try karo.";
+  if (m.includes("weak") || m.includes("pwned")) return "This password is too common. Use a stronger one with 8+ characters, a number and a symbol.";
+  if (m.includes("invalid login")) return "Incorrect email or password.";
+  if (m.includes("email not confirmed")) return "Please confirm your email first. Check your inbox or spam folder.";
+  if (m.includes("already registered")) return "An account with this email already exists. Please log in.";
+  if (m.includes("rate limit")) return "Too many attempts. Please try again in a few minutes.";
   return msg;
 }
 
@@ -70,17 +70,17 @@ function AuthPage() {
           {sent ? (
             <div className="rounded-2xl border bg-card p-8 text-center">
               <MailCheck className="mx-auto h-12 w-12 text-primary" />
-              <h1 className="mt-4 text-xl font-bold">Email check karo</h1>
-              <p className="mt-2 text-sm text-muted-foreground">Humne <b>{email}</b> par link bheja hai. Link kholte hi account ready. Spam folder bhi dekho.</p>
-              <Button variant="outline" className="mt-6 w-full" onClick={() => { setSent(false); setMode("login"); }}>Log in par jao</Button>
+              <h1 className="mt-4 text-xl font-bold">Check your email</h1>
+              <p className="mt-2 text-sm text-muted-foreground">We sent a confirmation link to <b>{email}</b>. Open it to activate your account.</p>
+              <Button variant="outline" className="mt-6 w-full" onClick={() => { setSent(false); setMode("login"); }}>Back to log in</Button>
             </div>
           ) : (<>
             <h1 className="text-3xl font-bold">{mode === "login" ? "Welcome back" : "Create account"}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{mode === "login" ? "Apne account me log in karo" : "Free account banao — 1 minute"}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{mode === "login" ? "Log in to manage your files and earnings" : "Start sharing and earning in under a minute"}</p>
             {search.ref && mode === "signup" && <p className="mt-2 rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">Invite code: {search.ref}</p>}
 
             <form onSubmit={submit} className="mt-6 space-y-3">
-              {mode === "signup" && <Input className="h-11" required placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
+              {mode === "signup" && <Input className="h-11" required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
               <label className="sr-only" htmlFor="auth-email">Email</label>
               <Input id="auth-email" className="h-12" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               <label className="sr-only" htmlFor="auth-password">Password</label>
@@ -97,12 +97,12 @@ function AuthPage() {
               </Button>
             </form>
             <p className="mt-6 text-center text-sm text-muted-foreground">
-              {mode === "login" ? "Account nahi hai? " : "Account pehle se hai? "}
+              {mode === "login" ? "Don't have an account? " : "Already have an account? "}
               <Button variant="link" className="px-1 font-medium text-primary" onClick={() => { setErr(null); setMode(mode === "login" ? "signup" : "login"); }}>
                 {mode === "login" ? "Sign up" : "Log in"}
               </Button>
             </p>
-            <p className="mt-6 text-center text-xs text-muted-foreground">Continue karke aap hamari <Link className="underline" to="/terms">Terms</Link>, <Link className="underline" to="/privacy">Privacy Policy</Link> aur <Link className="underline" to="/community-guidelines">Guidelines</Link> maante ho.</p>
+            <p className="mt-6 text-center text-xs text-muted-foreground">By continuing you agree to our <Link className="underline" to="/terms">Terms</Link>, <Link className="underline" to="/privacy">Privacy Policy</Link> and <Link className="underline" to="/community-guidelines">Guidelines</Link>.</p>
           </>)}
         </div>
       </div>
