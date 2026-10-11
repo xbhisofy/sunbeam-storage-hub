@@ -90,6 +90,7 @@ function SharePage() {
           <div>
             <h1 className="mb-4 truncate text-xl font-semibold">{data.name}</h1>
             {data.file_type === "video" && <video src={data.url} controls autoPlay className="w-full rounded-xl bg-foreground" />}
+            {data.file_type === "image" && <img src={data.url} alt={data.name} className="max-h-[80vh] w-full rounded-xl object-contain" />}
             {data.file_type === "audio" && <audio src={data.url} controls autoPlay className="w-full" />}
             {data.file_type === "other" && <p className="rounded-xl border bg-card p-6 text-muted-foreground">Preview not available. Use Download below.</p>}
             {data.file_type === "pdf" && <iframe src={data.url} title={data.name} className="h-[80vh] w-full rounded-xl border" />}
