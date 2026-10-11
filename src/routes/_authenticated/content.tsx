@@ -113,82 +113,101 @@ function Content() {
       </div>
 
       {tab === "convert" ? (
-        <form onSubmit={convert} className="mt-5 space-y-4 rounded-2xl border bg-card p-5 shadow-sm">
-          <div className="flex items-start gap-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><Link2 className="h-5 w-5" /></span>
+        <form onSubmit={convert} className="mt-5 overflow-hidden rounded-2xl border bg-card shadow-sm">
+          <div className="flex items-center gap-3 border-b bg-muted/40 px-5 py-4">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground"><Link2 className="h-4 w-4" /></span>
             <div className="min-w-0">
-              <div className="font-semibold">Convert any link</div>
-              <p className="mt-0.5 text-sm text-muted-foreground">Paste a link and get your own share link with an ad screen and custom header/footer.</p>
+              <div className="text-[15px] font-semibold leading-tight">Convert a link</div>
+              <p className="text-xs text-muted-foreground">Create a monetized share link in seconds</p>
             </div>
           </div>
-          <div className="space-y-1.5">
-            <label htmlFor="conv-url" className="text-sm font-medium">Link</label>
-            <Input id="conv-url" required placeholder="https://..." value={url} onChange={(e) => setUrl(e.target.value)} className="h-11 rounded-xl" />
+          <div className="space-y-4 p-5">
+            <div className="space-y-1.5">
+              <label htmlFor="conv-url" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Destination URL</label>
+              <div className="relative">
+                <Link2 className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input id="conv-url" type="url" required placeholder="https://example.com/video" value={url} onChange={(e) => setUrl(e.target.value)} className="h-11 rounded-xl bg-background pl-10" />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="conv-title" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Title</label>
+              <Input id="conv-title" placeholder="Give your link a name" value={title} onChange={(e) => setTitle(e.target.value)} className="h-11 rounded-xl bg-background" />
+            </div>
+            <details className="group rounded-xl border bg-background">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium">
+                <span>Customize share page <span className="font-normal text-muted-foreground">· optional</span></span>
+                <span className="text-muted-foreground transition-transform group-open:rotate-45 text-lg leading-none">+</span>
+              </summary>
+              <div className="space-y-3 border-t px-4 py-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="conv-header" className="text-xs font-medium text-muted-foreground">Header text</label>
+                  <Textarea id="conv-header" rows={2} placeholder="Shown above your content" value={header} onChange={(e) => setHeader(e.target.value)} className="min-h-0 resize-none rounded-lg" />
+                </div>
+                <div className="space-y-1.5">
+                  <label htmlFor="conv-footer" className="text-xs font-medium text-muted-foreground">Footer text</label>
+                  <Textarea id="conv-footer" rows={2} placeholder="Shown below your content" value={footer} onChange={(e) => setFooter(e.target.value)} className="min-h-0 resize-none rounded-lg" />
+                </div>
+              </div>
+            </details>
+            <Button className="h-11 w-full rounded-xl text-[15px] font-semibold shadow-sm">Create share link</Button>
           </div>
-          <div className="space-y-1.5">
-            <label htmlFor="conv-title" className="text-sm font-medium">Title <span className="font-normal text-muted-foreground">(optional)</span></label>
-            <Input id="conv-title" placeholder="My awesome video" value={title} onChange={(e) => setTitle(e.target.value)} className="h-11 rounded-xl" />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="conv-header" className="text-sm font-medium">Header text <span className="font-normal text-muted-foreground">(optional)</span></label>
-            <Textarea id="conv-header" placeholder="Shown at the top of your share page" value={header} onChange={(e) => setHeader(e.target.value)} className="min-h-20 rounded-xl" />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="conv-footer" className="text-sm font-medium">Footer text <span className="font-normal text-muted-foreground">(optional)</span></label>
-            <Textarea id="conv-footer" placeholder="Shown at the bottom of your share page" value={footer} onChange={(e) => setFooter(e.target.value)} className="min-h-20 rounded-xl" />
-          </div>
-          <Button className="h-11 w-full rounded-xl text-[15px] font-semibold"><Link2 className="h-4 w-4" /> Convert link</Button>
         </form>
       ) : (
-        <div className="mt-5 border-b pb-5">
+        <div className="mt-5">
           <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : undefined} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-          <Button size="lg" onClick={() => input.current?.click()} disabled={!!uploading}>
-            <Upload className="h-4 w-4" /> Upload files
-          </Button>
-          {uploading && <div className="mt-4 space-y-2 text-sm text-muted-foreground">Uploading {uploading.name}…<Progress value={uploading.pct} /></div>}
+          <button type="button" onClick={() => input.current?.click()} disabled={!!uploading}
+            className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed bg-card p-5 text-left transition-colors hover:border-primary/50 hover:bg-accent/40 disabled:opacity-60">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground"><Upload className="h-5 w-5" /></span>
+            <span className="min-w-0">
+              <span className="block font-semibold">Upload files</span>
+              <span className="block text-xs text-muted-foreground">Videos, audio, images and documents</span>
+            </span>
+          </button>
+          {uploading && <div className="mt-3 space-y-2 rounded-xl border bg-card p-4 text-sm"><div className="flex justify-between"><span className="truncate">{uploading.name}</span><span className="text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-9" placeholder="Search by file name" value={q} onChange={(e) => setQ(e.target.value)} />
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-sm">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input className="h-11 rounded-xl pl-10" placeholder="Search by file name" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
-        <div className="flex rounded-xl border bg-card p-1">
+        <div className="grid grid-cols-3 rounded-xl border bg-card p-1">
           {(["all", "original", "converted"] as const).map((k) => (
-            <Button variant="ghost" key={k} onClick={() => setFilter(k)}
-              className={`rounded-lg px-4 py-1.5 text-sm font-medium capitalize transition-colors ${filter === k ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary" : "text-muted-foreground"}`}>{k}</Button>
+            <button type="button" key={k} onClick={() => setFilter(k)}
+              className={`rounded-lg px-4 py-1.5 text-sm font-medium capitalize transition-colors ${filter === k ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>{k}</button>
           ))}
         </div>
       </div>
-      <p className="mt-4 text-sm text-muted-foreground">{shown.length} items</p>
-      <div className="mt-3 space-y-3">
+      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{shown.length} {shown.length === 1 ? "item" : "items"}</p>
+      <div className="mt-2 overflow-hidden rounded-2xl border bg-card">
         {shown.length === 0 ? (
-          <div className="rounded-2xl border border-dashed bg-card py-16 text-center">
-            <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-accent"><FolderOpen className="h-8 w-8 text-muted-foreground" /></span>
+          <div className="py-14 text-center">
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-accent"><FolderOpen className="h-7 w-7 text-muted-foreground" /></span>
             <p className="mt-4 font-semibold">No content yet</p>
             <p className="mt-1 text-sm text-muted-foreground">Upload a file or convert a link to get started.</p>
           </div>
-        ) : shown.map((f) => {
+        ) : <ul className="divide-y">{shown.map((f) => {
           const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;
           return (
-            <div key={f.id} className="flex flex-wrap items-center gap-4 rounded-lg border bg-card p-4">
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-accent text-accent-foreground"><Icon className="h-5 w-5" /></span>
+            <li key={f.id} className="flex items-center gap-3 p-3.5">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground"><Icon className="h-5 w-5" /></span>
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{f.name}</p>
-                <div className="text-xs text-muted-foreground">
-                  {f.source === "converted" ? "Link" : formatSize(f.size)} · {ago(f.created_at)}
+                <p className="truncate text-sm font-semibold">{f.name}</p>
+                <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="capitalize">{f.source}</span><span>·</span>
+                  <span>{f.source === "converted" ? "Link" : formatSize(f.size)}</span><span>·</span>
+                  <span className="inline-flex items-center gap-0.5"><Eye className="h-3 w-3" />{f.views}</span><span>·</span>
+                  <span className="truncate">{ago(f.created_at)}</span>
                 </div>
               </div>
-              <span className="flex items-center gap-1 text-sm text-muted-foreground"><Eye className="h-4 w-4" />{f.views}</span>
-              <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium capitalize">{f.source}</span>
-              <Button aria-label="Copy share link" variant="outline" onClick={() => { navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
-                <Copy className="h-4 w-4" /><span className="hidden sm:inline">Copy Link</span>
+              <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0" aria-label="Copy share link" onClick={() => { navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
+                <Copy className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="ghost" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>
-            </div>
+              <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>
+            </li>
           );
-        })}
+        })}</ul>}
       </div>
     </div>
   );
