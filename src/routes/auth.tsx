@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Eye, EyeOff, Loader2, MailCheck } from "lucide-react";
 import { Brand } from "@/components/Brand";
-import logoImg from "@/assets/tanyora-logo.jpg";
+import logoImg from "@/assets/tanyora-logo.jpg"; void logoImg;
 import { pageHead } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -76,20 +76,16 @@ function AuthPage() {
         </div>
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Tanyora</p>
       </aside>
-      <div className="landing landing-glow grid place-items-center px-5 py-10 lg:bg-none">
+      <div className="grid place-items-center bg-background px-5 py-10">
         <div className="w-full max-w-sm">
-          <div className="mb-8 flex flex-col items-center text-center lg:hidden">
-            <img src={logoImg} alt="" width={72} height={72} className="splash-logo h-[72px] w-[72px] rounded-[1.25rem] object-cover" />
-            <p className="mt-3 text-xl font-extrabold tracking-[0.16em]">TANYORA</p>
-          </div>
           {sent ? (
-            <div className="rounded-2xl border bg-card p-8 text-center">
+            <div className="rounded-2xl bg-card p-8 text-center shadow-sm">
               <MailCheck className="mx-auto h-12 w-12 text-primary" />
               <h1 className="mt-4 text-xl font-bold">Check your email</h1>
               <p className="mt-2 text-sm text-muted-foreground">We sent a confirmation link to <b>{email}</b>. Open it to activate your account.</p>
               <Button variant="outline" className="mt-6 w-full" onClick={() => { setSent(false); setMode("login"); }}>Back to log in</Button>
             </div>
-          ) : (<div className="rounded-3xl border bg-card/70 p-6 shadow-2xl backdrop-blur sm:p-8">
+          ) : (<div className="rounded-3xl bg-card p-6 shadow-[0_8px_30px_-12px_color-mix(in_oklab,var(--foreground)_18%,transparent)] sm:p-8">
             <div className="mb-6 grid grid-cols-2 rounded-xl bg-accent p-1 text-sm font-semibold">
               {(["login", "signup"] as const).map((m) => <button key={m} type="button" onClick={() => { setErr(null); setMode(m); }} className={`h-10 rounded-lg transition ${mode === m ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground"}`}>{m === "login" ? "Log in" : "Sign up"}</button>)}
             </div>
@@ -98,12 +94,12 @@ function AuthPage() {
             {search.ref && mode === "signup" && <p className="mt-2 rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">Invite code: {search.ref}</p>}
 
             <form onSubmit={submit} className="mt-6 space-y-3">
-              {mode === "signup" && <Input className="h-12 rounded-xl" required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
+              {mode === "signup" && <Input className="h-12 rounded-xl border-transparent bg-muted/60 focus-visible:bg-background" required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} />}
               <label className="sr-only" htmlFor="auth-email">Email</label>
-              <Input id="auth-email" className="h-12 rounded-xl" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input id="auth-email" className="h-12 rounded-xl border-transparent bg-muted/60 focus-visible:bg-background" type="email" required placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               <label className="sr-only" htmlFor="auth-password">Password</label>
               <div className="relative">
-                <Input id="auth-password" className="h-12 rounded-xl pr-10" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
+                <Input id="auth-password" className="h-12 rounded-xl border-transparent bg-muted/60 pr-10 focus-visible:bg-background" type={show ? "text" : "password"} required minLength={8} placeholder="Password (8+ characters)"
                   autoComplete={mode === "login" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} />
                 <Button variant="ghost" size="icon" type="button" aria-label={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)} className="absolute right-0 top-0 h-12 w-12 text-muted-foreground">
                   {show ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
