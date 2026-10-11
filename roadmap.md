@@ -15,6 +15,8 @@
 - [ ] Connect intended domain — waiting on domain ownership and connection.
 
 ## Mobile app (React Native / Expo — `mobile/`)
+- [ ] Add native Google account chooser and shared-backend login; verify cancellation and failure handling.
+- [ ] Configure owner's Google OAuth clients and native signing certificates — waiting on owner Google setup and signing identity.
 - [x] Full Expo app: login/signup, Home, My Content (upload + convert link + copy share link), Earnings (2 plans + switching), Referrals, Profile (edit name, sign out, delete account), share-link player with 5s countdown.
 - [x] Same Lovable Cloud backend (database + auth) as the website.
 - [x] App icon + splash assets, deep-link scheme (tanyora://), https /s/ intent filter, eas.json (preview APK + production AAB).
