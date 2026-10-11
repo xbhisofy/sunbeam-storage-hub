@@ -1,4 +1,5 @@
 import { createFileRoute, redirect, Outlet, Link, useNavigate } from "@tanstack/react-router";
+import { currentUserId } from "@/lib/session";
 import { useQuery } from "@tanstack/react-query";
 import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield } from "lucide-react";
 import { useIsAdmin } from "./admin";
@@ -27,9 +28,9 @@ export function useProfile() {
   return useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return null;
-      const { data } = await supabase.from("profiles").select("*").eq("id", u.user.id).single();
+      const uid = await currentUserId();
+      if (!uid) return null;
+      const { data } = await supabase.from("profiles").select("*").eq("id", uid).single();
       return data;
     },
   });

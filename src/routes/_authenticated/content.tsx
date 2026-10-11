@@ -1,4 +1,5 @@
 import { pageHead, site } from "@/lib/site";
+import { currentUserId } from "@/lib/session";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
@@ -45,25 +46,25 @@ function Content() {
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
     queryFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      const { data } = await supabase.from("files").select("*").eq("owner_id", u.user!.id).order("created_at", { ascending: false });
+      const uid = await currentUserId();
+      const { data } = await supabase.from("files").select("*").eq("owner_id", uid!).order("created_at", { ascending: false });
       return data ?? [];
     },
   });
 
   async function onFiles(list: FileList | null) {
     if (!list) return;
-    const { data: u } = await supabase.auth.getUser();
+    const uid = await currentUserId();
     const arr = Array.from(list);
     for (let i = 0; i < arr.length; i++) {
       const f = arr[i]!;
       if (f.size > 50 * 1024 * 1024) { toast.error(`${f.name} is bigger than 50 MB`); continue; }
       setUploading({ name: f.name, pct: Math.round((i / arr.length) * 100) + 10 });
-      const path = `${u.user!.id}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
+      const path = `${uid!}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
       const { error } = await supabase.storage.from("files").upload(path, f, { contentType: f.type || "application/octet-stream" });
       if (error) { toast.error(error.message); continue; }
       const { error: e2 } = await supabase.from("files").insert({
-        owner_id: u.user!.id, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
+        owner_id: uid!, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
       if (e2) toast.error(e2.message); else toast.success(`${f.name} uploaded`);
     }
@@ -76,9 +77,9 @@ function Content() {
     e.preventDefault();
     const parsed = urlSchema.safeParse(url);
     if (!parsed.success) { toast.error("Enter a valid link starting with https://"); return; }
-    const { data: u } = await supabase.auth.getUser();
+    const uid = await currentUserId();
     const { error } = await supabase.from("files").insert({
-      owner_id: u.user!.id, name: title.trim().slice(0, 200) || parsed.data, file_type: "link", size: 0,
+      owner_id: uid!, name: title.trim().slice(0, 200) || parsed.data, file_type: "link", size: 0,
       source: "converted", external_url: parsed.data,
       header_text: header.trim().slice(0, 500) || null, footer_text: footer.trim().slice(0, 500) || null,
     });

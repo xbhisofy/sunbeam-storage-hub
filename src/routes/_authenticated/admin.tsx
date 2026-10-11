@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { currentUserId } from "@/lib/session";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Users, FileText, Eye, Wallet, Clock, CheckCircle2, ShieldAlert, Search, Trash2 } from "lucide-react";
@@ -19,9 +20,9 @@ export function useIsAdmin() {
   return useQuery({
     queryKey: ["is-admin"],
     queryFn: async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return false;
-      const { data } = await supabase.rpc("has_role", { _user_id: u.user.id, _role: "admin" });
+      const uid = await currentUserId();
+      if (!uid) return false;
+      const { data } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
       return !!data;
     },
     staleTime: 5 * 60_000,
