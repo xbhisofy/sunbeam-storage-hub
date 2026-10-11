@@ -18,7 +18,7 @@
       "bundleIdentifier": "com.tanyora.app"
     },
     "android": {
-      "package": "app.lovable.sunbeam_storage_hub.twa",
+      "package": "app.lovable.tanyora.twa",
       "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/splash-icon.png",

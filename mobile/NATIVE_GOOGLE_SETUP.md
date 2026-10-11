@@ -22,7 +22,7 @@ by these code changes.
 3. Set the non-secret Web client ID as `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` in
    the Expo build environment. Do not put a Google client secret in the app.
 4. Register an Android OAuth client for
-   `app.lovable.sunbeam_storage_hub.twa` and the actual APK signing certificate
+   `app.lovable.tanyora.twa` and the actual APK signing certificate
    SHA-1. Register the Play App Signing SHA-1 separately for store releases if
    it differs. The supplied assetlinks SHA-256 is not the required SHA-1.
 5. Link the project to the owner's Expo account, then build on Expo's cloud

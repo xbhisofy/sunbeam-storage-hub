@@ -6,7 +6,7 @@ export const site = {
   supportEmail: "tanyora@support.com", updated: "October 9, 2026",
   appId: "com.tanyora.app", appScheme: "tanyora",
   // Installed Android package (PWABuilder TWA); Play Store links must use this.
-  androidPackage: "app.lovable.sunbeam_storage_hub.twa",
+  androidPackage: "app.lovable.tanyora.twa",
   // Share links live on the main domain (opens app); the dashboard lives on the web subdomain.
   // While both are the same host the split is inert (hostRedirect returns null) and everything
   // runs on one address. When app.tanyora.com is connected, set webUrl to it — the split turns
