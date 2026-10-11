@@ -6,7 +6,7 @@ export const SUPABASE_PUBLISHABLE_KEY =
   process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
   "sb_publishable_nXz4VBI5cCYvjQB1Kg21_w_Um-IsXwr";
 export const SITE_URL =
-  process.env.EXPO_PUBLIC_SITE_URL ?? "https://sunbeam-storage-hub.lovable.app";
+  process.env.EXPO_PUBLIC_SITE_URL ?? "https://tanyora.lovable.app";
 
 export const BRAND = {
   name: "Tanyora",
