@@ -24,6 +24,7 @@ import { Route as AuthenticatedEarningsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as ApiPublicDeleteAccountRouteImport } from './routes/api/public/delete-account'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -99,6 +100,11 @@ const SSlugRoute = SSlugRouteImport.update({
   path: '/s/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDeleteAccountRoute = ApiPublicDeleteAccountRouteImport.update({
+  id: '/api/public/delete-account',
+  path: '/api/public/delete-account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
   '/s/$slug': typeof SSlugRoute
+  '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
   '/s/$slug': typeof SSlugRoute
+  '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/referrals': typeof AuthenticatedReferralsRoute
   '/s/$slug': typeof SSlugRoute
+  '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/referrals'
     | '/s/$slug'
+    | '/api/public/delete-account'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/referrals'
     | '/s/$slug'
+    | '/api/public/delete-account'
   id:
     | '__root__'
     | '/'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/referrals'
     | '/s/$slug'
+    | '/api/public/delete-account'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -213,6 +225,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   SSlugRoute: typeof SSlugRoute
+  ApiPublicDeleteAccountRoute: typeof ApiPublicDeleteAccountRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -322,6 +335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/delete-account': {
+      id: '/api/public/delete-account'
+      path: '/api/public/delete-account'
+      fullPath: '/api/public/delete-account'
+      preLoaderRoute: typeof ApiPublicDeleteAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -355,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   SSlugRoute: SSlugRoute,
+  ApiPublicDeleteAccountRoute: ApiPublicDeleteAccountRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
