@@ -72,7 +72,7 @@ function Earnings() {
     const { error } = await supabase.rpc("request_withdrawal", { _amount: Number(amount), _method: method, _details: details.trim() });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
-    toast.success("Withdrawal request bhej di gayi");
+    toast.success("Withdrawal request submitted");
     setAmount(""); setDetails("");
     qc.invalidateQueries({ queryKey: ["profile"] });
     qc.invalidateQueries({ queryKey: ["my-withdrawals"] });
@@ -94,7 +94,7 @@ function Earnings() {
       </div>
       <form onSubmit={withdraw} className="mt-6 rounded-2xl border bg-card p-5">
         <div className="font-semibold">Withdraw</div>
-        <div className="text-sm text-muted-foreground">Minimum withdrawal is $5.00. Admin approve karke payment bhejega.</div>
+        <div className="text-sm text-muted-foreground">Minimum withdrawal is $5.00. Payouts are sent after admin review.</div>
         <div className="mt-4 grid gap-3 md:grid-cols-[140px_160px_1fr_auto]">
           <Input type="number" step="0.01" min={5} max={bal} required placeholder="Amount $" value={amount} onChange={(e) => setAmount(e.target.value)} />
           <select value={method} onChange={(e) => setMethod(e.target.value)} className="h-9 rounded-md border bg-background px-3 text-sm">
