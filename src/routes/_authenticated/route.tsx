@@ -1,17 +1,19 @@
 import { createFileRoute, redirect, Outlet, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { currentUserId } from "@/lib/session";
-import { useQuery } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2 } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
+  // Local session check (instant). Every data request is still verified by the backend.
   beforeLoad: async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/auth" });
+    if (!(await currentUserId())) throw redirect({ to: "/auth" });
   },
   component: Shell,
 });
@@ -40,9 +42,22 @@ function Shell() {
   const { data: p } = useProfile();
   const { data: isAdmin } = useIsAdmin();
   const navigate = useNavigate();
+  const qc = useQueryClient();
+  const [leaving, setLeaving] = useState(false);
+  async function signOut() {
+    setLeaving(true);
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut({ scope: "local" });
+    navigate({ to: "/auth", replace: true });
+  }
   return (
     <div className="flex min-h-screen flex-col bg-background md:flex-row">
       <aside className="flex shrink-0 flex-col border-b bg-card md:sticky md:top-0 md:h-screen md:w-64 md:border-b-0 md:border-r">
+        <div className="flex items-center justify-between px-4 pt-3 md:hidden">
+          <span className="truncate text-sm text-muted-foreground">{p?.email}</span>
+          <Button variant="ghost" size="sm" onClick={signOut} disabled={leaving}><LogOut className="h-4 w-4" /> Log out</Button>
+        </div>
         <div className="flex items-center gap-2 px-6 py-5 font-semibold text-lg">
           <Brand />
         </div>
@@ -67,17 +82,19 @@ function Shell() {
             </Link>
           )}
         </nav>
-        <div className="mt-auto hidden items-center gap-3 border-t px-5 py-4 md:flex">
-          <span className="grid h-10 w-10 place-items-center rounded-full bg-accent font-medium text-accent-foreground">
-            {(p?.display_name ?? "?")[0]?.toUpperCase()}
-          </span>
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-medium">{p?.display_name}</div>
-            <div className="truncate text-xs text-muted-foreground">{p?.email}</div>
+        <div className="mt-auto hidden border-t p-4 md:block">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary font-semibold text-primary-foreground">
+              {(p?.display_name ?? "?")[0]?.toUpperCase()}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium">{p?.display_name}</div>
+              <div className="truncate text-xs text-muted-foreground">{p?.email}</div>
+            </div>
           </div>
-          <button aria-label="Log out" onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/auth" }); }}>
-            <LogOut className="h-5 w-5 text-muted-foreground" />
-          </button>
+          <Button variant="outline" size="sm" className="mt-3 w-full" onClick={signOut} disabled={leaving}>
+            {leaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />} Log out
+          </Button>
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
