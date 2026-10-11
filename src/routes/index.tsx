@@ -37,17 +37,17 @@ export const Route = createFileRoute("/")({
 });
 
 const steps = [
-  { icon: UserPlus, title: "1. Account banao", text: "Naam, email aur password se 30 second me free account." },
-  { icon: Upload, title: "2. Upload & share", text: "Video, audio ya PDF upload karo aur apna share link copy karo." },
-  { icon: Wallet, title: "3. Earn karo", text: "Har view aur har naye user par balance badhta hai." },
+  { icon: UserPlus, title: "1. Create an account", text: "Sign up free in 30 seconds with your name, email and password." },
+  { icon: Upload, title: "2. Upload & share", text: "Upload videos, audio or PDFs and copy your unique share link." },
+  { icon: Wallet, title: "3. Get paid", text: "Your balance grows with every genuine view and every new signup." },
 ];
 const why = [
-  { icon: Smartphone, title: "App me hi play", text: "Share link kholne wale ko Tanyora app me hi video, audio aur PDF dikhta hai." },
-  { icon: BarChart3, title: "Live stats", text: "Dashboard par views, earnings aur referrals turant dekho." },
-  { icon: ShieldCheck, title: "Private storage", text: "Aapki files secure storage me rehti hain, sirf share link se khulti hain." },
-  { icon: Gift, title: "Referral commission", text: "Aapke invite kiye users ki view earnings ka 10% aapko." },
-  { icon: Wallet, title: "Low minimum payout", text: "Sirf $5 se withdrawal — UPI, PayPal ya bank." },
-  { icon: Headphones, title: "Support", text: `Koi sawal? ${site.supportEmail} par likho.` },
+  { icon: Smartphone, title: "Native app playback", text: "Viewers open your videos, audio and PDFs directly in the Tanyora Android app." },
+  { icon: BarChart3, title: "Real-time statistics", text: "Track views, earnings and referrals from a clean, fast dashboard." },
+  { icon: ShieldCheck, title: "Secure private storage", text: "Files are stored privately and are only reachable through your share link." },
+  { icon: Gift, title: "Referral commission", text: "Earn 10% of the view earnings of every user you invite." },
+  { icon: Wallet, title: "Low minimum payout", text: "Withdraw from just $5 via UPI, PayPal or bank transfer." },
+  { icon: Headphones, title: "Dedicated support", text: `Questions? Reach our team at ${site.supportEmail}.` },
 ];
 
 function Home() {
@@ -75,9 +75,9 @@ function Home() {
       <section className="landing-glow">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-2 md:py-28">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-sm text-accent-foreground"><span className="h-2 w-2 rounded-full bg-primary" />Upload karo, share karo, kamao</span>
-            <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight md:text-6xl">Apni files ko banao <span className="landing-text">Passive Income.</span></h1>
-            <p className="mt-6 max-w-lg text-lg text-muted-foreground">Video, audio aur PDF upload karo, link share karo. Dekhne wale Tanyora app me content kholte hain aur aapko har view ka paisa milta hai.</p>
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-sm text-accent-foreground"><span className="h-2 w-2 rounded-full bg-primary" />Upload. Share. Earn.</span>
+            <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight md:text-6xl">Turn your content into <span className="landing-text">Passive Income.</span></h1>
+            <p className="mt-6 max-w-lg text-lg text-muted-foreground">Upload videos, audio and PDFs, share your link anywhere, and earn every time someone watches it in the Tanyora app.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-7"><Link to="/auth" search={{ mode: "signup" }}>Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
               <Button size="lg" variant="outline" asChild className="h-12 rounded-full border-primary/50 bg-transparent px-7 text-accent-foreground hover:bg-accent"><a href="#rates">View Rates</a></Button>
@@ -91,9 +91,9 @@ function Home() {
             <div className="rounded-3xl border bg-card/70 p-6 backdrop-blur">
               <div className="flex items-center gap-3 rounded-2xl border bg-background/60 p-4">
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-accent text-accent-foreground"><Link2 className="h-5 w-5" /></span>
-                <div><p className="font-semibold">Share link ready</p><p className="text-xs uppercase tracking-wide text-muted-foreground">tanyora · /s/xy92p</p></div>
+                <div><p className="font-semibold">Generated share link</p><p className="text-xs uppercase tracking-wide text-muted-foreground">tanyora · /s/xy92p</p></div>
               </div>
-              <p className="mt-6 text-xs uppercase tracking-widest text-muted-foreground">Example earning</p>
+              <p className="mt-6 text-xs uppercase tracking-widest text-muted-foreground">Example earnings</p>
               <p className="text-4xl font-bold">$3.00 <span className="text-base font-normal text-muted-foreground">/ 1,000 views</span></p>
               <svg viewBox="0 0 300 120" className="mt-4 h-32 w-full rounded-2xl bg-background/60 p-3" aria-hidden><path d="M5 100 C 50 90, 70 110, 110 80 S 170 20, 200 70 S 250 110, 290 15" fill="none" stroke="var(--primary)" strokeWidth="4" strokeLinecap="round"/></svg>
               <div className="mt-5 flex items-center gap-3 rounded-2xl border bg-background/60 p-4">
@@ -120,11 +120,11 @@ function Home() {
       <section id="rates" className="landing-glow scroll-mt-20 py-20">
         <div className="mx-auto max-w-5xl px-5">
           <h2 className="text-center text-4xl font-extrabold md:text-5xl">Plans & Earnings</h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Apne traffic ke hisaab se plan chuno. Plan baad me 3 baar badal sakte ho.</p>
+          <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Choose the monetization model that fits your audience. Switch plans up to 3 times.</p>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             {[
-              { icon: Users, name: "Signup Referral", sub: "Naye users lao", price: "$0.10", unit: "per new signup", focus: "User growth" },
-              { icon: Eye, name: "View-Based", sub: "High traffic links", price: "$3.00", unit: "per 1,000 views", focus: "Views & scaling" },
+              { icon: Users, name: "Signup Referral", sub: "Maximize referral growth", price: "$0.10", unit: "per new signup", focus: "User growth" },
+              { icon: Eye, name: "View-Based", sub: "Scale high-traffic links", price: "$3.00", unit: "per 1,000 views", focus: "Views & scaling" },
             ].map((p) => (
               <div key={p.name} className="rounded-3xl border bg-card/80 p-7">
                 <div className="flex items-center gap-4">
@@ -145,17 +145,17 @@ function Home() {
           <div id="referral" className="mt-6 scroll-mt-24 rounded-3xl border bg-card/80 p-7">
             <div className="flex items-center gap-4">
               <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent text-accent-foreground"><Share2 className="h-6 w-6" /></span>
-              <div><h3 className="text-2xl font-bold">Referral Program</h3><p className="text-sm text-muted-foreground">Apne invite kiye users ki kamai ka hissa</p></div>
+              <div><h3 className="text-2xl font-bold">Referral Program</h3><p className="text-sm text-muted-foreground">Earn from the users you invite</p></div>
             </div>
             <p className="mt-5 text-3xl font-bold">10% <span className="text-base font-normal text-muted-foreground">of their view earnings</span></p>
-            <p className="mt-3 text-muted-foreground">Apna referral link share karo. Jo bhi us link se join karega, uski view earnings ka 10% aapke balance me automatically judega — unki kamai se kuch nahi katega.</p>
+            <p className="mt-3 text-muted-foreground">Share your permanent referral link. Whenever someone who joined through it earns from views, 10% is credited to your balance automatically, on top of their earnings, not taken from them.</p>
           </div>
         </div>
       </section>
 
       <section id="app" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-20">
         <h2 className="text-center text-4xl font-extrabold md:text-5xl">Why Tanyora</h2>
-        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Website par aap upload aur earnings manage karte ho. Dekhne wale app me content chalate hain.</p>
+        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Everything you need to monetize your content, in one platform.</p>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {why.map((f) => (
             <div key={f.title} className="rounded-2xl border bg-card p-7">
@@ -166,8 +166,8 @@ function Home() {
           ))}
         </div>
         <div className="landing-glow mt-12 flex flex-col items-center gap-5 rounded-3xl border p-10 text-center">
-          <h3 className="text-3xl font-bold">Aaj hi shuru karo</h3>
-          <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><Link to="/auth" search={{ mode: "signup" }}>Free account banao <ArrowRight className="h-4 w-4" /></Link></Button>
+          <h3 className="text-3xl font-bold">Start earning today</h3>
+          <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><Link to="/auth" search={{ mode: "signup" }}>Create free account <ArrowRight className="h-4 w-4" /></Link></Button>
         </div>
       </section>
       <LegalFooter />
