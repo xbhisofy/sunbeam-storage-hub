@@ -1,12 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { createFileRoute } from "@tanstack/react-start";
+import { createFileRoute as makeApiRoute } from "@tanstack/react-start";
 import { requireBearerUserId } from "@/lib/api-auth";
 import { deleteAccountData } from "@/lib/delete-account";
 
 // Called by the Tanyora mobile app (mobile/) when the user deletes their
 // account from the Profile screen. The handler verifies the caller's bearer
 // token itself because /api/public/* bypasses site auth.
-export const Route = createFileRoute("/api/public/delete-account")({
+export const Route = makeApiRoute("/api/public/delete-account")({
   server: {
     handlers: {
       POST: async ({ request }) => {
