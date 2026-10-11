@@ -107,20 +107,37 @@ function Content() {
       <h1 className="hidden text-3xl font-bold md:block">My Files</h1>
       {kind && <div className="flex items-center justify-between"><h2 className="font-semibold capitalize">{kind === "pdf" ? "Documents" : kind}</h2><Button variant="link" asChild><Link to="/content">All files</Link></Button></div>}
 
-      <div className="mt-6 flex gap-1 rounded-xl border bg-card p-1">
-        <Link to="/content" search={{ tab: "all" }} className={`rounded-lg px-4 py-2 text-sm ${tab === "all" ? "bg-primary text-primary-foreground" : ""}`}>All Content</Link>
-        <Link to="/content" search={{ tab: "convert" }} className={`rounded-lg px-4 py-2 text-sm ${tab === "convert" ? "bg-primary text-primary-foreground" : ""}`}>Convert Link</Link>
+      <div className="mt-6 grid grid-cols-2 gap-1 rounded-2xl border bg-card p-1.5">
+        <Link to="/content" search={{ tab: "all" }} className={`rounded-xl px-4 py-2.5 text-center text-sm font-medium transition-colors ${tab === "all" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground"}`}>All Content</Link>
+        <Link to="/content" search={{ tab: "convert" }} className={`rounded-xl px-4 py-2.5 text-center text-sm font-medium transition-colors ${tab === "convert" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground"}`}>Convert Link</Link>
       </div>
 
       {tab === "convert" ? (
-        <form onSubmit={convert} className="mt-6 space-y-3 rounded-lg border bg-card p-5">
-          <div className="font-semibold">Convert any link</div>
-          <p className="text-sm text-muted-foreground">Paste a link and get your own share link with an ad screen and custom header/footer.</p>
-          <Input required placeholder="https://..." value={url} onChange={(e) => setUrl(e.target.value)} />
-          <Input placeholder="Title (optional)" value={title} onChange={(e) => setTitle(e.target.value)} />
-          <Textarea placeholder="Header text (optional)" value={header} onChange={(e) => setHeader(e.target.value)} />
-          <Textarea placeholder="Footer text (optional)" value={footer} onChange={(e) => setFooter(e.target.value)} />
-          <Button><Link2 className="h-4 w-4" /> Convert link</Button>
+        <form onSubmit={convert} className="mt-5 space-y-4 rounded-2xl border bg-card p-5 shadow-sm">
+          <div className="flex items-start gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><Link2 className="h-5 w-5" /></span>
+            <div className="min-w-0">
+              <div className="font-semibold">Convert any link</div>
+              <p className="mt-0.5 text-sm text-muted-foreground">Paste a link and get your own share link with an ad screen and custom header/footer.</p>
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="conv-url" className="text-sm font-medium">Link</label>
+            <Input id="conv-url" required placeholder="https://..." value={url} onChange={(e) => setUrl(e.target.value)} className="h-11 rounded-xl" />
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="conv-title" className="text-sm font-medium">Title <span className="font-normal text-muted-foreground">(optional)</span></label>
+            <Input id="conv-title" placeholder="My awesome video" value={title} onChange={(e) => setTitle(e.target.value)} className="h-11 rounded-xl" />
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="conv-header" className="text-sm font-medium">Header text <span className="font-normal text-muted-foreground">(optional)</span></label>
+            <Textarea id="conv-header" placeholder="Shown at the top of your share page" value={header} onChange={(e) => setHeader(e.target.value)} className="min-h-20 rounded-xl" />
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="conv-footer" className="text-sm font-medium">Footer text <span className="font-normal text-muted-foreground">(optional)</span></label>
+            <Textarea id="conv-footer" placeholder="Shown at the bottom of your share page" value={footer} onChange={(e) => setFooter(e.target.value)} className="min-h-20 rounded-xl" />
+          </div>
+          <Button className="h-11 w-full rounded-xl text-[15px] font-semibold"><Link2 className="h-4 w-4" /> Convert link</Button>
         </form>
       ) : (
         <div className="mt-5 border-b pb-5">
