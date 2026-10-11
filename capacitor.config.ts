@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   appName: "Tanyora",
   webDir: "dist/client",
   server: {
-    url: "https://sunbeam-storage-hub.lovable.app",
+    url: "https://tanyora.lovable.app",
     cleartext: false,
   },
 };

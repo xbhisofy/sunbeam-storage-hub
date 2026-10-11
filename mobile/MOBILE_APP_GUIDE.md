@@ -79,7 +79,7 @@ Yeh **AAB** file banata hai — Play Store sirf yehi leta hai (APK nahi).
 4. **Store listing** ka sab text ready hai — project me
    `PLAY_STORE_LISTING.md` file kholo aur wahi copy-paste karo.
    - App icon: `mobile/assets/icon.png`
-   - Privacy Policy URL: `https://sunbeam-storage-hub.lovable.app/privacy`
+   - Privacy Policy URL: `https://tanyora.lovable.app/privacy`
 5. **Data safety form** ke jawab:
    - Data collected: Email, User IDs, Files (user content)
    - Data shared: No

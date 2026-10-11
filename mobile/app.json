@@ -31,7 +31,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "sunbeam-storage-hub.lovable.app",
+              "host": "tanyora.lovable.app",
               "pathPrefix": "/s"
             }
           ],
