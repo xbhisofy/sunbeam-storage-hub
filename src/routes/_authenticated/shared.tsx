@@ -36,7 +36,7 @@ function Shared() {
     if (!confirm("Delete this shared link? The file will be removed and the link will stop working.")) return;
     if (path) await supabase.storage.from("files").remove([path]);
     const { error } = await supabase.from("files").delete().eq("id", id);
-    if (error) return toast.error("Could not delete the link");
+    if (error) { toast.error("Could not delete the link"); return; }
     toast.success("Link deleted");
     qc.invalidateQueries({ queryKey: ["files"] });
   }

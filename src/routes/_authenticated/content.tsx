@@ -104,7 +104,7 @@ function Content() {
 
   async function download(path: string, name: string) {
     const { data, error } = await supabase.storage.from("files").createSignedUrl(path, 300, { download: name });
-    if (error || !data) return toast.error("Could not download the file");
+    if (error || !data) { toast.error("Could not download the file"); return; }
     window.location.href = data.signedUrl;
   }
 
