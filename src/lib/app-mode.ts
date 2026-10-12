@@ -21,3 +21,12 @@ export function hostRedirect(host: string, path: string, mainUrl: string, webUrl
   if (host === web && path === "/") return webUrl + "/dashboard";
   return null;
 }
+
+import { useEffect, useState } from "react";
+/** Earnings, referrals and premium live only on the website; the installed app hides them. */
+export const WEB_ONLY_PATHS = ["/earnings", "/referrals", "/plans"];
+export function useInstalledApp() {
+  const [app, setApp] = useState(false);
+  useEffect(() => setApp(isInstalledApp()), []);
+  return app;
+}
