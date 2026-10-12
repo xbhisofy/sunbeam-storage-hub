@@ -57,6 +57,13 @@
       "when": 1791708882705,
       "tag": "0007_admin_storage_delete",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791791070799,
+      "tag": "0008_view_and_referral_tracking",
+      "breakpoints": true
     }
   ]
 }
