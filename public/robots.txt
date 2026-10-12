@@ -8,4 +8,4 @@ Disallow: /profile
 Disallow: /s/
 
 Disallow: /auth
-Sitemap: https://tanyora.lovable.app/sitemap.xml
+Sitemap: https://tanyora.com/sitemap.xml
