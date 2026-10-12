@@ -124,6 +124,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  const pathname = useLocation({ select: (l) => l.pathname });
   useEffect(() => {
     // Main domain = landing + share links; web subdomain = login/dashboard. Installed app stays put.
     Promise.all([import("@/lib/app-mode"), import("@/lib/site")]).then(([m, { site }]) => {
@@ -131,7 +132,7 @@ function RootComponent() {
       const to = m.hostRedirect(location.host, location.pathname, site.shareUrl, site.webUrl);
       if (to) location.replace(to + location.search + location.hash);
     });
-  }, []);
+  }, [pathname]);
   useEffect(() => {
     import("@/lib/deep-links").then((m) => m.setupDeepLinks((path) => router.navigate({ to: path })));
   }, [router]);
