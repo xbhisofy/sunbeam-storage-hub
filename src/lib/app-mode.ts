@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 // True inside the installed Android app (TWA/standalone/Capacitor). Remembered for the session.
 export function isInstalledApp(): boolean {
   if (typeof window === "undefined") return false;
@@ -20,4 +21,12 @@ export function hostRedirect(host: string, path: string, mainUrl: string, webUrl
   if (host === web && path.startsWith("/s/")) return mainUrl + path;
   if (host === web && path === "/") return webUrl + "/dashboard";
   return null;
+}
+
+/** Earnings, referrals and premium live only on the website; the installed app hides them. */
+export const WEB_ONLY_PATHS = ["/earnings", "/referrals", "/plans"];
+export function useInstalledApp() {
+  const [app, setApp] = useState(false);
+  useEffect(() => setApp(isInstalledApp()), []);
+  return app;
 }

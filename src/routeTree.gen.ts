@@ -25,6 +25,7 @@ import { Route as AuthenticatedEarningsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPlansRouteImport } from './routes/_authenticated/plans'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
+import { Route as AuthenticatedSharedRouteImport } from './routes/_authenticated/shared'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as ApiPublicDeleteAccountRouteImport } from './routes/api/public/delete-account'
 
@@ -107,6 +108,11 @@ const AuthenticatedReferralsRoute = AuthenticatedReferralsRouteImport.update({
   path: '/referrals',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSharedRoute = AuthenticatedSharedRouteImport.update({
+  id: '/shared',
+  path: '/shared',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const SSlugRoute = SSlugRouteImport.update({
   id: '/s/$slug',
   path: '/s/$slug',
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/plans': typeof AuthenticatedPlansRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
+  '/shared': typeof AuthenticatedSharedRoute
   '/s/$slug': typeof SSlugRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/plans': typeof AuthenticatedPlansRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
+  '/shared': typeof AuthenticatedSharedRoute
   '/s/$slug': typeof SSlugRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/_authenticated/plans': typeof AuthenticatedPlansRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/referrals': typeof AuthenticatedReferralsRoute
+  '/_authenticated/shared': typeof AuthenticatedSharedRoute
   '/s/$slug': typeof SSlugRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/plans'
     | '/profile'
     | '/referrals'
+    | '/shared'
     | '/s/$slug'
     | '/api/public/delete-account'
   fileRoutesByTo: FileRoutesByTo
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/plans'
     | '/profile'
     | '/referrals'
+    | '/shared'
     | '/s/$slug'
     | '/api/public/delete-account'
   id:
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/_authenticated/plans'
     | '/_authenticated/profile'
     | '/_authenticated/referrals'
+    | '/_authenticated/shared'
     | '/s/$slug'
     | '/api/public/delete-account'
   fileRoutesById: FileRoutesById
@@ -366,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReferralsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/shared': {
+      id: '/_authenticated/shared'
+      path: '/shared'
+      fullPath: '/shared'
+      preLoaderRoute: typeof AuthenticatedSharedRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/s/$slug': {
       id: '/s/$slug'
       path: '/s/$slug'
@@ -391,6 +410,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPlansRoute: typeof AuthenticatedPlansRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedReferralsRoute: typeof AuthenticatedReferralsRoute
+  AuthenticatedSharedRoute: typeof AuthenticatedSharedRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -401,6 +421,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPlansRoute: AuthenticatedPlansRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedReferralsRoute: AuthenticatedReferralsRoute,
+  AuthenticatedSharedRoute: AuthenticatedSharedRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

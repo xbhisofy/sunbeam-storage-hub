@@ -1,8 +1,9 @@
 import { createFileRoute, redirect, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useInstalledApp, WEB_ONLY_PATHS } from "@/lib/app-mode";
 import { currentUserId } from "@/lib/session";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2, Crown, Video, Music, FileText, Image as ImageIcon } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2, Crown, Video, Music, FileText, Image as ImageIcon, Share2 } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
@@ -23,6 +24,13 @@ const nav = [
   { to: "/profile", label: "Profile", icon: User },
   { to: "/plans", label: "Premium", icon: Crown },
 ] as const;
+// Inside the installed app, earnings features are replaced by Shared files.
+const appNav = [
+  { to: "/dashboard", label: "Home", icon: Home },
+  { to: "/content", label: "My Files", icon: FolderOpen },
+  { to: "/shared", label: "Shared", icon: Share2 },
+  { to: "/profile", label: "Profile", icon: User },
+] as const;
 export function useProfile() {
   return useQuery({ queryKey: ["profile"], queryFn: async () => {
     const uid = await currentUserId();
@@ -40,6 +48,9 @@ function Shell() {
   const [leaving, setLeaving] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [upload, setUpload] = useState(false);
+  const app = useInstalledApp();
+  const items = app ? appNav : nav;
+  useEffect(() => { if (app && WEB_ONLY_PATHS.includes(pathname)) navigate({ to: "/dashboard", replace: true }); }, [app, pathname, navigate]);
   async function signOut() {
     setLeaving(true);
     await qc.cancelQueries(); qc.clear();
@@ -47,9 +58,9 @@ function Shell() {
     if (error) { setLeaving(false); return; }
     navigate({ to: "/auth", replace: true });
   }
-  const title = nav.find(n => n.to === pathname)?.label ?? "Admin";
+  const title = [...nav, ...appNav].find(n => n.to === pathname)?.label ?? "Admin";
   const menu = <nav className="space-y-0.5 p-3" aria-label="Account navigation">
-    {nav.map(n => <Button key={n.to} variant="ghost" asChild className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium"><Link to={n.to} onClick={() => setDrawer(false)} className="data-[status=active]:bg-accent data-[status=active]:text-accent-foreground"><n.icon className="h-5 w-5" />{n.label}</Link></Button>)}
+    {items.map(n => <Button key={n.to} variant="ghost" asChild className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium"><Link to={n.to} onClick={() => setDrawer(false)} className="data-[status=active]:bg-accent data-[status=active]:text-accent-foreground"><n.icon className="h-5 w-5" />{n.label}</Link></Button>)}
     <Button variant="ghost" asChild className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium"><Link to="/content" search={{ tab: "convert" }} onClick={() => setDrawer(false)}><Link2 className="h-5 w-5" />Convert Link</Link></Button>
     {isAdmin && <Button variant="ghost" asChild className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium"><Link to="/admin" onClick={() => setDrawer(false)}><Shield className="h-5 w-5" />Admin</Link></Button>}
     <div className="mt-2 border-t pt-2"><Button variant="ghost" className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium text-destructive" onClick={signOut} disabled={leaving}>{leaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}Log out</Button></div>
@@ -61,7 +72,7 @@ function Shell() {
       <main className="app-main mx-auto max-w-6xl px-5 pb-32 pt-6 md:px-10 md:py-10"><Outlet /></main>
       <div className="hidden md:block"><LegalFooter /></div>
       <nav aria-label="Bottom navigation" className="app-bottom fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-center border-t bg-card px-3 pt-2 md:hidden">
-        {nav.filter(n => n.to !== "/referrals" && n.to !== "/plans").map((n, i) => <Link key={n.to} to={n.to} style={{ gridColumnStart: i < 2 ? i + 1 : i + 2, gridRowStart: 1 }} className="flex h-14 w-full select-none flex-col items-center justify-center gap-1 rounded-xl text-muted-foreground transition-colors duration-150 [-webkit-tap-highlight-color:transparent] data-[status=active]:text-primary"><n.icon className="h-6 w-6 shrink-0" /><span className="text-[11px] font-medium leading-none">{n.label}</span></Link>)}
+        {items.filter(n => n.to !== "/referrals" && n.to !== "/plans").map((n, i) => <Link key={n.to} to={n.to} style={{ gridColumnStart: i < 2 ? i + 1 : i + 2, gridRowStart: 1 }} className="flex h-14 w-full select-none flex-col items-center justify-center gap-1 rounded-xl text-muted-foreground transition-colors duration-150 [-webkit-tap-highlight-color:transparent] data-[status=active]:text-primary"><n.icon className="h-6 w-6 shrink-0" /><span className="text-[11px] font-medium leading-none">{n.label}</span></Link>)}
         <Button className="absolute left-1/2 top-2 h-14 w-14 -translate-x-1/2 rounded-full" size="icon" aria-label="Add files" onClick={() => setUpload(true)}><Plus className="h-7 w-7" /></Button>
       </nav>
     </div>
@@ -79,7 +90,7 @@ function Shell() {
       </div>
       <Link to="/content" search={{ tab: "convert" }} onClick={() => setUpload(false)} className="mt-3 flex items-center gap-3 rounded-2xl bg-accent/50 p-4 active:bg-accent">
         <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground"><Link2 className="h-5 w-5" /></span>
-        <span className="min-w-0"><span className="block text-[15px] font-semibold">Convert a link</span><span className="block text-xs text-muted-foreground">Turn any URL into a monetized share link</span></span>
+        <span className="min-w-0"><span className="block text-[15px] font-semibold">Convert a link</span><span className="block text-xs text-muted-foreground">Turn any URL into a share link</span></span>
       </Link>
     </SheetContent></Sheet>
   </div>;
