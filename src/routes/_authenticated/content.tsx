@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Upload, Search, FolderOpen, Copy, Trash2, Film, Music, FileText, Eye, Link2 } from "lucide-react";
+import { Upload, Search, FolderOpen, Copy, Trash2, Film, Music, FileText, Eye, Link2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,6 +100,12 @@ function Content() {
     if (path) await supabase.storage.from("files").remove([path]);
     await supabase.from("files").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["files"] });
+  }
+
+  async function download(path: string, name: string) {
+    const { data, error } = await supabase.storage.from("files").createSignedUrl(path, 300, { download: name });
+    if (error || !data) return toast.error("Could not download the file");
+    window.location.href = data.signedUrl;
   }
 
   const shown = files.filter((f) => (filter === "all" || f.source === filter) && (!kind || f.file_type === kind) && f.name.toLowerCase().includes(q.toLowerCase()));
@@ -203,6 +209,7 @@ function Content() {
                   <span className="truncate">{ago(f.created_at)}</span>
                 </div>
               </div>
+              {f.storage_path && <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0" aria-label="Download" onClick={() => download(f.storage_path!, f.name)}><Download className="h-4 w-4" /></Button>}
               <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0" aria-label="Copy share link" onClick={() => { navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
                 <Copy className="h-4 w-4" />
               </Button>
