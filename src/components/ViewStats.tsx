@@ -24,7 +24,7 @@ export function ViewStats() {
   });
   const max = Math.max(1, ...days.map(d => d.views));
   const week = days.reduce((s, d) => s + d.views, 0);
-  const today = days[6].views;
+  const today = days[6]?.views ?? 0;
   return <section className="rounded-2xl border bg-card p-5">
     <div className="flex items-start justify-between gap-3">
       <div><p className="text-sm text-muted-foreground">Views · last 7 days</p><p className="mt-1 text-2xl font-bold">{week.toLocaleString()}</p></div>
