@@ -110,6 +110,30 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_daily: {
+        Row: {
+          commission: number
+          day: string
+          referred_id: string
+          referrer_id: string
+          signup_bonus: number
+        }
+        Insert: {
+          commission?: number
+          day?: string
+          referred_id: string
+          referrer_id: string
+          signup_bonus?: number
+        }
+        Update: {
+          commission?: number
+          day?: string
+          referred_id?: string
+          referrer_id?: string
+          signup_bonus?: number
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -125,6 +149,27 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      view_daily: {
+        Row: {
+          day: string
+          file_id: string
+          owner_id: string
+          views: number
+        }
+        Insert: {
+          day?: string
+          file_id: string
+          owner_id: string
+          views?: number
+        }
+        Update: {
+          day?: string
+          file_id?: string
+          owner_id?: string
+          views?: number
         }
         Relationships: []
       }
@@ -204,6 +249,14 @@ export type Database = {
         Returns: boolean
       }
       my_referral_count: { Args: never; Returns: number }
+      my_referrals: {
+        Args: never
+        Returns: {
+          earned: number
+          joined: string
+          name: string
+        }[]
+      }
       record_view: { Args: { _slug: string }; Returns: undefined }
       request_withdrawal: {
         Args: { _amount: number; _details: string; _method: string }
