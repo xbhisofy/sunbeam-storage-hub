@@ -330,7 +330,7 @@ function UsersTab() {
   const [pwTarget, setPwTarget] = useState<{ id: string; name: string; password: string } | null>(null);
   const setPassword = useServerFn(adminSetPassword);
   async function savePassword() {
-    if (!pwTarget || pwTarget.password.length < 8) return toast.error("Password must be at least 8 characters");
+    if (!pwTarget || pwTarget.password.length < 8) { toast.error("Password must be at least 8 characters"); return; }
     try { await setPassword({ data: { userId: pwTarget.id, password: pwTarget.password } }); toast.success("Password updated"); setPwTarget(null); }
     catch (e) { toast.error(e instanceof Error ? e.message : "Could not update password"); }
   }

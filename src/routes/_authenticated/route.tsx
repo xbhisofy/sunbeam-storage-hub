@@ -7,6 +7,7 @@ import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, P
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
+import logo from "@/assets/tanyora-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,7 +77,7 @@ function Shell() {
         <Button className="absolute left-1/2 top-2 h-14 w-14 -translate-x-1/2 rounded-full" size="icon" aria-label="Add files" onClick={() => setUpload(true)}><Plus className="h-7 w-7" /></Button>
       </nav>
     </div>
-    <Sheet open={drawer} onOpenChange={setDrawer}><SheetContent side="left" onOpenAutoFocus={(e) => e.preventDefault()} className="w-[80vw] max-w-[300px] overflow-y-auto p-0"><div className="border-b px-4 pb-4 pt-5"><div className="mb-4 pr-8"><Brand /></div><div className="flex min-w-0 items-center gap-3 rounded-xl bg-accent/60 p-2.5"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-base font-bold text-primary-foreground">{p?.display_name?.[0]?.toUpperCase() ?? "T"}</span><div className="min-w-0"><SheetTitle className="truncate text-sm">{p?.display_name ?? "Tanyora"}</SheetTitle><SheetDescription className="truncate text-xs">{p?.email}</SheetDescription></div></div></div>{menu}</SheetContent></Sheet>
+    <Sheet open={drawer} onOpenChange={setDrawer}><SheetContent side="left" onOpenAutoFocus={(e) => e.preventDefault()} className="w-[80vw] max-w-[300px] overflow-y-auto p-0"><div className="flex items-center gap-2.5 border-b bg-accent/40 px-3.5 py-3 pr-11"><img src={logo} alt="" width={32} height={32} className="h-8 w-8 shrink-0 rounded-lg object-cover" decoding="async" /><div className="min-w-0"><SheetTitle className="truncate text-[15px] font-semibold leading-tight">{p?.display_name ?? "Tanyora"}</SheetTitle><SheetDescription className="truncate text-[11px] leading-tight text-muted-foreground">{p?.email}</SheetDescription></div></div>{menu}</SheetContent></Sheet>
     <Sheet open={upload} onOpenChange={setUpload}><SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-3xl border-0 px-5 pb-8 pt-3">
       <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-muted" />
       <SheetTitle className="text-lg font-bold">Add to your files</SheetTitle>
