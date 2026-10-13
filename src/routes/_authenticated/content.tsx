@@ -107,7 +107,6 @@ function Content() {
           className="group flex w-full flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-border bg-card px-5 py-7 text-center transition-all hover:border-primary/60 hover:bg-primary/[0.03] disabled:opacity-60">
           <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary transition-transform group-hover:scale-105"><CloudUpload className="h-6 w-6" /></span>
           <span className="text-[15px] font-semibold">Tap to upload files</span>
-          <span className="text-xs text-muted-foreground">Videos, audio, images and documents · up to 50 MB each</span>
         </button>
         {uploading && <div className="mt-3 space-y-2 rounded-xl border bg-card p-4 text-sm shadow-sm"><div className="flex justify-between"><span className="truncate font-medium">{uploading.name}</span><span className="tabular-nums text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
       </div>
