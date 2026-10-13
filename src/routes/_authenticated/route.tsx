@@ -71,7 +71,6 @@ function Shell() {
     {(!app || isAdmin) && <>
       <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
       <div className="space-y-1">
-        {!app && <Link to="/content" search={{ tab: "convert" }} activeOptions={{ exact: true, includeSearch: true }} onClick={() => setDrawer(false)} className={row}><span className={tile}><Link2 className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>Convert Link</Link>}
         {isAdmin && <Link to="/admin" onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><Shield className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>Admin</Link>}
       </div>
     </>}
