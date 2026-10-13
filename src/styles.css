@@ -199,16 +199,6 @@
 .app-shell button, .app-shell a { touch-action: manipulation; }
 .app-hero-card { background: linear-gradient(135deg, var(--primary), oklch(0.5 0.2 285)); color: var(--primary-foreground); box-shadow: 0 16px 40px -18px color-mix(in oklab, var(--primary) 70%, transparent); }
 .app-bottom { backdrop-filter: blur(14px); background: color-mix(in oklab, var(--card) 92%, transparent); }
-/* Raised, glossy centre action in the bottom bar */
-.app-fab {
-  background: radial-gradient(125% 125% at 50% 0%, color-mix(in oklab, var(--primary) 74%, white) 0%, var(--primary) 52%, color-mix(in oklab, var(--primary) 88%, black) 100%);
-  border: 1px solid color-mix(in oklab, var(--primary) 72%, black);
-  box-shadow:
-    0 12px 24px -10px color-mix(in oklab, var(--primary) 80%, transparent),
-    0 5px 10px -5px rgba(15, 23, 42, .4),
-    inset 0 2px 1px rgba(255, 255, 255, .5),
-    inset 0 -4px 7px rgba(0, 0, 0, .25);
-}
 @media (max-width: 767px) { .app-main { padding-left: 16px; padding-right: 16px; } }
 
 /* App-open splash — logo + wordmark + footer, same flat light colour as the Android launch screen (#ffffff) */
