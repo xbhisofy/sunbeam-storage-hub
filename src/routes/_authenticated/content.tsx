@@ -117,7 +117,7 @@ function Content() {
           <div className="px-6 py-14 text-center">
             <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><FolderOpen className="h-8 w-8 text-primary" /></span>
             <p className="mt-5 text-[15px] font-semibold">Your folder is empty</p>
-            <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">Upload your first video, photo or document above. Once it's here, tap copy to get a share link and start earning views.</p>
+            <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">Upload your first video, photo or document above. Once it's here, tap copy to get a share link you can send to anyone.</p>
           </div>
         ) : (
           <>
