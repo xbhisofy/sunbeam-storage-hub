@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isInstalledApp } from "@/lib/app-mode";
 import logoImg from "@/assets/tanyora-logo.jpg";
 
 /**
@@ -11,7 +12,7 @@ export function SplashScreen() {
   const [state, setState] = useState<"hidden" | "show" | "leave">("hidden");
   useEffect(() => {
     const p = location.pathname;
-    if (p === "/" || p.startsWith("/s/") || sessionStorage.getItem("ty-splash")) return;
+    if (!isInstalledApp() || p === "/" || p.startsWith("/s/") || sessionStorage.getItem("ty-splash")) return;
     sessionStorage.setItem("ty-splash", "1");
     setState("show");
     const a = setTimeout(() => setState("leave"), 1900);
