@@ -9,6 +9,8 @@ import {
 import { toast } from "sonner";
 import { pageHead } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { adminSetPassword } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -325,6 +327,13 @@ function UsersTab() {
   const [page, setPage] = useState(0);
   const [adjust, setAdjust] = useState<{ id: string; name: string; amount: string } | null>(null);
   const [blockTarget, setBlockTarget] = useState<{ id: string; name: string; blocked: boolean } | null>(null);
+  const [pwTarget, setPwTarget] = useState<{ id: string; name: string; password: string } | null>(null);
+  const setPassword = useServerFn(adminSetPassword);
+  async function savePassword() {
+    if (!pwTarget || pwTarget.password.length < 8) return toast.error("Password must be at least 8 characters");
+    try { await setPassword({ data: { userId: pwTarget.id, password: pwTarget.password } }); toast.success("Password updated"); setPwTarget(null); }
+    catch (e) { toast.error(e instanceof Error ? e.message : "Could not update password"); }
+  }
   const { data, isLoading } = useQuery({
     queryKey: ["admin-users", dq, filter, page],
     placeholderData: keepPreviousData,
@@ -376,8 +385,9 @@ function UsersTab() {
                     <Stat label="Balance" value={money(Number(u.balance))} />
                     <Stat label="Paid" value={money(Number(u.paid_total))} />
                   </div>
-                  <div className="grid grid-cols-2 gap-2 md:w-48">
+                  <div className="grid grid-cols-3 gap-2 md:w-72">
                     <Button size="sm" variant="outline" className="rounded-lg" onClick={() => setAdjust({ id: u.id, name, amount: "" })}>Adjust</Button>
+                    <Button size="sm" variant="outline" className="rounded-lg" onClick={() => setPwTarget({ id: u.id, name, password: "" })}>Password</Button>
                     <Button size="sm" variant={u.blocked ? "outline" : "destructive"} className="rounded-lg" onClick={() => setBlockTarget({ id: u.id, name, blocked: u.blocked })}>
                       {!u.blocked && <Ban className="h-3.5 w-3.5" />}{u.blocked ? "Unblock" : "Block"}
                     </Button>
