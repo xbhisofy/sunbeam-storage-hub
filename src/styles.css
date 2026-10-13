@@ -156,6 +156,7 @@
 .dark { --file-document: oklch(0.8 0.1 262); --file-link: oklch(0.8 0.1 163); --file-video: oklch(0.8 0.1 20); --file-audio: oklch(0.8 0.1 70); --file-image: oklch(0.82 0.1 330); }
 .category-document { color: var(--file-document); background: color-mix(in oklab, var(--file-document) 8%, var(--card)); }
 .category-link { color: var(--file-link); background: color-mix(in oklab, var(--file-link) 8%, var(--card)); }
+.category-image { color: var(--file-image); background: color-mix(in oklab, var(--file-image) 8%, var(--card)); }
 .category-video { color: var(--file-video); background: color-mix(in oklab, var(--file-video) 8%, var(--card)); }
 .category-audio { color: var(--file-audio); background: color-mix(in oklab, var(--file-audio) 8%, var(--card)); }
 .app-bottom { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
