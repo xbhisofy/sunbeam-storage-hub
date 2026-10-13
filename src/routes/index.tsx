@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Tanyora — Upload, share & earn from your videos" },
-      { name: "description", content: "Upload videos, audio and PDFs, get a share link, and track your content." },
-      { property: "og:title", content: "Tanyora — Upload, share & earn" },
-      { property: "og:description", content: "Upload files, share links and manage your content." },
+      { title: "Tanyora — Secure cloud storage and file sharing" },
+      { name: "description", content: "Private cloud storage for videos, photos, audio and documents with expiring share links." },
+      { property: "og:title", content: "Tanyora — Secure cloud storage and file sharing" },
+      { property: "og:description", content: "Private cloud storage with expiring share links on web and Android." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: site.publicUrl + "/" },
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
         name: "Tanyora",
         applicationCategory: "UtilitiesApplication",
         operatingSystem: "Web, Android",
-        description: "Upload videos, audio and PDFs, get a share link, and track your content.",
+        description: "Private cloud storage for videos, photos, audio and documents with expiring share links.",
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       }),
     }],
@@ -39,14 +39,14 @@ export const Route = createFileRoute("/")({
 const steps = [
   { icon: UserPlus, title: "1. Create an account", text: "Sign up free in 30 seconds with your name, email and password." },
   { icon: Upload, title: "2. Upload & share", text: "Upload videos, audio or PDFs and copy your unique share link." },
-  { icon: Wallet, title: "3. Get paid", text: "Your balance grows with every genuine view and every new signup." },
+  { icon: Share2, title: "3. Share safely", text: "Pick how long a link works — 1 hour to never — and remove it anytime." },
 ];
 const why = [
   { icon: Smartphone, title: "Native app playback", text: "Viewers open your videos, audio and PDFs directly in the Tanyora Android app." },
-  { icon: BarChart3, title: "Real-time statistics", text: "Track views, earnings and referrals from a clean, fast dashboard." },
+  { icon: BarChart3, title: "Organised library", text: "Browse documents, images, videos and music by category, rename and download any time." },
   { icon: ShieldCheck, title: "Secure private storage", text: "Files are stored privately and are only reachable through your share link." },
-  { icon: Gift, title: "Referral commission", text: "Earn 10% of the view earnings of every user you invite." },
-  { icon: Wallet, title: "Low minimum payout", text: "Withdraw from just $5 via UPI, PayPal or bank transfer." },
+  { icon: Gift, title: "Expiring links", text: "Every share link can expire after 1 hour, 24 hours, 7 days or 30 days." },
+  { icon: Wallet, title: "You stay in control", text: "Delete files, remove shares or delete your whole account from settings." },
   { icon: Headphones, title: "Dedicated support", text: `Questions? Reach our team at ${site.supportEmail}.` },
 ];
 
@@ -66,9 +66,9 @@ function Home() {
           <Brand />
           <nav className="hidden gap-8 text-sm font-medium text-muted-foreground lg:flex">
             <a href="#" className="hover:text-foreground">Home</a>
-            <a href="#rates" className="hover:text-foreground">Rates / Earnings</a>
-            <a href="#referral" className="hover:text-foreground">Referral Program</a>
-            <a href="#app" className="hover:text-foreground">Why Tanyora</a>
+            <a href="#features" className="hover:text-foreground">Features</a>
+            <a href="#rates" className="hover:text-foreground">Creator Program</a>
+            <a href="/faq" className="hover:text-foreground">FAQ</a>
           </nav>
           <div className="flex items-center gap-1 sm:gap-2">
             <Button variant="ghost" asChild className="hidden hover:bg-accent hover:text-foreground sm:inline-flex"><a href={`${site.webUrl}/auth`}>Log in</a></Button>
@@ -80,34 +80,34 @@ function Home() {
       <section className="relative">
         <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-14 sm:px-5 md:pt-24 lg:grid-cols-2">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-accent-foreground"><span className="h-2 w-2 animate-pulse rounded-full bg-primary" />Upload. Share. Earn.</span>
-            <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">Turn your content into <span className="landing-text block">Passive Income.</span></h1>
-            <p className="mt-6 max-w-lg text-base text-muted-foreground sm:text-lg">Upload videos, audio and PDFs, share your link anywhere, and earn every time someone watches it in the Tanyora app.</p>
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-accent-foreground"><span className="h-2 w-2 animate-pulse rounded-full bg-primary" />Store. Share. Stay in control.</span>
+            <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">Your files, safe and <span className="landing-text block">ready to share.</span></h1>
+            <p className="mt-6 max-w-lg text-base text-muted-foreground sm:text-lg">Upload videos, photos, audio and documents to private cloud storage. Create share links with an expiry time and open them anywhere on web or Android.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><a href={`${site.webUrl}/auth?mode=signup`}>Get Started <ArrowRight className="h-4 w-4" /></a></Button>
-              <Button size="lg" variant="outline" asChild className="h-12 rounded-full border-primary/40 bg-transparent px-8 text-accent-foreground hover:bg-accent"><a href="#rates">View Rates</a></Button>
+              <Button size="lg" variant="outline" asChild className="h-12 rounded-full border-primary/40 bg-transparent px-8 text-accent-foreground hover:bg-accent"><a href="#features">See features</a></Button>
             </div>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success" />Free account</span>
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success" />Withdraw anytime, min $5</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success" />Expiring share links</span>
             </div>
           </div>
           <div className="relative mx-auto w-full max-w-md lg:max-w-none">
             <div className="landing-glass landing-float rounded-3xl p-6 shadow-2xl">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">View-based rate</p>
-                  <p className="mt-1 text-4xl font-bold">$3.00 <span className="text-base font-normal text-muted-foreground">/ 1,000 views</span></p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Storage used</p>
+                  <p className="mt-1 text-4xl font-bold">2.4 GB <span className="text-base font-normal text-muted-foreground">used</span></p>
                 </div>
-                <span className="rounded-full bg-success/15 px-2.5 py-1 text-xs font-semibold text-success">Live</span>
+                <span className="rounded-full bg-success/15 px-2.5 py-1 text-xs font-semibold text-success">Synced</span>
               </div>
               <svg viewBox="0 0 300 120" className="mt-5 h-36 w-full rounded-2xl bg-background/50 p-3" aria-hidden>
                 <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stopColor="var(--primary)" /><stop offset="1" stopColor="oklch(0.66 0.21 300)" /></linearGradient></defs>
                 <path d="M5 100 C 50 90, 70 110, 110 80 S 170 20, 200 70 S 250 110, 290 15" fill="none" stroke="url(#lg)" strokeWidth="4" strokeLinecap="round" />
               </svg>
               <div className="mt-5">
-                <div className="flex justify-between text-xs text-muted-foreground"><span>Payout progress</span><span>$5 minimum</span></div>
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-background/60"><div className="h-full w-4/5 rounded-full" style={{ backgroundImage: "var(--landing-text)" }} /></div>
+                <div className="flex justify-between text-xs text-muted-foreground"><span>Documents · Images · Videos</span><span></span></div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-background/60"><div className="h-full w-[48%] rounded-full" style={{ backgroundImage: "var(--landing-text)" }} /></div>
               </div>
             </div>
             <div className="landing-glass landing-float-slow absolute -left-4 -top-14 flex items-center gap-3 rounded-2xl p-3 pr-5 shadow-xl sm:-left-10">
@@ -115,8 +115,8 @@ function Home() {
               <div><p className="text-sm font-semibold">Share link created</p><p className="text-[11px] uppercase tracking-wider text-muted-foreground">tanyora · /s/xy92p</p></div>
             </div>
             <div className="landing-glass landing-float-slow absolute -bottom-6 -right-2 flex items-center gap-3 rounded-2xl p-3 pr-5 shadow-xl sm:-right-8">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-success/15 text-success"><DollarSign className="h-5 w-5" /></span>
-              <div><p className="text-sm font-semibold">Payout request</p><p className="text-[11px] uppercase tracking-wider text-muted-foreground">UPI · PayPal · Bank</p></div>
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-success/15 text-success"><ShieldCheck className="h-5 w-5" /></span>
+              <div><p className="text-sm font-semibold">Link expires in 7 days</p><p className="text-[11px] uppercase tracking-wider text-muted-foreground">You can remove it anytime</p></div>
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@ function Home() {
 
       <section className="relative mx-auto max-w-6xl px-4 py-20 sm:px-5">
         <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Simple 3-Step Process</h2>
-        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">No friction. Start earning without any technical expertise.</p>
+        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Get started in under a minute — no technical knowledge needed.</p>
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           {steps.map((f) => (
             <div key={f.title} className="landing-card rounded-3xl p-7 text-center">
@@ -136,10 +136,27 @@ function Home() {
         </div>
       </section>
 
+      <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-20">
+        <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Why Tanyora</h2>
+        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Everything you need to store and share files, in one place.</p>
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {why.map((f) => (
+            <div key={f.title} className="landing-card rounded-2xl p-7">
+              <span className="grid h-12 w-12 place-items-center rounded-xl bg-accent text-accent-foreground"><f.icon className="h-5 w-5" /></span>
+              <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
+              <p className="mt-2 text-muted-foreground">{f.text}</p>
+            </div>
+          ))}
+        </div>
+        <div className="landing-glow mt-12 flex flex-col items-center gap-5 rounded-3xl border p-8 sm:p-12 text-center">
+          <h3 className="text-3xl font-bold">Start storing your files today</h3>
+          <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><a href={`${site.webUrl}/auth?mode=signup`}>Create free account <ArrowRight className="h-4 w-4" /></a></Button>
+        </div>
+      </section>
       <section id="rates" className="relative scroll-mt-20 py-20">
         <div className="mx-auto max-w-5xl px-5">
-          <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Plans & Earnings</h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Choose the monetization model that fits your audience. Switch plans up to 3 times.</p>
+          <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Creator Program</h2>
+          <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Optional for creators: earn from genuine views or referrals. Rewards are subject to our Terms and anti-fraud checks. Switch plans up to 3 times.</p>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
             {[
               { icon: Users, name: "Signup Referral", sub: "Maximize referral growth", price: "$0.10", unit: "per new signup", focus: "User growth" },
@@ -172,23 +189,6 @@ function Home() {
         </div>
       </section>
 
-      <section id="app" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-20">
-        <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Why Tanyora</h2>
-        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Everything you need to monetize your content, in one platform.</p>
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {why.map((f) => (
-            <div key={f.title} className="landing-card rounded-2xl p-7">
-              <span className="grid h-12 w-12 place-items-center rounded-xl bg-accent text-accent-foreground"><f.icon className="h-5 w-5" /></span>
-              <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
-              <p className="mt-2 text-muted-foreground">{f.text}</p>
-            </div>
-          ))}
-        </div>
-        <div className="landing-glow mt-12 flex flex-col items-center gap-5 rounded-3xl border p-8 sm:p-12 text-center">
-          <h3 className="text-3xl font-bold">Start earning today</h3>
-          <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><a href={`${site.webUrl}/auth?mode=signup`}>Create free account <ArrowRight className="h-4 w-4" /></a></Button>
-        </div>
-      </section>
       <LegalFooter />
     </div>
   );
