@@ -2,7 +2,7 @@ import { pageHead } from "@/lib/site";
 import { ViewStats } from "@/components/ViewStats";
 import { useInstalledApp } from "@/lib/app-mode";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Cloud, FileText, Film, Music, Link2, ArrowUpRight, Wallet, Users, FolderOpen, Crown } from "lucide-react";
+import { Cloud, FileText, Film, Music, Image, ArrowUpRight, Wallet, Users, FolderOpen, Crown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { currentUserId } from "@/lib/session";
@@ -20,7 +20,7 @@ function Dashboard() {
   const used = files.reduce((s, f) => s + Number(f.size ?? 0), 0);
   const categories = [
     { label: "Documents", kind: "pdf", icon: FileText, tone: "category-document" },
-    { label: "Links", kind: "link", icon: Link2, tone: "category-link" },
+    { label: "Images", kind: "image", icon: Image, tone: "category-image" },
     { label: "Videos", kind: "video", icon: Film, tone: "category-video" },
     { label: "Music", kind: "audio", icon: Music, tone: "category-audio" },
   ] as const;

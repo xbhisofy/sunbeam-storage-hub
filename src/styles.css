@@ -152,8 +152,8 @@
   --color-file-video: var(--file-video);
   --color-file-audio: var(--file-audio);
 }
-:root { --file-document: oklch(0.47 0.19 262); --file-link: oklch(0.43 0.12 163); --file-video: oklch(0.49 0.18 20); --file-audio: oklch(0.47 0.12 70); }
-.dark { --file-document: oklch(0.8 0.1 262); --file-link: oklch(0.8 0.1 163); --file-video: oklch(0.8 0.1 20); --file-audio: oklch(0.8 0.1 70); }
+:root { --file-document: oklch(0.47 0.19 262); --file-link: oklch(0.43 0.12 163); --file-video: oklch(0.49 0.18 20); --file-audio: oklch(0.47 0.12 70); --file-image: oklch(0.55 0.18 330); }
+.dark { --file-document: oklch(0.8 0.1 262); --file-link: oklch(0.8 0.1 163); --file-video: oklch(0.8 0.1 20); --file-audio: oklch(0.8 0.1 70); --file-image: oklch(0.82 0.1 330); }
 .category-document { color: var(--file-document); background: color-mix(in oklab, var(--file-document) 8%, var(--card)); }
 .category-link { color: var(--file-link); background: color-mix(in oklab, var(--file-link) 8%, var(--card)); }
 .category-video { color: var(--file-video); background: color-mix(in oklab, var(--file-video) 8%, var(--card)); }
