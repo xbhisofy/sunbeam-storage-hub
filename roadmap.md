@@ -8,3 +8,8 @@
 - [ ] Google Play Billing purchase (blocked: Play Console subscription products + app on Play Store)
 - [ ] Confirm Views chart is hidden inside the installed app (blocked: user must reopen app and report)
 - [ ] Backend independence: keep Lovable Cloud + take code/database backups, or rebuild backend elsewhere (blocked: needs user's decision)
+- [x] Compliance step 1: storage-first landing, professional footer, all legal pages (AUP, reporting, child safety, retention, security, law enforcement, grievance, cookies, refunds, FAQ)
+- [ ] Compliance step 2: in-app Report button + reports table + admin moderation tab
+- [ ] Compliance step 3: legal/delete/report links inside Android app profile + Play readiness checks
+- [ ] Compliance step 4: security audit (scan, RLS, signed URLs) and final report
+- [ ] Real support email on own domain (blocked: user must create e.g. support@tanyora.com)
