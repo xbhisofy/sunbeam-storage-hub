@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Eye, Link2, Download, CloudUpload, Image as ImageIcon, FolderOpen } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Eye, Link2, Download, Image as ImageIcon, FolderOpen, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -94,22 +94,18 @@ function Content() {
 
   return (
     <div className="mx-auto w-full max-w-3xl">
-      <div className="hidden md:block">
-        <h1 className="text-2xl font-bold tracking-tight">My Files</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Upload, share and track your content.</p>
+      <div className="hidden items-center justify-between md:flex">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">My Files</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Upload, share and track your content.</p>
+        </div>
+        <Button className="gap-2" onClick={() => input.current?.click()} disabled={!!uploading}><Upload className="h-4 w-4" />Upload files</Button>
       </div>
       {kind && <div className="flex items-center justify-between"><h2 className="font-semibold capitalize">{kind === "pdf" ? "Documents" : kind}</h2><Button variant="link" asChild><Link to="/content">All files</Link></Button></div>}
 
-      {/* Upload */}
-      <div className={kind ? "mt-4" : "mt-5"}>
-        <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-        <button type="button" onClick={() => input.current?.click()} disabled={!!uploading}
-          className="group flex w-full flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-border bg-card px-5 py-7 text-center transition-all hover:border-primary/60 hover:bg-primary/[0.03] disabled:opacity-60">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary transition-transform group-hover:scale-105"><CloudUpload className="h-6 w-6" /></span>
-          <span className="text-[15px] font-semibold">Tap to upload files</span>
-        </button>
-        {uploading && <div className="mt-3 space-y-2 rounded-xl border bg-card p-4 text-sm shadow-sm"><div className="flex justify-between"><span className="truncate font-medium">{uploading.name}</span><span className="tabular-nums text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
-      </div>
+      {/* Upload (hidden input — triggered by the + button or the desktop Upload button) */}
+      <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
+      {uploading && <div className="mt-5 space-y-2 rounded-xl border bg-card p-4 text-sm shadow-sm"><div className="flex justify-between"><span className="truncate font-medium">{uploading.name}</span><span className="tabular-nums text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
 
       {/* File list */}
       <div className="mt-5 overflow-hidden rounded-2xl border bg-card shadow-sm">
@@ -117,7 +113,7 @@ function Content() {
           <div className="px-6 py-14 text-center">
             <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><FolderOpen className="h-8 w-8 text-primary" /></span>
             <p className="mt-5 text-[15px] font-semibold">Your folder is empty</p>
-            <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">Upload your first video, photo or document above. Once it's here, tap copy to get a share link you can send to anyone.</p>
+            <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">Tap the + button below to upload your first video, photo or document. Once it's here, tap copy to get a share link you can send to anyone.</p>
           </div>
         ) : (
           <>
