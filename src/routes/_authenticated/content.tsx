@@ -145,27 +145,19 @@ function Content() {
     const url = `${site.shareUrl}/s/${f.slug}`;
     setPickingExpiry(false);
     setActive(null);
-    try { await navigator.clipboard.writeText(url); } catch { /* clipboard may be unavailable */ }
-    toast.success("Link ready — copied", { description: hours === null ? "This link never expires." : `This link stops working after ${label}.` });
     qc.invalidateQueries({ queryKey: ["files"] });
-  }
-
-  async function share(f: FileRow) {
-    const url = `${site.shareUrl}/s/${f.slug}`;
+    toast.success("Link ready", { description: hours === null ? "This link never expires." : `This link stops working after ${label}.` });
     if (navigator.share) {
       try {
         await navigator.share({ title: f.name, url });
-        setActive(null);
         return;
       } catch (e) {
-        // User closed the device share sheet — just close our menu too.
-        if (e instanceof DOMException && e.name === "AbortError") { setActive(null); return; }
+        // User closed the device share sheet — nothing more to do.
+        if (e instanceof DOMException && e.name === "AbortError") return;
         // Any other failure falls through to the copy fallback below.
       }
     }
-    setActive(null);
-    navigator.clipboard.writeText(url);
-    toast.success("Link copied");
+    try { await navigator.clipboard.writeText(url); toast.success("Link copied"); } catch { /* clipboard may be unavailable */ }
   }
 
   const shown = files.filter((f) => (!kind || f.file_type === kind));
@@ -302,13 +294,10 @@ function Content() {
                   <Pencil className="h-5 w-5 text-muted-foreground" /> Rename
                 </button>
                 <button type="button" onClick={() => setPickingExpiry(true)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
-                  <Link2 className="h-5 w-5 text-muted-foreground" /> Share link
+                  <Share2 className="h-5 w-5 text-muted-foreground" /> Share
                 </button>
                 <button type="button" onClick={() => copyLink(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Copy className="h-5 w-5 text-muted-foreground" /> Copy link
-                </button>
-                <button type="button" onClick={() => share(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
-                  <Share2 className="h-5 w-5 text-muted-foreground" /> Share
                 </button>
                 <button type="button" onClick={() => remove(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium text-destructive transition-colors hover:bg-destructive/10 active:bg-destructive/15">
                   <Trash2 className="h-5 w-5" /> Move to Trash
