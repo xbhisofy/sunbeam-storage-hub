@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -52,6 +52,8 @@ function Content() {
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState("");
   const [savingName, setSavingName] = useState(false);
+  const [pickingExpiry, setPickingExpiry] = useState(false);
+  const [makingLink, setMakingLink] = useState(false);
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
@@ -124,6 +126,28 @@ function Content() {
     setActive(null);
     navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`);
     toast.success("Link copied");
+  }
+
+  const EXPIRY_OPTIONS: { label: string; hours: number | null }[] = [
+    { label: "1 hour", hours: 1 },
+    { label: "24 hours", hours: 24 },
+    { label: "7 days", hours: 24 * 7 },
+    { label: "30 days", hours: 24 * 30 },
+    { label: "Never expires", hours: null },
+  ];
+
+  async function generateLink(f: FileRow, hours: number | null, label: string) {
+    setMakingLink(true);
+    const expires_at = hours === null ? null : new Date(Date.now() + hours * 3600_000).toISOString();
+    const { error } = await supabase.from("files").update({ expires_at }).eq("id", f.id);
+    setMakingLink(false);
+    if (error) { toast.error("Could not create the link", { description: error.message }); return; }
+    const url = `${site.shareUrl}/s/${f.slug}`;
+    setPickingExpiry(false);
+    setActive(null);
+    try { await navigator.clipboard.writeText(url); } catch { /* clipboard may be unavailable */ }
+    toast.success("Link ready — copied", { description: hours === null ? "This link never expires." : `This link stops working after ${label}.` });
+    qc.invalidateQueries({ queryKey: ["files"] });
   }
 
   async function share(f: FileRow) {
@@ -214,7 +238,7 @@ function Content() {
       )}
 
       {/* File actions — bottom sheet */}
-      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); } }}>
+      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); setPickingExpiry(false); } }}>
         <SheetContent side="bottom" className="rounded-t-3xl px-2 pb-8 pt-3">
           {active && (
             <>
@@ -229,7 +253,25 @@ function Content() {
                   </div>
                 </div>
               </SheetHeader>
-              {renaming ? (
+              {pickingExpiry ? (
+                <div className="mt-1 px-4 pb-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">How long should the link work?</p>
+                  <div className="mt-2 space-y-1">
+                    {EXPIRY_OPTIONS.map((o) => (
+                      <button
+                        key={o.label}
+                        type="button"
+                        disabled={makingLink}
+                        onClick={() => generateLink(active, o.hours, o.label)}
+                        className="flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted disabled:opacity-50"
+                      >
+                        <Clock className="h-5 w-5 text-muted-foreground" /> {o.label}
+                      </button>
+                    ))}
+                  </div>
+                  <Button variant="outline" className="mt-3 w-full rounded-xl" onClick={() => setPickingExpiry(false)} disabled={makingLink}>Back</Button>
+                </div>
+              ) : renaming ? (
                 <div className="mt-1 px-4 pb-2">
                   <label htmlFor="rename-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">New name</label>
                   <input
@@ -258,6 +300,9 @@ function Content() {
                 )}
                 <button type="button" onClick={() => { setNewName(active.name); setRenaming(true); }} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Pencil className="h-5 w-5 text-muted-foreground" /> Rename
+                </button>
+                <button type="button" onClick={() => setPickingExpiry(true)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                  <Link2 className="h-5 w-5 text-muted-foreground" /> Share link
                 </button>
                 <button type="button" onClick={() => copyLink(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Copy className="h-5 w-5 text-muted-foreground" /> Copy link

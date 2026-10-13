@@ -31,8 +31,9 @@ function SharePage() {
     enabled: isApp,
     staleTime: 60_000,
     queryFn: async () => {
-      const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text").eq("slug", slug).maybeSingle();
+      const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text,expires_at").eq("slug", slug).maybeSingle();
       if (!f) return null;
+      if (f.expires_at && new Date(f.expires_at).getTime() < Date.now()) return { expired: true as const };
       if (!f.storage_path) return { ...f, url: f.external_url ?? "" };
       const { data: s } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 60 * 60 * 3);
       return { ...f, url: s?.signedUrl ?? "" };
@@ -47,7 +48,7 @@ function SharePage() {
 
   function play() {
     supabase.rpc("record_view", { _slug: slug });
-    if (data?.source === "converted" && data.url) { window.location.href = data.url; return; }
+    if (data && !("expired" in data) && data.source === "converted" && data.url) { window.location.href = data.url; return; }
     setOpen(true);
   }
 
@@ -72,6 +73,11 @@ function SharePage() {
           </div>
         ) : isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
           <p className="text-center text-muted-foreground">This file doesn't exist or was deleted.</p>
+        ) : "expired" in data ? (
+          <div className="rounded-2xl border bg-card p-8 text-center">
+            <h1 className="text-xl font-semibold">This link has expired</h1>
+            <p className="mt-2 text-sm text-muted-foreground">The owner set a time limit on this share link, and it has run out. Ask them to generate a new link.</p>
+          </div>
         ) : !open ? (
           <div className="rounded-2xl border bg-card p-6 text-center">
             {data.header_text && <p className="mb-4 whitespace-pre-line text-sm">{data.header_text}</p>}
