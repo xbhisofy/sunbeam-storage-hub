@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Upload, Search, FolderOpen, Copy, Trash2, Film, Music, FileText, Eye, Link2, Download } from "lucide-react";
+import { Upload, Search, FolderOpen, Copy, Trash2, Film, Music, FileText, Eye, Link2, Download, CloudUpload, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,16 @@ export const Route = createFileRoute("/_authenticated/content")({
   component: Content,
 });
 
-const icons = { video: Film, audio: Music, pdf: FileText, other: FileText, link: Link2 };
+const icons = { video: Film, audio: Music, pdf: FileText, other: FileText, link: Link2, image: ImageIcon };
+
+const typeStyles: Record<string, string> = {
+  video: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+  audio: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
+  image: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  pdf: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+  link: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  other: "bg-muted text-muted-foreground",
+};
 
 function ago(d: string) {
   const s = Math.floor((Date.now() - new Date(d).getTime()) / 1000);
@@ -109,19 +118,38 @@ function Content() {
   }
 
   const shown = files.filter((f) => (filter === "all" || f.source === filter) && (!kind || f.file_type === kind) && f.name.toLowerCase().includes(q.toLowerCase()));
+  const totalViews = files.reduce((s, f) => s + (f.views ?? 0), 0);
 
   return (
-    <div className="max-w-6xl">
-      <h1 className="hidden text-3xl font-bold md:block">My Files</h1>
+    <div className="mx-auto w-full max-w-3xl">
+      <div className="hidden md:block">
+        <h1 className="text-2xl font-bold tracking-tight">My Files</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Upload, share and track your content.</p>
+      </div>
       {kind && <div className="flex items-center justify-between"><h2 className="font-semibold capitalize">{kind === "pdf" ? "Documents" : kind}</h2><Button variant="link" asChild><Link to="/content">All files</Link></Button></div>}
 
-      <div className="mt-6 grid grid-cols-2 gap-1 rounded-2xl border bg-card p-1.5">
-        <Link to="/content" search={{ tab: "all" }} className={`rounded-xl px-4 py-2.5 text-center text-sm font-medium transition-colors ${tab === "all" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground"}`}>All Content</Link>
-        <Link to="/content" search={{ tab: "convert" }} className={`rounded-xl px-4 py-2.5 text-center text-sm font-medium transition-colors ${tab === "convert" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground"}`}>Convert Link</Link>
+      {/* Stats strip */}
+      <div className="mt-5 grid grid-cols-3 gap-3">
+        {[
+          { label: "Files", value: files.filter((f) => f.source === "original").length },
+          { label: "Links", value: files.filter((f) => f.source === "converted").length },
+          { label: "Total views", value: totalViews },
+        ].map((s) => (
+          <div key={s.label} className="rounded-2xl border bg-card px-4 py-3 shadow-sm">
+            <p className="text-xl font-bold tabular-nums leading-none">{s.value}</p>
+            <p className="mt-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Tabs */}
+      <div className="mt-5 grid grid-cols-2 gap-1 rounded-xl bg-muted/70 p-1">
+        <Link to="/content" search={{ tab: "all" }} className={`rounded-lg px-4 py-2 text-center text-sm font-semibold transition-all ${tab === "all" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>All Content</Link>
+        <Link to="/content" search={{ tab: "convert" }} className={`rounded-lg px-4 py-2 text-center text-sm font-semibold transition-all ${tab === "convert" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Convert Link</Link>
       </div>
 
       {tab === "convert" ? (
-        <form onSubmit={convert} className="mt-5 overflow-hidden rounded-2xl border bg-card shadow-sm">
+        <form onSubmit={convert} className="mt-4 overflow-hidden rounded-2xl border bg-card shadow-sm">
           <div className="flex items-center gap-3 border-b bg-muted/40 px-5 py-4">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground"><Link2 className="h-4 w-4" /></span>
             <div className="min-w-0">
@@ -161,59 +189,66 @@ function Content() {
           </div>
         </form>
       ) : (
-        <div className="mt-5">
+        <div className="mt-4">
           <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
           <button type="button" onClick={() => input.current?.click()} disabled={!!uploading}
-            className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed bg-card p-5 text-left transition-colors hover:border-primary/50 hover:bg-accent/40 disabled:opacity-60">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground"><Upload className="h-5 w-5" /></span>
-            <span className="min-w-0">
-              <span className="block font-semibold">Upload files</span>
-              <span className="block text-xs text-muted-foreground">Videos, audio, images and documents</span>
-            </span>
+            className="group flex w-full flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-border bg-card px-5 py-7 text-center transition-all hover:border-primary/60 hover:bg-primary/[0.03] disabled:opacity-60">
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary transition-transform group-hover:scale-105"><CloudUpload className="h-6 w-6" /></span>
+            <span className="text-[15px] font-semibold">Tap to upload files</span>
+            <span className="text-xs text-muted-foreground">Videos, audio, images and documents · up to 50 MB each</span>
           </button>
-          {uploading && <div className="mt-3 space-y-2 rounded-xl border bg-card p-4 text-sm"><div className="flex justify-between"><span className="truncate">{uploading.name}</span><span className="text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
+          {uploading && <div className="mt-3 space-y-2 rounded-xl border bg-card p-4 text-sm shadow-sm"><div className="flex justify-between"><span className="truncate font-medium">{uploading.name}</span><span className="tabular-nums text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
         </div>
       )}
 
+      {/* Search + filter */}
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full sm:max-w-sm">
+        <div className="relative w-full sm:max-w-xs">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input className="h-11 rounded-xl pl-10" placeholder="Search by file name" value={q} onChange={(e) => setQ(e.target.value)} />
+          <Input className="h-10 rounded-xl bg-card pl-10 shadow-sm" placeholder="Search by file name" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
-        <div className="grid grid-cols-3 rounded-xl border bg-card p-1">
+        <div className="grid grid-cols-3 rounded-xl bg-muted/70 p-1">
           {(["all", "original", "converted"] as const).map((k) => (
             <button type="button" key={k} onClick={() => setFilter(k)}
-              className={`rounded-lg px-4 py-1.5 text-sm font-medium capitalize transition-colors ${filter === k ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>{k}</button>
+              className={`rounded-lg px-4 py-1.5 text-[13px] font-semibold capitalize transition-all ${filter === k ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>{k}</button>
           ))}
         </div>
       </div>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{shown.length} {shown.length === 1 ? "item" : "items"}</p>
-      <div className="mt-2 overflow-hidden rounded-2xl border bg-card">
+
+      {/* File list */}
+      <div className="mt-4 overflow-hidden rounded-2xl border bg-card shadow-sm">
+        <div className="flex items-center justify-between border-b bg-muted/40 px-4 py-2.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{shown.length} {shown.length === 1 ? "item" : "items"}</p>
+        </div>
         {shown.length === 0 ? (
-          <div className="py-14 text-center">
-            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-accent"><FolderOpen className="h-7 w-7 text-muted-foreground" /></span>
-            <p className="mt-4 font-semibold">No content yet</p>
-            <p className="mt-1 text-sm text-muted-foreground">Upload a file or convert a link to get started.</p>
+          <div className="px-6 py-16 text-center">
+            <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><FolderOpen className="h-8 w-8 text-primary" /></span>
+            <p className="mt-5 text-[15px] font-semibold">No content yet</p>
+            <p className="mx-auto mt-1.5 max-w-xs text-sm text-muted-foreground">Upload a file or convert a link — everything you share will show up here.</p>
+            <Button className="mt-5 rounded-xl" onClick={() => input.current?.click()}><Upload className="mr-2 h-4 w-4" />Upload your first file</Button>
           </div>
         ) : <ul className="divide-y">{shown.map((f) => {
           const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;
+          const style = typeStyles[f.file_type] ?? typeStyles.other;
           return (
-            <li key={f.id} className="flex items-center gap-3 p-3.5">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground"><Icon className="h-5 w-5" /></span>
+            <li key={f.id} className="flex items-center gap-3 p-3.5 transition-colors hover:bg-muted/40">
+              <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${style}`}><Icon className="h-5 w-5" /></span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{f.name}</p>
-                <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <span className="capitalize">{f.source}</span><span>·</span>
-                  <span>{f.source === "converted" ? "Link" : formatSize(f.size)}</span><span>·</span>
-                  <span className="inline-flex items-center gap-0.5"><Eye className="h-3 w-3" />{f.views}</span><span>·</span>
+                <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${f.source === "converted" ? "bg-amber-500/10 text-amber-600 dark:text-amber-400" : "bg-primary/10 text-primary"}`}>{f.source === "converted" ? "Link" : "File"}</span>
+                  {f.source !== "converted" && <><span>·</span><span>{formatSize(f.size)}</span></>}
+                  <span>·</span>
+                  <span className="inline-flex items-center gap-0.5 tabular-nums"><Eye className="h-3 w-3" />{f.views}</span>
+                  <span>·</span>
                   <span className="truncate">{ago(f.created_at)}</span>
                 </div>
               </div>
-              {f.storage_path && <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0" aria-label="Download" onClick={() => download(f.storage_path!, f.name)}><Download className="h-4 w-4" /></Button>}
-              <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0" aria-label="Copy share link" onClick={() => { navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
+              {f.storage_path && <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 rounded-lg" aria-label="Download" onClick={() => download(f.storage_path!, f.name)}><Download className="h-4 w-4" /></Button>}
+              <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 rounded-lg" aria-label="Copy share link" onClick={() => { navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
                 <Copy className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>
+              <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 rounded-lg text-muted-foreground hover:text-destructive" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>
             </li>
           );
         })}</ul>}
