@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -49,6 +49,9 @@ function Content() {
   useEffect(() => { if (upload) input.current?.click(); }, [upload]);
   const [uploading, setUploading] = useState<{ name: string; size: number; step: string; pct: number } | null>(null);
   const [active, setActive] = useState<FileRow | null>(null);
+  const [renaming, setRenaming] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [savingName, setSavingName] = useState(false);
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
@@ -84,6 +87,20 @@ function Content() {
     }
     setUploading(null);
     if (input.current) input.current.value = "";
+    qc.invalidateQueries({ queryKey: ["files"] });
+  }
+
+  async function rename(f: FileRow) {
+    const name = newName.trim();
+    if (!name) { toast.error("Enter a file name"); return; }
+    if (name.length > 120) { toast.error("Name is too long"); return; }
+    setSavingName(true);
+    const { error } = await supabase.from("files").update({ name }).eq("id", f.id);
+    setSavingName(false);
+    if (error) { toast.error("Could not rename", { description: error.message }); return; }
+    toast.success("Renamed", { description: name });
+    setRenaming(false);
+    setActive(null);
     qc.invalidateQueries({ queryKey: ["files"] });
   }
 
@@ -197,7 +214,7 @@ function Content() {
       )}
 
       {/* File actions — bottom sheet */}
-      <Sheet open={!!active} onOpenChange={(o) => { if (!o) setActive(null); }}>
+      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); } }}>
         <SheetContent side="bottom" className="rounded-t-3xl px-2 pb-8 pt-3">
           {active && (
             <>
@@ -212,6 +229,24 @@ function Content() {
                   </div>
                 </div>
               </SheetHeader>
+              {renaming ? (
+                <div className="mt-1 px-4 pb-2">
+                  <label htmlFor="rename-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">New name</label>
+                  <input
+                    id="rename-input"
+                    autoFocus
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") rename(active); }}
+                    maxLength={120}
+                    className="mt-2 w-full rounded-xl border bg-background px-4 py-3 text-[15px] outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <div className="mt-3 flex gap-2">
+                    <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setRenaming(false)} disabled={savingName}>Cancel</Button>
+                    <Button className="flex-1 rounded-xl" onClick={() => rename(active)} disabled={savingName || !newName.trim()}>{savingName ? "Saving…" : "Save"}</Button>
+                  </div>
+                </div>
+              ) : (
               <div className="mt-1">
                 <Button variant="ghost" onClick={() => { setActive(null); toast.info(active.name, { description: fileMetadata(active, isInstalledApp()) }); }} className="flex h-auto w-full items-center justify-start gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium">
                   <Info className="h-5 w-5 text-muted-foreground" /> Details
@@ -221,6 +256,9 @@ function Content() {
                     <Download className="h-5 w-5 text-muted-foreground" /> Download
                   </button>
                 )}
+                <button type="button" onClick={() => { setNewName(active.name); setRenaming(true); }} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                  <Pencil className="h-5 w-5 text-muted-foreground" /> Rename
+                </button>
                 <button type="button" onClick={() => copyLink(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Copy className="h-5 w-5 text-muted-foreground" /> Copy link
                 </button>
@@ -231,6 +269,7 @@ function Content() {
                   <Trash2 className="h-5 w-5" /> Move to Trash
                 </button>
               </div>
+              )}
             </>
           )}
         </SheetContent>
