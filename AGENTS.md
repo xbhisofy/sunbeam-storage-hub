@@ -23,3 +23,5 @@
 - Preserve the existing distributed Android application ID when replacing the PWABuilder shell; an upgrade also requires compatible signing and a higher versionCode.
 
 - Share links use `site.shareUrl` (main domain, opens the app) and the dashboard uses `site.webUrl` (web subdomain); installed-app detection lives in src/lib/app-mode.ts so browsers get the Play Store page while the TWA plays files.
+
+- The VPS deployment uses a self-hosted backend (Docker in /opt/tanyora-backend, served at app.tanyora.com/backend) with storage on Cloudflare R2; the VPS .env overrides backend URLs at build time, so app code must keep using the generated client and never hardcode backend URLs.
