@@ -5,10 +5,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Eye, Link2, Download, Image as ImageIcon, FolderOpen, Upload } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { fileKind, formatSize } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/content")({
@@ -36,20 +37,33 @@ function ago(d: string) {
   return `${Math.floor(s / 86400)}d ago`;
 }
 
+type FileRow = {
+  id: string;
+  name: string;
+  file_type: string;
+  size: number;
+  views: number;
+  created_at: string;
+  storage_path: string | null;
+  slug: string;
+  source: string;
+};
+
 function Content() {
   const { kind, upload } = Route.useSearch();
   const qc = useQueryClient();
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => { if (upload) input.current?.click(); }, [upload]);
   const [uploading, setUploading] = useState<{ name: string; size: number; step: string; pct: number } | null>(null);
+  const [active, setActive] = useState<FileRow | null>(null);
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
     queryFn: async () => {
       const uid = await currentUserId();
-      if (!uid) return [];
+      if (!uid) return [] as FileRow[];
       const { data } = await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false });
-      return data ?? [];
+      return (data ?? []) as FileRow[];
     },
   });
 
@@ -80,16 +94,36 @@ function Content() {
     qc.invalidateQueries({ queryKey: ["files"] });
   }
 
-  async function remove(id: string, path: string | null) {
-    if (path) await supabase.storage.from("files").remove([path]);
-    await supabase.from("files").delete().eq("id", id);
+  async function remove(f: FileRow) {
+    setActive(null);
+    if (f.storage_path) await supabase.storage.from("files").remove([f.storage_path]);
+    await supabase.from("files").delete().eq("id", f.id);
     qc.invalidateQueries({ queryKey: ["files"] });
+    toast.success("Moved to trash", { description: f.name });
   }
 
-  async function download(path: string, name: string) {
-    const { data, error } = await supabase.storage.from("files").createSignedUrl(path, 300, { download: name });
+  async function download(f: FileRow) {
+    setActive(null);
+    if (!f.storage_path) return;
+    const { data, error } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 300, { download: f.name });
     if (error || !data) { toast.error("Could not download the file"); return; }
     window.location.href = data.signedUrl;
+  }
+
+  function copyLink(f: FileRow) {
+    setActive(null);
+    navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`);
+    toast.success("Link copied", { description: "Share it anywhere to get views" });
+  }
+
+  async function share(f: FileRow) {
+    const url = `${site.shareUrl}/s/${f.slug}`;
+    setActive(null);
+    if (navigator.share) {
+      try { await navigator.share({ title: f.name, url }); return; } catch { /* user cancelled */ }
+    }
+    navigator.clipboard.writeText(url);
+    toast.success("Link copied");
   }
 
   const shown = files.filter((f) => (!kind || f.file_type === kind));
@@ -125,47 +159,81 @@ function Content() {
         </div>
       )}
 
-      {/* File list */}
-      <div className="mt-5 overflow-hidden rounded-2xl border bg-card shadow-sm">
-        {shown.length === 0 ? (
-          <div className="px-6 py-14 text-center">
-            <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><FolderOpen className="h-8 w-8 text-primary" /></span>
-            <p className="mt-5 text-[15px] font-semibold">Your folder is empty</p>
-            <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">Tap the + button below to upload your first video, photo or document. Once it's here, tap copy to get a share link you can send to anyone.</p>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center justify-between border-b bg-muted/40 px-4 py-2.5">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{shown.length} {shown.length === 1 ? "item" : "items"}</p>
-            </div>
-            <ul className="divide-y">{shown.map((f) => {
-              const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;
-              const style = typeStyles[f.file_type] ?? typeStyles["other"];
-              return (
-                <li key={f.id} className="flex items-center gap-3 p-3.5 transition-colors hover:bg-muted/40">
-                  <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${style}`}><Icon className="h-5 w-5" /></span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{f.name}</p>
-                    <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${f.source === "converted" ? "bg-amber-500/10 text-amber-600 dark:text-amber-400" : "bg-primary/10 text-primary"}`}>{f.source === "converted" ? "Link" : "File"}</span>
-                      {f.source !== "converted" && <><span>·</span><span>{formatSize(f.size)}</span></>}
-                      <span>·</span>
-                      <span className="inline-flex items-center gap-0.5 tabular-nums"><Eye className="h-3 w-3" />{f.views}</span>
-                      <span>·</span>
-                      <span className="truncate">{ago(f.created_at)}</span>
-                    </div>
+      {/* File list — TeraBox-style cards */}
+      {shown.length === 0 ? (
+        <div className="mt-5 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
+          <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><FolderOpen className="h-8 w-8 text-primary" /></span>
+          <p className="mt-5 text-[15px] font-semibold">Your folder is empty</p>
+          <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">Tap the + button below to upload your first video, photo or document. Once it's here, tap the ⋮ menu to copy its share link.</p>
+        </div>
+      ) : (
+        <div className="mt-4 space-y-2.5">
+          <p className="px-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{shown.length} {shown.length === 1 ? "item" : "items"}</p>
+          {shown.map((f) => {
+            const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;
+            const style = typeStyles[f.file_type] ?? typeStyles["other"];
+            return (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setActive(f)}
+                className="flex w-full items-center gap-3 rounded-2xl border bg-card p-3.5 text-left shadow-sm transition-colors hover:bg-muted/40 active:bg-muted/60"
+              >
+                <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${style}`}><Icon className="h-5 w-5" /></span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold">{f.name}</span>
+                  <span className="mt-0.5 block text-xs text-muted-foreground">
+                    {f.storage_path ? `${formatSize(f.size)} · ` : ""}{ago(f.created_at)}
+                  </span>
+                </span>
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground" aria-hidden>
+                  <MoreVertical className="h-5 w-5" />
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* File actions — bottom sheet */}
+      <Sheet open={!!active} onOpenChange={(o) => { if (!o) setActive(null); }}>
+        <SheetContent side="bottom" className="rounded-t-3xl px-2 pb-8 pt-3">
+          {active && (
+            <>
+              <SheetHeader className="px-4 pb-2">
+                <div className="flex items-center gap-3">
+                  <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl ${typeStyles[active.file_type] ?? typeStyles["other"]}`}>
+                    {(() => { const I = icons[active.file_type as keyof typeof icons] ?? FileText; return <I className="h-5 w-5" />; })()}
+                  </span>
+                  <div className="min-w-0">
+                    <SheetTitle className="truncate text-left text-sm">{active.name}</SheetTitle>
+                    <p className="text-xs text-muted-foreground">{active.storage_path ? `${formatSize(active.size)} · ` : ""}{ago(active.created_at)}</p>
                   </div>
-                  {f.storage_path && <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 rounded-lg" aria-label="Download" onClick={() => download(f.storage_path!, f.name)}><Download className="h-4 w-4" /></Button>}
-                  <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 rounded-lg" aria-label="Copy share link" onClick={() => { navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`); toast.success("Link copied"); }}>
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="h-9 w-9 shrink-0 rounded-lg text-muted-foreground hover:text-destructive" aria-label="Delete" onClick={() => remove(f.id, f.storage_path)}><Trash2 className="h-4 w-4" /></Button>
-                </li>
-              );
-            })}</ul>
-          </>
-        )}
-      </div>
+                </div>
+              </SheetHeader>
+              <div className="mt-1">
+                <button type="button" onClick={() => { setActive(null); toast.info("Details", { description: `${active.name} · ${formatSize(active.size)} · ${active.views} views · uploaded ${new Date(active.created_at).toLocaleDateString()}` }); }} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                  <Info className="h-5 w-5 text-muted-foreground" /> Details
+                </button>
+                {active.storage_path && (
+                  <button type="button" onClick={() => download(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                    <Download className="h-5 w-5 text-muted-foreground" /> Download
+                  </button>
+                )}
+                <button type="button" onClick={() => copyLink(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                  <Copy className="h-5 w-5 text-muted-foreground" /> Copy link
+                </button>
+                <button type="button" onClick={() => share(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                  <Share2 className="h-5 w-5 text-muted-foreground" /> Share
+                </button>
+                <button type="button" onClick={() => remove(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium text-destructive transition-colors hover:bg-destructive/10 active:bg-destructive/15">
+                  <Trash2 className="h-5 w-5" /> Move to Trash
+                </button>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
