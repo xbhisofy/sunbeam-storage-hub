@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Hide app file views, standardize upload metadata, verify and update VPS.
 - [x] Test main/subdomain split using two Lovable addresses until tanyora.com is bought
 - [x] Fix mobile responsiveness on landing + all signed-in screens
 - [x] Upgrade landing page design

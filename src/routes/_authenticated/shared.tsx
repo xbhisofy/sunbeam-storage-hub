@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { currentUserId } from "@/lib/session";
 import { pageHead, site } from "@/lib/site";
-import { formatSize } from "@/lib/format";
+import { formatSize, formatFileDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/shared")({
   head: () => pageHead("Shared files", "Files and links you have shared.", undefined, true),
@@ -78,7 +78,7 @@ function Shared() {
           <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${typeStyles[f.file_type] ?? typeStyles["other"]}`}><Icon className="h-5 w-5" /></span>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-semibold">{f.name}</span>
-            <span className="mt-0.5 block text-xs text-muted-foreground">{f.storage_path ? `${formatSize(f.size)} · ` : ""}{new Date(f.created_at).toLocaleDateString()}</span>
+            <span className="mt-0.5 block text-xs text-muted-foreground">{f.storage_path ? `${formatSize(f.size)} · ` : ""}{formatFileDate(f.created_at)}</span>
           </span>
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground" aria-hidden><MoreVertical className="h-5 w-5" /></span>
         </button>;
