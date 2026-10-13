@@ -87,7 +87,7 @@ function Content() {
         owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
       if (e2) toast.error("Upload failed", { description: e2.message });
-      else toast.success("Upload complete", { description: `${f.name} is ready to share` });
+      else toast.success(`${f.name} uploaded`);
     }
     setUploading(null);
     if (input.current) input.current.value = "";
