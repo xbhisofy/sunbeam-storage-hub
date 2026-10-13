@@ -99,10 +99,6 @@ function Shell() {
             <span><span className="block text-[15px] font-semibold">{item.label}</span><span className="block text-xs text-muted-foreground">{item.hint}</span></span>
           </button>)}
       </div>
-      <Link to="/content" search={{ tab: "convert" }} onClick={() => setUpload(false)} className="mt-3 flex items-center gap-3 rounded-2xl bg-accent/50 p-4 active:bg-accent">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground"><Link2 className="h-5 w-5" /></span>
-        <span className="min-w-0"><span className="block text-[15px] font-semibold">Convert a link</span><span className="block text-xs text-muted-foreground">Turn any URL into a share link</span></span>
-      </Link>
     </SheetContent></Sheet>
   </div>;
 }
