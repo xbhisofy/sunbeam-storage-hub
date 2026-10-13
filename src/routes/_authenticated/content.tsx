@@ -294,13 +294,10 @@ function Content() {
                   <Pencil className="h-5 w-5 text-muted-foreground" /> Rename
                 </button>
                 <button type="button" onClick={() => setPickingExpiry(true)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
-                  <Link2 className="h-5 w-5 text-muted-foreground" /> Share link
+                  <Share2 className="h-5 w-5 text-muted-foreground" /> Share
                 </button>
                 <button type="button" onClick={() => copyLink(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Copy className="h-5 w-5 text-muted-foreground" /> Copy link
-                </button>
-                <button type="button" onClick={() => share(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
-                  <Share2 className="h-5 w-5 text-muted-foreground" /> Share
                 </button>
                 <button type="button" onClick={() => remove(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium text-destructive transition-colors hover:bg-destructive/10 active:bg-destructive/15">
                   <Trash2 className="h-5 w-5" /> Move to Trash
