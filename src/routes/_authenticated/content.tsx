@@ -229,7 +229,7 @@ function Content() {
           </div>
         ) : <ul className="divide-y">{shown.map((f) => {
           const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;
-          const style = typeStyles[f.file_type] ?? typeStyles.other;
+          const style = typeStyles[f.file_type] ?? typeStyles["other"];
           return (
             <li key={f.id} className="flex items-center gap-3 p-3.5 transition-colors hover:bg-muted/40">
               <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${style}`}><Icon className="h-5 w-5" /></span>
