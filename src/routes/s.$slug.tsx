@@ -73,6 +73,11 @@ function SharePage() {
           </div>
         ) : isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
           <p className="text-center text-muted-foreground">This file doesn't exist or was deleted.</p>
+        ) : "expired" in data ? (
+          <div className="rounded-2xl border bg-card p-8 text-center">
+            <h1 className="text-xl font-semibold">This link has expired</h1>
+            <p className="mt-2 text-sm text-muted-foreground">The owner set a time limit on this share link, and it has run out. Ask them to generate a new link.</p>
+          </div>
         ) : !open ? (
           <div className="rounded-2xl border bg-card p-6 text-center">
             {data.header_text && <p className="mb-4 whitespace-pre-line text-sm">{data.header_text}</p>}
