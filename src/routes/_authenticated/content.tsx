@@ -145,27 +145,19 @@ function Content() {
     const url = `${site.shareUrl}/s/${f.slug}`;
     setPickingExpiry(false);
     setActive(null);
-    try { await navigator.clipboard.writeText(url); } catch { /* clipboard may be unavailable */ }
-    toast.success("Link ready — copied", { description: hours === null ? "This link never expires." : `This link stops working after ${label}.` });
     qc.invalidateQueries({ queryKey: ["files"] });
-  }
-
-  async function share(f: FileRow) {
-    const url = `${site.shareUrl}/s/${f.slug}`;
+    toast.success("Link ready", { description: hours === null ? "This link never expires." : `This link stops working after ${label}.` });
     if (navigator.share) {
       try {
         await navigator.share({ title: f.name, url });
-        setActive(null);
         return;
       } catch (e) {
-        // User closed the device share sheet — just close our menu too.
-        if (e instanceof DOMException && e.name === "AbortError") { setActive(null); return; }
+        // User closed the device share sheet — nothing more to do.
+        if (e instanceof DOMException && e.name === "AbortError") return;
         // Any other failure falls through to the copy fallback below.
       }
     }
-    setActive(null);
-    navigator.clipboard.writeText(url);
-    toast.success("Link copied");
+    try { await navigator.clipboard.writeText(url); toast.success("Link copied"); } catch { /* clipboard may be unavailable */ }
   }
 
   const shown = files.filter((f) => (!kind || f.file_type === kind));
