@@ -12,7 +12,7 @@ export function isInstalledApp(): boolean {
   return yes;
 }
 
-const MAIN_ONLY = ["/privacy", "/terms", "/community-guidelines", "/copyright", "/contact", "/delete-account"];
+const MAIN_ONLY = ["/privacy", "/terms", "/community-guidelines", "/copyright", "/contact", "/delete-account", "/acceptable-use", "/content-reporting", "/child-safety", "/data-retention", "/security", "/law-enforcement", "/grievance", "/cookies", "/refunds", "/faq"];
 /** Where a path belongs when main (landing + share links) and web (login/dashboard) hosts differ. null = stay. */
 export function hostRedirect(host: string, path: string, mainUrl: string, webUrl: string): string | null {
   const main = new URL(mainUrl).host, web = new URL(webUrl).host;
