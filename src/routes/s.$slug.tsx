@@ -31,8 +31,9 @@ function SharePage() {
     enabled: isApp,
     staleTime: 60_000,
     queryFn: async () => {
-      const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text").eq("slug", slug).maybeSingle();
+      const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text,expires_at").eq("slug", slug).maybeSingle();
       if (!f) return null;
+      if (f.expires_at && new Date(f.expires_at).getTime() < Date.now()) return { expired: true as const };
       if (!f.storage_path) return { ...f, url: f.external_url ?? "" };
       const { data: s } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 60 * 60 * 3);
       return { ...f, url: s?.signedUrl ?? "" };

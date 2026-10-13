@@ -71,6 +71,13 @@
       "when": 1791930054665,
       "tag": "0009_owner_update_files_rename",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791930209830,
+      "tag": "0010_files_expires_at",
+      "breakpoints": true
     }
   ]
 }
