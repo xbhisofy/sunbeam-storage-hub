@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useInstalledApp, WEB_ONLY_PATHS } from "@/lib/app-mode";
 import { currentUserId } from "@/lib/session";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2, Crown, Video, Music, FileText, Image as ImageIcon, Share2 } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Crown, Video, Music, FileText, Image as ImageIcon, Share2 } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
