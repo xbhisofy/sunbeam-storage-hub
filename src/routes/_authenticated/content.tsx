@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -49,6 +49,9 @@ function Content() {
   useEffect(() => { if (upload) input.current?.click(); }, [upload]);
   const [uploading, setUploading] = useState<{ name: string; size: number; step: string; pct: number } | null>(null);
   const [active, setActive] = useState<FileRow | null>(null);
+  const [renaming, setRenaming] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [savingName, setSavingName] = useState(false);
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
@@ -84,6 +87,20 @@ function Content() {
     }
     setUploading(null);
     if (input.current) input.current.value = "";
+    qc.invalidateQueries({ queryKey: ["files"] });
+  }
+
+  async function rename(f: FileRow) {
+    const name = newName.trim();
+    if (!name) { toast.error("Enter a file name"); return; }
+    if (name.length > 120) { toast.error("Name is too long"); return; }
+    setSavingName(true);
+    const { error } = await supabase.from("files").update({ name }).eq("id", f.id);
+    setSavingName(false);
+    if (error) { toast.error("Could not rename", { description: error.message }); return; }
+    toast.success("Renamed", { description: name });
+    setRenaming(false);
+    setActive(null);
     qc.invalidateQueries({ queryKey: ["files"] });
   }
 
