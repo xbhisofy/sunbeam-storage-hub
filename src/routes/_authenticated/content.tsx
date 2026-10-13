@@ -41,7 +41,7 @@ function Content() {
   const qc = useQueryClient();
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => { if (upload) input.current?.click(); }, [upload]);
-  const [uploading, setUploading] = useState<{ name: string; pct: number } | null>(null);
+  const [uploading, setUploading] = useState<{ name: string; size: number; step: string; pct: number } | null>(null);
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
@@ -62,16 +62,18 @@ function Content() {
       const f = arr[i];
       if (!f) continue;
       if (f.size > 50 * 1024 * 1024) { toast.error("File too large", { description: `${f.name} is over the 50 MB limit` }); continue; }
-      setUploading({ name: arr.length > 1 ? `${f.name} (${i + 1}/${arr.length})` : f.name, pct: Math.round((i / arr.length) * 100) + 10 });
-      const tid = toast.loading(`Uploading ${f.name}`, { description: `${formatSize(f.size)} · please keep the app open` });
+      setUploading({ name: f.name, size: f.size, step: arr.length > 1 ? `${i + 1} of ${arr.length}` : "", pct: 5 });
+      const tick = setInterval(() => setUploading((u) => (u ? { ...u, pct: Math.min(92, u.pct + (95 - u.pct) * 0.08) } : u)), 300);
       const path = `${uid}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
       const { error } = await supabase.storage.from("files").upload(path, f, { contentType: f.type || "application/octet-stream" });
-      if (error) { toast.error("Upload failed", { id: tid, description: error.message }); continue; }
+      clearInterval(tick);
+      if (error) { toast.error("Upload failed", { description: error.message }); continue; }
+      setUploading((u) => (u ? { ...u, pct: 100 } : u));
       const { error: e2 } = await supabase.from("files").insert({
         owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
-      if (e2) toast.error("Upload failed", { id: tid, description: e2.message });
-      else toast.success("Upload complete", { id: tid, description: `${f.name} is ready to share` });
+      if (e2) toast.error("Upload failed", { description: e2.message });
+      else toast.success("Upload complete", { description: `${f.name} is ready to share` });
     }
     setUploading(null);
     if (input.current) input.current.value = "";
