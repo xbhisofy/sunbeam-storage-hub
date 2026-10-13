@@ -9,6 +9,7 @@ import { pageHead } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useInstalledApp } from "@/lib/app-mode";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: z.object({ mode: z.enum(["login", "signup"]).optional(), ref: z.string().max(20).optional() }),
@@ -29,6 +30,7 @@ function friendly(msg: string) {
 function AuthPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const app = useInstalledApp();
   const [mode, setMode] = useState<"login" | "signup">(search.mode ?? "login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -70,13 +72,23 @@ function AuthPage() {
     <div className="grid min-h-dvh bg-background lg:grid-cols-2">
       <aside className="landing landing-glow hidden flex-col justify-between p-12 lg:flex">
         <Brand />
-        <div>
-          <h2 className="text-4xl font-extrabold leading-tight">Upload once.<br /><span className="landing-text">Earn from every view.</span></h2>
-          <p className="mt-4 max-w-md text-muted-foreground">Share videos, audio and PDFs with a single link. Track views, referrals and payouts from one dashboard.</p>
-          <ul className="mt-8 space-y-3 text-sm">
-            <li>$3.00 per 1,000 views</li><li>10% referral commission</li><li>Withdraw from $5 via UPI, PayPal or bank</li>
-          </ul>
-        </div>
+        {app ? (
+          <div>
+            <h2 className="text-4xl font-extrabold leading-tight">Upload once.<br /><span className="landing-text">Share anywhere.</span></h2>
+            <p className="mt-4 max-w-md text-muted-foreground">Keep your videos, photos and documents in one place and send a single link to anyone.</p>
+            <ul className="mt-8 space-y-3 text-sm">
+              <li>Upload videos, photos and documents</li><li>One simple share link for every file</li><li>Download your files anytime</li>
+            </ul>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-4xl font-extrabold leading-tight">Upload once.<br /><span className="landing-text">Earn from every view.</span></h2>
+            <p className="mt-4 max-w-md text-muted-foreground">Share videos, audio and PDFs with a single link. Track views, referrals and payouts from one dashboard.</p>
+            <ul className="mt-8 space-y-3 text-sm">
+              <li>$3.00 per 1,000 views</li><li>10% referral commission</li><li>Withdraw from $5 via UPI, PayPal or bank</li>
+            </ul>
+          </div>
+        )}
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Tanyora</p>
       </aside>
       <div className="grid place-items-center bg-background px-5 py-10">
@@ -93,7 +105,7 @@ function AuthPage() {
               {(["login", "signup"] as const).map((m) => <button key={m} type="button" onClick={() => { setErr(null); setMode(m); }} className={`h-10 rounded-lg transition ${mode === m ? "bg-primary text-primary-foreground shadow" : "text-muted-foreground"}`}>{m === "login" ? "Log in" : "Sign up"}</button>)}
             </div>
             <h1 className="text-2xl font-bold">{mode === "login" ? "Welcome back" : "Create your account"}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{mode === "login" ? "Log in to manage your files and earnings" : "Start sharing and earning in under a minute"}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{mode === "login" ? (app ? "Log in to manage your files" : "Log in to manage your files and earnings") : (app ? "Create your account in under a minute" : "Start sharing and earning in under a minute")}</p>
             {search.ref && mode === "signup" && <p className="mt-2 rounded-lg bg-accent px-3 py-2 text-sm text-accent-foreground">Invite code: {search.ref}</p>}
 
             <form onSubmit={submit} className="mt-6 space-y-3">
