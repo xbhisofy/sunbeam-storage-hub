@@ -60,19 +60,22 @@ function Shell() {
     navigate({ to: "/auth", replace: true });
   }
   const title = [...nav, ...appNav].find(n => n.to === pathname)?.label ?? "Admin";
-  const row = "relative flex h-11 w-full items-center gap-3 rounded-xl px-3 text-[15px] font-medium text-foreground/80 outline-none transition-colors active:bg-accent/60 focus-visible:ring-2 focus-visible:ring-ring [@media(hover:hover)]:hover:bg-accent/50";
-  const active = "data-[status=active]:bg-primary/10 data-[status=active]:font-semibold data-[status=active]:text-primary data-[status=active]:before:absolute data-[status=active]:before:left-0 data-[status=active]:before:top-2.5 data-[status=active]:before:h-6 data-[status=active]:before:w-1 data-[status=active]:before:rounded-r-full data-[status=active]:before:bg-primary";
-  const menu = <nav className="flex flex-col p-3" aria-label="Account navigation">
+  const row = "group relative flex h-12 w-full items-center gap-3 rounded-xl px-2 text-[15px] font-medium text-foreground/85 outline-none transition-colors active:bg-accent/60 focus-visible:ring-2 focus-visible:ring-ring [@media(hover:hover)]:hover:bg-accent/50";
+  const active = "data-[status=active]:bg-primary/10 data-[status=active]:font-semibold data-[status=active]:text-primary";
+  const tile = "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-data-[status=active]:bg-primary group-data-[status=active]:text-primary-foreground";
+  const menu = <nav className="flex flex-1 flex-col p-3" aria-label="Account navigation">
     <p className="px-3 pb-1.5 pt-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Menu</p>
-    <div className="space-y-0.5">
-      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><n.icon className="h-5 w-5 shrink-0" />{n.label}</Link>)}
+    <div className="space-y-1">
+      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><n.icon className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>{n.label}</Link>)}
     </div>
-    <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
-    <div className="space-y-0.5">
-      <Link to="/content" search={{ tab: "convert" }} activeOptions={{ exact: true, includeSearch: true }} onClick={() => setDrawer(false)} className={row}><Link2 className="h-5 w-5 shrink-0" />Convert Link</Link>
-      {isAdmin && <Link to="/admin" onClick={() => setDrawer(false)} className={`${row} ${active}`}><Shield className="h-5 w-5 shrink-0" />Admin</Link>}
-    </div>
-    <div className="mt-4 border-t pt-3"><button type="button" className={`${row} text-destructive`} onClick={signOut} disabled={leaving}>{leaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}Log out</button></div>
+    {(!app || isAdmin) && <>
+      <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
+      <div className="space-y-1">
+        {!app && <Link to="/content" search={{ tab: "convert" }} activeOptions={{ exact: true, includeSearch: true }} onClick={() => setDrawer(false)} className={row}><span className={tile}><Link2 className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>Convert Link</Link>}
+        {isAdmin && <Link to="/admin" onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><Shield className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>Admin</Link>}
+      </div>
+    </>}
+    <div className="mt-auto border-t pt-3"><button type="button" className={`${row} text-destructive`} onClick={signOut} disabled={leaving}><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">{leaving ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <LogOut className="h-[18px] w-[18px]" strokeWidth={2.2} />}</span>Log out</button></div>
   </nav>;
   return <div className="app-shell flex min-h-dvh bg-background">
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card md:flex"><div className="p-6"><Brand /></div>{menu}<div className="mt-auto border-t p-5"><p className="truncate font-medium">{p?.display_name}</p><p className="truncate text-sm text-muted-foreground">{p?.email}</p></div></aside>
@@ -85,7 +88,7 @@ function Shell() {
         <Button className="absolute left-1/2 top-2 h-14 w-14 -translate-x-1/2 rounded-full" size="icon" aria-label="Add files" onClick={() => setUpload(true)}><Plus className="h-7 w-7" /></Button>
       </nav>
     </div>
-    <Sheet open={drawer} onOpenChange={setDrawer}><SheetContent side="left" onOpenAutoFocus={(e) => e.preventDefault()} className="w-[80vw] max-w-[300px] overflow-y-auto p-0"><div className="flex items-center gap-2.5 border-b bg-accent/40 px-3.5 py-3 pr-11"><img src={logo} alt="" width={32} height={32} className="h-8 w-8 shrink-0 rounded-lg object-cover" decoding="async" /><div className="min-w-0"><SheetTitle className="truncate text-[15px] font-semibold leading-tight">{p?.display_name ?? "Tanyora"}</SheetTitle><SheetDescription className="truncate text-[11px] leading-tight text-muted-foreground">{p?.email}</SheetDescription></div></div>{menu}</SheetContent></Sheet>
+    <Sheet open={drawer} onOpenChange={setDrawer}><SheetContent side="left" onOpenAutoFocus={(e) => e.preventDefault()} className="flex w-[80vw] max-w-[300px] flex-col overflow-y-auto p-0"><div className="flex items-center gap-2.5 border-b bg-accent/40 px-3.5 py-3 pr-11"><img src={logo} alt="" width={32} height={32} className="h-8 w-8 shrink-0 rounded-lg object-cover" decoding="async" /><div className="min-w-0"><SheetTitle className="truncate text-[15px] font-semibold leading-tight">{p?.display_name ?? "Tanyora"}</SheetTitle><SheetDescription className="truncate text-[11px] leading-tight text-muted-foreground">{p?.email}</SheetDescription></div></div>{menu}</SheetContent></Sheet>
     <Sheet open={upload} onOpenChange={setUpload}><SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-3xl border-0 px-5 pb-8 pt-3">
       <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-muted" />
       <SheetTitle className="text-lg font-bold">Add to your files</SheetTitle>
