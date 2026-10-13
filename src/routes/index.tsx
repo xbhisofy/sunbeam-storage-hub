@@ -71,8 +71,8 @@ function Home() {
             <a href="#app" className="hover:text-foreground">Why Tanyora</a>
           </nav>
           <div className="flex items-center gap-1 sm:gap-2">
-            <Button variant="ghost" asChild className="hidden hover:bg-accent hover:text-foreground sm:inline-flex"><Link to="/auth">Log in</Link></Button>
-            <Button asChild className="landing-shadow rounded-full px-5"><Link to="/auth" search={{ mode: "signup" }}>Get Started</Link></Button>
+            <Button variant="ghost" asChild className="hidden hover:bg-accent hover:text-foreground sm:inline-flex"><a href={`${site.webUrl}/auth`}>Log in</a></Button>
+            <Button asChild className="landing-shadow rounded-full px-5"><a href={`${site.webUrl}/auth?mode=signup`}>Get Started</a></Button>
           </div>
         </div>
       </header>
@@ -84,7 +84,7 @@ function Home() {
             <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">Turn your content into <span className="landing-text block">Passive Income.</span></h1>
             <p className="mt-6 max-w-lg text-base text-muted-foreground sm:text-lg">Upload videos, audio and PDFs, share your link anywhere, and earn every time someone watches it in the Tanyora app.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><Link to="/auth" search={{ mode: "signup" }}>Get Started <ArrowRight className="h-4 w-4" /></Link></Button>
+              <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><a href={`${site.webUrl}/auth?mode=signup`}>Get Started <ArrowRight className="h-4 w-4" /></a></Button>
               <Button size="lg" variant="outline" asChild className="h-12 rounded-full border-primary/40 bg-transparent px-8 text-accent-foreground hover:bg-accent"><a href="#rates">View Rates</a></Button>
             </div>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
@@ -186,7 +186,7 @@ function Home() {
         </div>
         <div className="landing-glow mt-12 flex flex-col items-center gap-5 rounded-3xl border p-8 sm:p-12 text-center">
           <h3 className="text-3xl font-bold">Start earning today</h3>
-          <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><Link to="/auth" search={{ mode: "signup" }}>Create free account <ArrowRight className="h-4 w-4" /></Link></Button>
+          <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><a href={`${site.webUrl}/auth?mode=signup`}>Create free account <ArrowRight className="h-4 w-4" /></a></Button>
         </div>
       </section>
       <LegalFooter />
