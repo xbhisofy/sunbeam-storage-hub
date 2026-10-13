@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useInstalledApp, WEB_ONLY_PATHS } from "@/lib/app-mode";
 import { currentUserId } from "@/lib/session";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Link2, Crown, Video, Music, FileText, Image as ImageIcon, Share2 } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Cloud, Upload, Crown, Video, Music, FileText, Image as ImageIcon, Share2 } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
@@ -71,7 +71,6 @@ function Shell() {
     {(!app || isAdmin) && <>
       <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
       <div className="space-y-1">
-        {!app && <Link to="/content" search={{ tab: "convert" }} activeOptions={{ exact: true, includeSearch: true }} onClick={() => setDrawer(false)} className={row}><span className={tile}><Link2 className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>Convert Link</Link>}
         {isAdmin && <Link to="/admin" onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><Shield className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>Admin</Link>}
       </div>
     </>}
@@ -100,10 +99,6 @@ function Shell() {
             <span><span className="block text-[15px] font-semibold">{item.label}</span><span className="block text-xs text-muted-foreground">{item.hint}</span></span>
           </button>)}
       </div>
-      <Link to="/content" search={{ tab: "convert" }} onClick={() => setUpload(false)} className="mt-3 flex items-center gap-3 rounded-2xl bg-accent/50 p-4 active:bg-accent">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground"><Link2 className="h-5 w-5" /></span>
-        <span className="min-w-0"><span className="block text-[15px] font-semibold">Convert a link</span><span className="block text-xs text-muted-foreground">Turn any URL into a share link</span></span>
-      </Link>
     </SheetContent></Sheet>
   </div>;
 }
