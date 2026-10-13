@@ -9,7 +9,7 @@ import { currentUserId } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { useProfile } from "./route";
 import { money, formatSize } from "@/lib/format";
-export const Route = createFileRoute("/_authenticated/dashboard")({ head: () => pageHead("Home", "Your Tanyora files, storage and earnings.", undefined, true), component: Dashboard });
+export const Route = createFileRoute("/_authenticated/dashboard")({ head: () => pageHead("Home", "Your Tanyora files and storage.", undefined, true), component: Dashboard });
 function Dashboard() {
   const { data: p } = useProfile();
   const app = useInstalledApp();
