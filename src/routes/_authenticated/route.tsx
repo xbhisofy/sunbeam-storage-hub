@@ -60,11 +60,19 @@ function Shell() {
     navigate({ to: "/auth", replace: true });
   }
   const title = [...nav, ...appNav].find(n => n.to === pathname)?.label ?? "Admin";
-  const menu = <nav className="space-y-0.5 p-3" aria-label="Account navigation">
-    {items.map(n => <Button key={n.to} variant="ghost" asChild className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium"><Link to={n.to} onClick={() => setDrawer(false)} className="data-[status=active]:bg-accent data-[status=active]:text-accent-foreground"><n.icon className="h-5 w-5" />{n.label}</Link></Button>)}
-    <Button variant="ghost" asChild className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium"><Link to="/content" search={{ tab: "convert" }} onClick={() => setDrawer(false)}><Link2 className="h-5 w-5" />Convert Link</Link></Button>
-    {isAdmin && <Button variant="ghost" asChild className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium"><Link to="/admin" onClick={() => setDrawer(false)}><Shield className="h-5 w-5" />Admin</Link></Button>}
-    <div className="mt-2 border-t pt-2"><Button variant="ghost" className="h-11 w-full justify-start gap-3 rounded-xl px-3 text-[15px] font-medium text-destructive" onClick={signOut} disabled={leaving}>{leaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}Log out</Button></div>
+  const row = "relative flex h-11 w-full items-center gap-3 rounded-xl px-3 text-[15px] font-medium text-foreground/80 outline-none transition-colors active:bg-accent/60 focus-visible:ring-2 focus-visible:ring-ring [@media(hover:hover)]:hover:bg-accent/50";
+  const active = "data-[status=active]:bg-primary/10 data-[status=active]:font-semibold data-[status=active]:text-primary data-[status=active]:before:absolute data-[status=active]:before:left-0 data-[status=active]:before:top-2.5 data-[status=active]:before:h-6 data-[status=active]:before:w-1 data-[status=active]:before:rounded-r-full data-[status=active]:before:bg-primary";
+  const menu = <nav className="flex flex-col p-3" aria-label="Account navigation">
+    <p className="px-3 pb-1.5 pt-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Menu</p>
+    <div className="space-y-0.5">
+      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><n.icon className="h-5 w-5 shrink-0" />{n.label}</Link>)}
+    </div>
+    <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
+    <div className="space-y-0.5">
+      <Link to="/content" search={{ tab: "convert" }} activeOptions={{ exact: true, includeSearch: true }} onClick={() => setDrawer(false)} className={row}><Link2 className="h-5 w-5 shrink-0" />Convert Link</Link>
+      {isAdmin && <Link to="/admin" onClick={() => setDrawer(false)} className={`${row} ${active}`}><Shield className="h-5 w-5 shrink-0" />Admin</Link>}
+    </div>
+    <div className="mt-4 border-t pt-3"><button type="button" className={`${row} text-destructive`} onClick={signOut} disabled={leaving}>{leaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}Log out</button></div>
   </nav>;
   return <div className="app-shell flex min-h-dvh bg-background">
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card md:flex"><div className="p-6"><Brand /></div>{menu}<div className="mt-auto border-t p-5"><p className="truncate font-medium">{p?.display_name}</p><p className="truncate text-sm text-muted-foreground">{p?.email}</p></div></aside>
