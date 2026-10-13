@@ -11,12 +11,22 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AcceptableUseRouteImport } from './routes/acceptable-use'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ChildSafetyRouteImport } from './routes/child-safety'
 import { Route as CommunityGuidelinesRouteImport } from './routes/community-guidelines'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContentReportingRouteImport } from './routes/content-reporting'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as CopyrightRouteImport } from './routes/copyright'
+import { Route as DataRetentionRouteImport } from './routes/data-retention'
 import { Route as DeleteAccountRouteImport } from './routes/delete-account'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as GrievanceRouteImport } from './routes/grievance'
+import { Route as LawEnforcementRouteImport } from './routes/law-enforcement'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RefundsRouteImport } from './routes/refunds'
+import { Route as SecurityRouteImport } from './routes/security'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedContentRouteImport } from './routes/_authenticated/content'
@@ -38,9 +48,19 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcceptableUseRoute = AcceptableUseRouteImport.update({
+  id: '/acceptable-use',
+  path: '/acceptable-use',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChildSafetyRoute = ChildSafetyRouteImport.update({
+  id: '/child-safety',
+  path: '/child-safety',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunityGuidelinesRoute = CommunityGuidelinesRouteImport.update({
@@ -53,9 +73,24 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContentReportingRoute = ContentReportingRouteImport.update({
+  id: '/content-reporting',
+  path: '/content-reporting',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CopyrightRoute = CopyrightRouteImport.update({
   id: '/copyright',
   path: '/copyright',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataRetentionRoute = DataRetentionRouteImport.update({
+  id: '/data-retention',
+  path: '/data-retention',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeleteAccountRoute = DeleteAccountRouteImport.update({
@@ -63,9 +98,34 @@ const DeleteAccountRoute = DeleteAccountRouteImport.update({
   path: '/delete-account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GrievanceRoute = GrievanceRouteImport.update({
+  id: '/grievance',
+  path: '/grievance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LawEnforcementRoute = LawEnforcementRouteImport.update({
+  id: '/law-enforcement',
+  path: '/law-enforcement',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundsRoute = RefundsRouteImport.update({
+  id: '/refunds',
+  path: '/refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -126,12 +186,22 @@ const ApiPublicDeleteAccountRoute = ApiPublicDeleteAccountRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acceptable-use': typeof AcceptableUseRoute
   '/auth': typeof AuthRoute
+  '/child-safety': typeof ChildSafetyRoute
   '/community-guidelines': typeof CommunityGuidelinesRoute
   '/contact': typeof ContactRoute
+  '/content-reporting': typeof ContentReportingRoute
+  '/cookies': typeof CookiesRoute
   '/copyright': typeof CopyrightRoute
+  '/data-retention': typeof DataRetentionRoute
   '/delete-account': typeof DeleteAccountRoute
+  '/faq': typeof FaqRoute
+  '/grievance': typeof GrievanceRoute
+  '/law-enforcement': typeof LawEnforcementRoute
   '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/content': typeof AuthenticatedContentRoute
@@ -146,12 +216,22 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acceptable-use': typeof AcceptableUseRoute
   '/auth': typeof AuthRoute
+  '/child-safety': typeof ChildSafetyRoute
   '/community-guidelines': typeof CommunityGuidelinesRoute
   '/contact': typeof ContactRoute
+  '/content-reporting': typeof ContentReportingRoute
+  '/cookies': typeof CookiesRoute
   '/copyright': typeof CopyrightRoute
+  '/data-retention': typeof DataRetentionRoute
   '/delete-account': typeof DeleteAccountRoute
+  '/faq': typeof FaqRoute
+  '/grievance': typeof GrievanceRoute
+  '/law-enforcement': typeof LawEnforcementRoute
   '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/content': typeof AuthenticatedContentRoute
@@ -168,12 +248,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/acceptable-use': typeof AcceptableUseRoute
   '/auth': typeof AuthRoute
+  '/child-safety': typeof ChildSafetyRoute
   '/community-guidelines': typeof CommunityGuidelinesRoute
   '/contact': typeof ContactRoute
+  '/content-reporting': typeof ContentReportingRoute
+  '/cookies': typeof CookiesRoute
   '/copyright': typeof CopyrightRoute
+  '/data-retention': typeof DataRetentionRoute
   '/delete-account': typeof DeleteAccountRoute
+  '/faq': typeof FaqRoute
+  '/grievance': typeof GrievanceRoute
+  '/law-enforcement': typeof LawEnforcementRoute
   '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/content': typeof AuthenticatedContentRoute
@@ -190,12 +280,22 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/acceptable-use'
     | '/auth'
+    | '/child-safety'
     | '/community-guidelines'
     | '/contact'
+    | '/content-reporting'
+    | '/cookies'
     | '/copyright'
+    | '/data-retention'
     | '/delete-account'
+    | '/faq'
+    | '/grievance'
+    | '/law-enforcement'
     | '/privacy'
+    | '/refunds'
+    | '/security'
     | '/terms'
     | '/admin'
     | '/content'
@@ -210,12 +310,22 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/acceptable-use'
     | '/auth'
+    | '/child-safety'
     | '/community-guidelines'
     | '/contact'
+    | '/content-reporting'
+    | '/cookies'
     | '/copyright'
+    | '/data-retention'
     | '/delete-account'
+    | '/faq'
+    | '/grievance'
+    | '/law-enforcement'
     | '/privacy'
+    | '/refunds'
+    | '/security'
     | '/terms'
     | '/admin'
     | '/content'
@@ -231,12 +341,22 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/acceptable-use'
     | '/auth'
+    | '/child-safety'
     | '/community-guidelines'
     | '/contact'
+    | '/content-reporting'
+    | '/cookies'
     | '/copyright'
+    | '/data-retention'
     | '/delete-account'
+    | '/faq'
+    | '/grievance'
+    | '/law-enforcement'
     | '/privacy'
+    | '/refunds'
+    | '/security'
     | '/terms'
     | '/_authenticated/admin'
     | '/_authenticated/content'
@@ -253,12 +373,22 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AcceptableUseRoute: typeof AcceptableUseRoute
   AuthRoute: typeof AuthRoute
+  ChildSafetyRoute: typeof ChildSafetyRoute
   CommunityGuidelinesRoute: typeof CommunityGuidelinesRoute
   ContactRoute: typeof ContactRoute
+  ContentReportingRoute: typeof ContentReportingRoute
+  CookiesRoute: typeof CookiesRoute
   CopyrightRoute: typeof CopyrightRoute
+  DataRetentionRoute: typeof DataRetentionRoute
   DeleteAccountRoute: typeof DeleteAccountRoute
+  FaqRoute: typeof FaqRoute
+  GrievanceRoute: typeof GrievanceRoute
+  LawEnforcementRoute: typeof LawEnforcementRoute
   PrivacyRoute: typeof PrivacyRoute
+  RefundsRoute: typeof RefundsRoute
+  SecurityRoute: typeof SecurityRoute
   TermsRoute: typeof TermsRoute
   SSlugRoute: typeof SSlugRoute
   ApiPublicDeleteAccountRoute: typeof ApiPublicDeleteAccountRoute
@@ -280,11 +410,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/acceptable-use': {
+      id: '/acceptable-use'
+      path: '/acceptable-use'
+      fullPath: '/acceptable-use'
+      preLoaderRoute: typeof AcceptableUseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/child-safety': {
+      id: '/child-safety'
+      path: '/child-safety'
+      fullPath: '/child-safety'
+      preLoaderRoute: typeof ChildSafetyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/community-guidelines': {
@@ -301,11 +445,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/content-reporting': {
+      id: '/content-reporting'
+      path: '/content-reporting'
+      fullPath: '/content-reporting'
+      preLoaderRoute: typeof ContentReportingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/copyright': {
       id: '/copyright'
       path: '/copyright'
       fullPath: '/copyright'
       preLoaderRoute: typeof CopyrightRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-retention': {
+      id: '/data-retention'
+      path: '/data-retention'
+      fullPath: '/data-retention'
+      preLoaderRoute: typeof DataRetentionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/delete-account': {
@@ -315,11 +480,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeleteAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grievance': {
+      id: '/grievance'
+      path: '/grievance'
+      fullPath: '/grievance'
+      preLoaderRoute: typeof GrievanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/law-enforcement': {
+      id: '/law-enforcement'
+      path: '/law-enforcement'
+      fullPath: '/law-enforcement'
+      preLoaderRoute: typeof LawEnforcementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refunds': {
+      id: '/refunds'
+      path: '/refunds'
+      fullPath: '/refunds'
+      preLoaderRoute: typeof RefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -430,12 +630,22 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AcceptableUseRoute: AcceptableUseRoute,
   AuthRoute: AuthRoute,
+  ChildSafetyRoute: ChildSafetyRoute,
   CommunityGuidelinesRoute: CommunityGuidelinesRoute,
   ContactRoute: ContactRoute,
+  ContentReportingRoute: ContentReportingRoute,
+  CookiesRoute: CookiesRoute,
   CopyrightRoute: CopyrightRoute,
+  DataRetentionRoute: DataRetentionRoute,
   DeleteAccountRoute: DeleteAccountRoute,
+  FaqRoute: FaqRoute,
+  GrievanceRoute: GrievanceRoute,
+  LawEnforcementRoute: LawEnforcementRoute,
   PrivacyRoute: PrivacyRoute,
+  RefundsRoute: RefundsRoute,
+  SecurityRoute: SecurityRoute,
   TermsRoute: TermsRoute,
   SSlugRoute: SSlugRoute,
   ApiPublicDeleteAccountRoute: ApiPublicDeleteAccountRoute,

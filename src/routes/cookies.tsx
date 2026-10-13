@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/LegalPage";
-import { pageHead, site } from "@/lib/site";
+import { pageHead } from "@/lib/site";
 export const Route = createFileRoute("/cookies")({
   head: () => pageHead("Cookie Policy", "How Tanyora uses cookies and browser storage.", "/cookies"),
   component: () => <LegalPage title="Cookie Policy"><p>Tanyora uses only essential browser storage and cookies needed to keep you signed in and remember basic settings.</p>
