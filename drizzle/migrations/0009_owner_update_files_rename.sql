@@ -1,0 +1,1 @@
+CREATE POLICY "owner updates files" ON public.files FOR UPDATE TO authenticated USING (auth.uid() = owner_id) WITH CHECK (auth.uid() = owner_id);
