@@ -5,7 +5,8 @@ export function isInstalledApp(): boolean {
   const w = window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } };
   const yes = !!w.Capacitor?.isNativePlatform?.()
     || document.referrer.startsWith("android-app://")
-    || window.matchMedia("(display-mode: standalone)").matches
+    || ["standalone", "fullscreen", "minimal-ui"].some((m) => window.matchMedia(`(display-mode: ${m})`).matches)
+    || new URLSearchParams(location.search).has("app")
     || sessionStorage.getItem("tanyora_app") === "1";
   if (yes) sessionStorage.setItem("tanyora_app", "1");
   return yes;
