@@ -107,7 +107,23 @@ function Content() {
 
       {/* Upload (hidden input — triggered by the + button or the desktop Upload button) */}
       <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-      {uploading && <div className="mt-5 space-y-2 rounded-xl border bg-card p-4 text-sm shadow-sm"><div className="flex justify-between"><span className="truncate font-medium">{uploading.name}</span><span className="tabular-nums text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
+      {uploading && (
+        <div role="status" aria-live="polite" className="fixed inset-x-3 bottom-24 z-40 mx-auto max-w-md rounded-2xl border bg-card p-4 shadow-xl md:bottom-6">
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Upload className="h-5 w-5 animate-bounce" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="truncate text-sm font-semibold">{uploading.name}</p>
+                <span className="shrink-0 text-sm font-semibold tabular-nums text-primary">{Math.round(uploading.pct)}%</span>
+              </div>
+              <p className="text-xs text-muted-foreground">{formatSize(uploading.size)}{uploading.step ? ` · File ${uploading.step}` : ""} · {uploading.pct >= 100 ? "Finishing up" : "Uploading"}</p>
+            </div>
+          </div>
+          <Progress value={uploading.pct} className="mt-3 h-1.5" />
+        </div>
+      )}
 
       {/* File list */}
       <div className="mt-5 overflow-hidden rounded-2xl border bg-card shadow-sm">
