@@ -1,7 +1,7 @@
 {
   "name": "Tanyora",
   "short_name": "Tanyora",
-  "description": "Upload files, get share links, and earn from views and referrals.",
+  "description": "Upload files, get share links, and manage everything from one place.",
   "id": "/",
   "start_url": "/dashboard",
   "scope": "/",
