@@ -238,7 +238,7 @@ function Content() {
       )}
 
       {/* File actions — bottom sheet */}
-      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); } }}>
+      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); setPickingExpiry(false); } }}>
         <SheetContent side="bottom" className="rounded-t-3xl px-2 pb-8 pt-3">
           {active && (
             <>
@@ -253,7 +253,25 @@ function Content() {
                   </div>
                 </div>
               </SheetHeader>
-              {renaming ? (
+              {pickingExpiry ? (
+                <div className="mt-1 px-4 pb-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">How long should the link work?</p>
+                  <div className="mt-2 space-y-1">
+                    {EXPIRY_OPTIONS.map((o) => (
+                      <button
+                        key={o.label}
+                        type="button"
+                        disabled={makingLink}
+                        onClick={() => generateLink(active, o.hours, o.label)}
+                        className="flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted disabled:opacity-50"
+                      >
+                        <Clock className="h-5 w-5 text-muted-foreground" /> {o.label}
+                      </button>
+                    ))}
+                  </div>
+                  <Button variant="outline" className="mt-3 w-full rounded-xl" onClick={() => setPickingExpiry(false)} disabled={makingLink}>Back</Button>
+                </div>
+              ) : renaming ? (
                 <div className="mt-1 px-4 pb-2">
                   <label htmlFor="rename-input" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">New name</label>
                   <input
@@ -282,6 +300,9 @@ function Content() {
                 )}
                 <button type="button" onClick={() => { setNewName(active.name); setRenaming(true); }} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Pencil className="h-5 w-5 text-muted-foreground" /> Rename
+                </button>
+                <button type="button" onClick={() => setPickingExpiry(true)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                  <Link2 className="h-5 w-5 text-muted-foreground" /> Share link
                 </button>
                 <button type="button" onClick={() => copyLink(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Copy className="h-5 w-5 text-muted-foreground" /> Copy link
