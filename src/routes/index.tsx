@@ -13,8 +13,8 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Tanyora — Secure cloud storage and file sharing" },
       { name: "description", content: "Private cloud storage for videos, photos, audio and documents with expiring share links." },
-      { property: "og:title", content: "Tanyora — Upload, share & earn" },
-      { property: "og:description", content: "Upload files, share links and manage your content." },
+      { property: "og:title", content: "Tanyora — Secure cloud storage and file sharing" },
+      { property: "og:description", content: "Private cloud storage with expiring share links on web and Android." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: site.publicUrl + "/" },
@@ -97,7 +97,7 @@ function Home() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Storage used</p>
-                  <p className="mt-1 text-4xl font-bold">2.4 GB <span className="text-base font-normal text-muted-foreground">of 5 GB</span></p>
+                  <p className="mt-1 text-4xl font-bold">2.4 GB <span className="text-base font-normal text-muted-foreground">used</span></p>
                 </div>
                 <span className="rounded-full bg-success/15 px-2.5 py-1 text-xs font-semibold text-success">Synced</span>
               </div>
@@ -106,7 +106,7 @@ function Home() {
                 <path d="M5 100 C 50 90, 70 110, 110 80 S 170 20, 200 70 S 250 110, 290 15" fill="none" stroke="url(#lg)" strokeWidth="4" strokeLinecap="round" />
               </svg>
               <div className="mt-5">
-                <div className="flex justify-between text-xs text-muted-foreground"><span>Documents · Images · Videos</span><span>48%</span></div>
+                <div className="flex justify-between text-xs text-muted-foreground"><span>Documents · Images · Videos</span><span></span></div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-background/60"><div className="h-full w-[48%] rounded-full" style={{ backgroundImage: "var(--landing-text)" }} /></div>
               </div>
             </div>
