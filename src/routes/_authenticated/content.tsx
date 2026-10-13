@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -52,6 +52,8 @@ function Content() {
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState("");
   const [savingName, setSavingName] = useState(false);
+  const [pickingExpiry, setPickingExpiry] = useState(false);
+  const [makingLink, setMakingLink] = useState(false);
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
@@ -124,6 +126,28 @@ function Content() {
     setActive(null);
     navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`);
     toast.success("Link copied");
+  }
+
+  const EXPIRY_OPTIONS: { label: string; hours: number | null }[] = [
+    { label: "1 hour", hours: 1 },
+    { label: "24 hours", hours: 24 },
+    { label: "7 days", hours: 24 * 7 },
+    { label: "30 days", hours: 24 * 30 },
+    { label: "Never expires", hours: null },
+  ];
+
+  async function generateLink(f: FileRow, hours: number | null, label: string) {
+    setMakingLink(true);
+    const expires_at = hours === null ? null : new Date(Date.now() + hours * 3600_000).toISOString();
+    const { error } = await supabase.from("files").update({ expires_at }).eq("id", f.id);
+    setMakingLink(false);
+    if (error) { toast.error("Could not create the link", { description: error.message }); return; }
+    const url = `${site.shareUrl}/s/${f.slug}`;
+    setPickingExpiry(false);
+    setActive(null);
+    try { await navigator.clipboard.writeText(url); } catch { /* clipboard may be unavailable */ }
+    toast.success("Link ready — copied", { description: hours === null ? "This link never expires." : `This link stops working after ${label}.` });
+    qc.invalidateQueries({ queryKey: ["files"] });
   }
 
   async function share(f: FileRow) {
