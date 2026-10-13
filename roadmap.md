@@ -4,3 +4,4 @@
 - [x] Upgrade landing page design
 - [x] Storage subscription plans page (Free/Plus/Pro)
 - [ ] Google Play Billing purchase (blocked: Play Console subscription products + app on Play Store)
+- [ ] VPS deployment (blocked: user must run deploy/deploy-vps.sh; Lovable cannot SSH; server admin key unavailable)
