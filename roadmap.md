@@ -3,5 +3,7 @@
 - [x] Fix mobile responsiveness on landing + all signed-in screens
 - [x] Upgrade landing page design
 - [x] Storage subscription plans page (Free/Plus/Pro)
+- [x] Deploy website + subdomain to own VPS with HTTPS (tanyora.com, app.tanyora.com, www)
 - [ ] Google Play Billing purchase (blocked: Play Console subscription products + app on Play Store)
-- [ ] VPS deployment (blocked: user must run deploy/deploy-vps.sh; Lovable cannot SSH; server admin key unavailable)
+- [ ] Confirm Views chart is hidden inside the installed app (blocked: user must reopen app and report)
+- [ ] Backend independence: keep Lovable Cloud + take code/database backups, or rebuild backend elsewhere (blocked: needs user's decision)
