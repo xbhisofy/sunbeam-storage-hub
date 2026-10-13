@@ -10,7 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { fileKind, formatSize } from "@/lib/format";
+import { fileKind, formatSize, formatFileDate, fileMetadata } from "@/lib/format";
+import { isInstalledApp } from "@/lib/app-mode";
 
 export const Route = createFileRoute("/_authenticated/content")({
   validateSearch: z.object({ kind: z.enum(["pdf", "video", "audio", "image", "link"]).optional(), upload: z.enum(["video", "audio", "image", "document"]).optional() }),
@@ -28,14 +29,6 @@ const typeStyles: Record<string, string> = {
   link: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   other: "bg-muted text-muted-foreground",
 };
-
-function ago(d: string) {
-  const s = Math.floor((Date.now() - new Date(d).getTime()) / 1000);
-  if (s < 60) return `${s}s ago`;
-  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
-  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
-  return `${Math.floor(s / 86400)}d ago`;
-}
 
 type FileRow = {
   id: string;
@@ -113,7 +106,7 @@ function Content() {
   function copyLink(f: FileRow) {
     setActive(null);
     navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`);
-    toast.success("Link copied", { description: "Share it anywhere to get views" });
+    toast.success("Link copied");
   }
 
   async function share(f: FileRow) {
@@ -141,7 +134,7 @@ function Content() {
       <div className="hidden items-center justify-between md:flex">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">My Files</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Upload, share and track your content.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Your uploaded files.</p>
         </div>
         <Button className="gap-2" onClick={() => input.current?.click()} disabled={!!uploading}><Upload className="h-4 w-4" />Upload files</Button>
       </div>
@@ -191,7 +184,7 @@ function Content() {
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold">{f.name}</span>
                   <span className="mt-0.5 block text-xs text-muted-foreground">
-                    {f.storage_path ? `${formatSize(f.size)} · ` : ""}{ago(f.created_at)}
+                    {f.storage_path ? `${formatSize(f.size)} · ` : ""}{formatFileDate(f.created_at)}
                   </span>
                 </span>
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground" aria-hidden>
@@ -215,14 +208,14 @@ function Content() {
                   </span>
                   <div className="min-w-0">
                     <SheetTitle className="truncate text-left text-sm">{active.name}</SheetTitle>
-                    <p className="text-xs text-muted-foreground">{active.storage_path ? `${formatSize(active.size)} · ` : ""}{ago(active.created_at)}</p>
+                    <p className="text-xs text-muted-foreground">{active.storage_path ? `${formatSize(active.size)} · ` : ""}{formatFileDate(active.created_at)}</p>
                   </div>
                 </div>
               </SheetHeader>
               <div className="mt-1">
-                <button type="button" onClick={() => { setActive(null); toast.info("Details", { description: `${active.name} · ${formatSize(active.size)} · ${active.views} views · uploaded ${new Date(active.created_at).toLocaleDateString()}` }); }} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
+                <Button variant="ghost" onClick={() => { setActive(null); toast.info(active.name, { description: fileMetadata(active, isInstalledApp()) }); }} className="flex h-auto w-full items-center justify-start gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium">
                   <Info className="h-5 w-5 text-muted-foreground" /> Details
-                </button>
+                </Button>
                 {active.storage_path && (
                   <button type="button" onClick={() => download(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                     <Download className="h-5 w-5 text-muted-foreground" /> Download
