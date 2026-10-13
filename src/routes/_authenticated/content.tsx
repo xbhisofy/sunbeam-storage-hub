@@ -41,7 +41,7 @@ function Content() {
   const qc = useQueryClient();
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => { if (upload) input.current?.click(); }, [upload]);
-  const [uploading, setUploading] = useState<{ name: string; pct: number } | null>(null);
+  const [uploading, setUploading] = useState<{ name: string; size: number; step: string; pct: number } | null>(null);
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
@@ -62,16 +62,18 @@ function Content() {
       const f = arr[i];
       if (!f) continue;
       if (f.size > 50 * 1024 * 1024) { toast.error("File too large", { description: `${f.name} is over the 50 MB limit` }); continue; }
-      setUploading({ name: arr.length > 1 ? `${f.name} (${i + 1}/${arr.length})` : f.name, pct: Math.round((i / arr.length) * 100) + 10 });
-      const tid = toast.loading(`Uploading ${f.name}`, { description: `${formatSize(f.size)} · please keep the app open` });
+      setUploading({ name: f.name, size: f.size, step: arr.length > 1 ? `${i + 1} of ${arr.length}` : "", pct: 5 });
+      const tick = setInterval(() => setUploading((u) => (u ? { ...u, pct: Math.min(92, u.pct + (95 - u.pct) * 0.08) } : u)), 300);
       const path = `${uid}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;
       const { error } = await supabase.storage.from("files").upload(path, f, { contentType: f.type || "application/octet-stream" });
-      if (error) { toast.error("Upload failed", { id: tid, description: error.message }); continue; }
+      clearInterval(tick);
+      if (error) { toast.error("Upload failed", { description: error.message }); continue; }
+      setUploading((u) => (u ? { ...u, pct: 100 } : u));
       const { error: e2 } = await supabase.from("files").insert({
         owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
-      if (e2) toast.error("Upload failed", { id: tid, description: e2.message });
-      else toast.success("Upload complete", { id: tid, description: `${f.name} is ready to share` });
+      if (e2) toast.error("Upload failed", { description: e2.message });
+      else toast.success("Upload complete", { description: `${f.name} is ready to share` });
     }
     setUploading(null);
     if (input.current) input.current.value = "";
@@ -105,7 +107,23 @@ function Content() {
 
       {/* Upload (hidden input — triggered by the + button or the desktop Upload button) */}
       <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-      {uploading && <div className="mt-5 space-y-2 rounded-xl border bg-card p-4 text-sm shadow-sm"><div className="flex justify-between"><span className="truncate font-medium">{uploading.name}</span><span className="tabular-nums text-muted-foreground">{Math.round(uploading.pct)}%</span></div><Progress value={uploading.pct} /></div>}
+      {uploading && (
+        <div role="status" aria-live="polite" className="fixed inset-x-3 bottom-24 z-40 mx-auto max-w-md rounded-2xl border bg-card p-4 shadow-xl md:bottom-6">
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Upload className="h-5 w-5 animate-bounce" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="truncate text-sm font-semibold">{uploading.name}</p>
+                <span className="shrink-0 text-sm font-semibold tabular-nums text-primary">{Math.round(uploading.pct)}%</span>
+              </div>
+              <p className="text-xs text-muted-foreground">{formatSize(uploading.size)}{uploading.step ? ` · File ${uploading.step}` : ""} · {uploading.pct >= 100 ? "Finishing up" : "Uploading"}</p>
+            </div>
+          </div>
+          <Progress value={uploading.pct} className="mt-3 h-1.5" />
+        </div>
+      )}
 
       {/* File list */}
       <div className="mt-5 overflow-hidden rounded-2xl border bg-card shadow-sm">
