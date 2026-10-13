@@ -1,0 +1,106 @@
+# Automated deploy to your own Ubuntu VPS (Hostinger).
+# Runs only when started manually: GitHub repo -> Actions -> "Deploy to VPS" -> Run workflow.
+# Required GitHub secrets (repo -> Settings -> Secrets and variables -> Actions):
+#   VPS_HOST, VPS_USER, VPS_PASSWORD (or VPS_SSH_KEY), ENV_PRODUCTION (contents of .env.production)
+# DNS is never changed here. HTTPS is requested only when enable_https = true.
+name: Deploy to VPS
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "Unique app name on the server (one per website)"
+        default: "tanyora"
+        required: true
+      port:
+        description: "Local port for this website (unique per website)"
+        default: "3100"
+        required: true
+      domains:
+        description: "Domains served by this site, space separated"
+        default: "tanyora.com app.tanyora.com"
+        required: true
+      enable_https:
+        description: "Request HTTPS (only after DNS points to the VPS)"
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload code to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "."
+          target: "/var/www/${{ inputs.app_name }}-src"
+          rm: true
+
+      - name: Build, start and configure Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          APP: ${{ inputs.app_name }}
+          PORT: ${{ inputs.port }}
+          DOMAINS: ${{ inputs.domains }}
+          HTTPS: ${{ inputs.enable_https }}
+          ENV_PRODUCTION: ${{ secrets.ENV_PRODUCTION }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: APP,PORT,DOMAINS,HTTPS,ENV_PRODUCTION
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+            SUDO=""; [ "$(id -u)" -ne 0 ] && SUDO="sudo"
+            export DEBIAN_FRONTEND=noninteractive
+            $SUDO apt-get update -y
+            $SUDO apt-get install -y nginx curl rsync unzip
+            if ! command -v node >/dev/null || [ "$(node -v | cut -d. -f1 | tr -d v)" -lt 22 ]; then
+              curl -fsSL https://deb.nodesource.com/setup_22.x | $SUDO -E bash -
+              $SUDO apt-get install -y nodejs
+            fi
+            command -v bun >/dev/null || { curl -fsSL https://bun.sh/install | bash; }
+            export PATH="$HOME/.bun/bin:$PATH"
+            command -v pm2 >/dev/null || $SUDO npm i -g pm2
+
+            DIR=/var/www/$APP
+            $SUDO mkdir -p "$DIR" && $SUDO chown -R "$USER" "$DIR" "/var/www/$APP-src"
+            rsync -a --delete --exclude node_modules --exclude .output --exclude .env.production "/var/www/$APP-src/" "$DIR/"
+            cd "$DIR"
+            printf '%s\n' "$ENV_PRODUCTION" > .env.production && chmod 600 .env.production
+            set -a; . ./.env.production; set +a
+
+            bun install
+            NITRO_PRESET=node-server bun run build
+
+            PORT=$PORT pm2 startOrReload deploy/ecosystem.config.cjs --name "$APP" --update-env || \
+              PORT=$PORT pm2 start .output/server/index.mjs --name "$APP" --update-env
+            pm2 save
+            $SUDO env PATH="$PATH" pm2 startup systemd -u "$USER" --hp "$HOME" >/dev/null || true
+
+            FIRST=$(echo $DOMAINS | awk '{print $1}')
+            sed "s/__DOMAIN__/$FIRST/g; s/__PORT__/$PORT/g" deploy/nginx-tanyora.conf \
+              | sed "s/server_name .*;/server_name $DOMAINS;/" | $SUDO tee /etc/nginx/sites-available/$APP >/dev/null
+            $SUDO ln -sf /etc/nginx/sites-available/$APP /etc/nginx/sites-enabled/$APP
+            $SUDO rm -f /etc/nginx/sites-enabled/default
+            $SUDO nginx -t && $SUDO systemctl reload nginx
+
+            if [ "$HTTPS" = "true" ]; then
+              $SUDO apt-get install -y certbot python3-certbot-nginx
+              ARGS=""; for d in $DOMAINS; do ARGS="$ARGS -d $d"; done
+              $SUDO certbot --nginx --non-interactive --agree-tos --register-unsafely-without-email $ARGS
+            fi
+
+            sleep 5
+            curl -fsS -o /dev/null -w "App check: HTTP %{http_code}\n" "http://127.0.0.1:$PORT/"
+            for d in $DOMAINS; do
+              curl -fsS -o /dev/null -H "Host: $d" -w "Nginx check $d: HTTP %{http_code}\n" http://127.0.0.1/
+            done
