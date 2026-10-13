@@ -419,6 +419,21 @@ function UsersTab() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={!!pwTarget} onOpenChange={(o) => !o && setPwTarget(null)}>
+        <DialogContent className="rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Set new password</DialogTitle>
+            <DialogDescription>Set a new sign-in password for {pwTarget?.name}. Share it with the user privately.</DialogDescription>
+          </DialogHeader>
+          <Input type="text" autoComplete="off" placeholder="Minimum 8 characters" value={pwTarget?.password ?? ""}
+            onChange={(e) => setPwTarget((t) => (t ? { ...t, password: e.target.value } : t))} />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPwTarget(null)}>Cancel</Button>
+            <Button onClick={savePassword}>Save password</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={!!blockTarget} onOpenChange={(o) => !o && setBlockTarget(null)}>
         <DialogContent className="rounded-2xl">
           <DialogHeader>
