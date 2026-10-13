@@ -118,10 +118,18 @@ function Content() {
 
   async function share(f: FileRow) {
     const url = `${site.shareUrl}/s/${f.slug}`;
-    setActive(null);
     if (navigator.share) {
-      try { await navigator.share({ title: f.name, url }); return; } catch { /* user cancelled */ }
+      try {
+        await navigator.share({ title: f.name, url });
+        setActive(null);
+        return;
+      } catch (e) {
+        // User closed the device share sheet — just close our menu too.
+        if (e instanceof DOMException && e.name === "AbortError") { setActive(null); return; }
+        // Any other failure falls through to the copy fallback below.
+      }
     }
+    setActive(null);
     navigator.clipboard.writeText(url);
     toast.success("Link copied");
   }

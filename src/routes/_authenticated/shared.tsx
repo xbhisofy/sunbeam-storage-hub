@@ -40,10 +40,19 @@ function Shared() {
   const link = (slug: string) => `${site.shareUrl}/s/${slug}`;
 
   async function shareAgain(f: Row) {
-    setActive(null);
     const url = link(f.slug);
-    if (navigator.share) { try { await navigator.share({ title: f.name, url }); } catch { /* dismissed */ } }
-    else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: f.name, url });
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "AbortError") { /* dismissed */ }
+        else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied");
+    }
+    setActive(null);
   }
   async function stop(f: Row) {
     if (!confirm("Remove this share? The file will be deleted and the link will stop working.")) return;
