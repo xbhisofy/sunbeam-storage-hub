@@ -78,6 +78,13 @@
       "when": 1791930209830,
       "tag": "0010_files_expires_at",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791962484622,
+      "tag": "0011_allow_usdt_withdrawal_method",
+      "breakpoints": true
     }
   ]
 }

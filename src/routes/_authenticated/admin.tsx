@@ -298,7 +298,7 @@ function Withdrawals() {
         )}
       </div>
       <Pager page={page} setPage={setPage} more={rows.length === PAGE} />
-      <p className="text-xs text-muted-foreground">Send the payment via UPI, PayPal or bank transfer first, then select "Mark paid". Rejected requests are refunded to the user's balance.</p>
+      <p className="text-xs text-muted-foreground">Send the payment using the method shown on the request first, then select "Mark paid". Rejected requests are refunded to the user's balance.</p>
 
       <Dialog open={!!reject} onOpenChange={(o) => !o && setReject(null)}>
         <DialogContent className="rounded-2xl">
