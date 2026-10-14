@@ -67,7 +67,7 @@ function Shared() {
   const item = "flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted";
 
   return <div className="mx-auto w-full max-w-3xl">
-    <h1 className="hidden text-2xl font-bold tracking-tight md:block">Shared Files</h1>
+    <h1 className="hidden text-2xl font-bold tracking-tight lg:block">Shared Files</h1>
     {files.length === 0 ? <div className="mt-1 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
       <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><Share2 className="h-8 w-8 text-primary" /></span>
       <p className="mt-5 text-[15px] font-semibold">{isPending ? "Loading…" : "Nothing shared yet"}</p>

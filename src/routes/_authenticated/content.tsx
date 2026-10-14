@@ -162,7 +162,7 @@ function Content() {
 
   return (
     <div className="mx-auto w-full max-w-3xl">
-      <div className="hidden items-center justify-between md:flex">
+      <div className="hidden items-center justify-between lg:flex">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{app ? "My Files" : "My Content"}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{app ? "Your uploaded files." : "Everything in your account with a shareable link. Upload a file and get a link back instantly."}</p>

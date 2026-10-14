@@ -22,7 +22,7 @@ function Plans() {
       <h1 className="mt-3 text-2xl font-bold sm:text-3xl">Go Premium</h1>
       <p className="mt-1 text-sm opacity-90">More storage, bigger files and an ad-free experience.</p>
     </div>
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-4 lg:grid-cols-3">
       {plans.map(p => <div key={p.id} className={`relative rounded-2xl border bg-card p-5 ${p.popular ? "border-primary ring-2 ring-primary/30" : ""}`}>
         {p.popular && <span className="absolute -top-3 right-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">Most popular</span>}
         <div className="flex items-center gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-primary"><p.icon className="h-5 w-5" /></span><h2 className="text-lg font-bold">{p.name}</h2></div>

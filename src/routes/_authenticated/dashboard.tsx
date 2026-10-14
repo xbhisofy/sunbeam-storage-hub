@@ -49,7 +49,7 @@ function Dashboard() {
     return recent.length ? <div className="divide-y">{recent.map(f => <Link key={`${f.kind}-${f.id}`} to={f.kind === "yours" ? "/content" : "/s/$slug"} params={f.kind === "watched" ? { slug: f.slug } : {}} className="flex items-center gap-3 py-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-accent text-primary">{f.file_type === "video" ? <Film className="h-6 w-6" /> : f.file_type === "image" ? <Image className="h-6 w-6" /> : f.file_type === "audio" ? <Music className="h-6 w-6" /> : <FileText className="h-6 w-6" />}</span><div className="min-w-0 flex-1"><p className="truncate font-medium">{f.name}</p><p className="text-xs leading-relaxed text-muted-foreground">{f.kind === "watched" ? "Watched · " : ""}{fileMetadata(f, app)}</p></div><ArrowUpRight className="h-5 w-5 text-muted-foreground" /></Link>)}</div> : <div className="py-8 text-center"><FolderOpen className="mx-auto h-12 w-12 text-muted-foreground" /><p className="mt-3 font-medium">{isPending ? "Loading your files…" : "No files yet"}</p><Button variant="link" asChild className="mt-2"><Link to="/content" search={{ upload: "document" }}>Upload a file</Link></Button></div>;
   })()}</section>;
   if (app) return <div className="space-y-7">
-    <div className="hidden md:block"><h1 className="text-3xl font-bold">Your cloud</h1><p className="mt-1 text-muted-foreground">{p?.display_name ? `Welcome back, ${p.display_name}` : "Welcome to Tanyora"}</p></div>
+    <div className="hidden lg:block"><h1 className="text-3xl font-bold">Your cloud</h1><p className="mt-1 text-muted-foreground">{p?.display_name ? `Welcome back, ${p.display_name}` : "Welcome to Tanyora"}</p></div>
     <section className="app-storage-card rounded-2xl border p-5 shadow-sm">{(() => {
       const total = 1024 * 1024 * 1024; // Free plan: 1 GB
       const pct = Math.min(100, Math.round((used / total) * 100));
@@ -83,7 +83,7 @@ function Dashboard() {
       <h2 className="font-semibold">{plan === "view" ? "View-Based Plan" : "Signup Referral Plan"}</h2>
       <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{plan === "view" ? "View-based" : "Referral"}</span>
     </div>
-    <div className="grid gap-4 sm:grid-cols-3">{stats.map(s => <div key={s.label} className="rounded-2xl border bg-card p-5 shadow-sm">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{stats.map(s => <div key={s.label} className="rounded-2xl border bg-card p-5 shadow-sm">
       <div className="flex items-center gap-3"><span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${s.tone}`}><s.icon className="h-5 w-5" /></span><p className="text-sm font-medium text-muted-foreground">{s.label}</p></div>
       <p className="mt-3 text-2xl font-bold">{money(s.value)}</p>
       <p className="mt-0.5 text-xs text-muted-foreground">{s.hint}</p>

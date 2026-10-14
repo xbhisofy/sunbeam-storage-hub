@@ -76,7 +76,7 @@ function Shell() {
             </div>}
           </div>)}
     </div>
-    {(!app || isAdmin) && <>
+    {isAdmin && <>
       <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
       <div className="space-y-1">
         {isAdmin && <Link to="/admin" onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><Shield className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>Admin</Link>}
@@ -85,11 +85,11 @@ function Shell() {
     <div className="mt-auto border-t pt-3"><button type="button" className={`${row} text-destructive`} onClick={signOut} disabled={leaving}><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">{leaving ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <LogOut className="h-[18px] w-[18px]" strokeWidth={2.2} />}</span>Log out</button></div>
   </nav>;
   return <div className="app-shell app-bg flex min-h-dvh">
-    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card md:flex"><div className="p-6"><Brand /></div>{menu}<div className="mt-auto border-t p-5"><p className="truncate font-medium">{p?.display_name}</p><p className="truncate text-sm text-muted-foreground">{p?.email}</p></div></aside>
+    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card lg:flex"><div className="p-6"><Brand /></div>{menu}<div className="mt-auto border-t p-5"><p className="truncate font-medium">{p?.display_name}</p><p className="truncate text-sm text-muted-foreground">{p?.email}</p></div></aside>
     <div className="min-w-0 flex-1">
-      <header className="app-topbar relative sticky top-0 z-30 flex h-16 items-center border-b bg-card px-4 md:hidden"><Button size="icon" variant="ghost" className="h-12 w-12" aria-label="Open menu" onClick={() => setDrawer(true)}><Menu className="h-6 w-6" /></Button><span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-lg font-bold">{pathname === "/dashboard" ? "Tanyora" : title}</span></header>
-      <main className="app-main mx-auto max-w-6xl px-5 pb-32 pt-3 md:px-10 md:py-10"><Outlet /></main>
-      <nav aria-label="Bottom navigation" className="app-bottom fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-center border-t bg-card px-3 pt-2 md:hidden">
+      <header className="app-topbar relative sticky top-0 z-30 flex h-16 items-center border-b bg-card px-4 lg:hidden"><Button size="icon" variant="ghost" className="h-12 w-12" aria-label="Open menu" onClick={() => setDrawer(true)}><Menu className="h-6 w-6" /></Button><span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-lg font-bold">{pathname === "/dashboard" ? "Tanyora" : title}</span></header>
+      <main className="app-main mx-auto max-w-6xl px-5 pb-32 pt-3 md:px-8 lg:px-10 lg:py-10"><Outlet /></main>
+      <nav aria-label="Bottom navigation" className="app-bottom fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-center border-t bg-card px-3 pt-2 lg:hidden">
         {items.filter(n => n.to !== "/referrals" && n.to !== "/oc-bonus" && n.to !== "/plans").map((n, i) => <Link key={n.to} to={n.to} style={{ gridColumnStart: i < 2 ? i + 1 : i + 2, gridRowStart: 1 }} className="flex h-14 w-full select-none flex-col items-center justify-center gap-1 rounded-xl text-muted-foreground transition-colors duration-150 [-webkit-tap-highlight-color:transparent] data-[status=active]:text-primary"><n.icon className="h-6 w-6 shrink-0" strokeWidth={2} aria-hidden="true" /><span className="text-[11px] font-medium leading-none">{n.label}</span></Link>)}
         <Button type="button" size="icon" aria-label="Add files" onClick={() => setUpload(true)} className="absolute -top-2 left-1/2 h-14 w-14 -translate-x-1/2 rounded-full shadow-none active:bg-primary/90 [&_svg]:size-7"><Plus strokeWidth={2} aria-hidden="true" /></Button>
       </nav>
