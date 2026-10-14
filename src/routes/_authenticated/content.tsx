@@ -195,13 +195,13 @@ function Content() {
 
       {/* File list — TeraBox-style cards */}
       {shown.length === 0 ? (
-        <div className="mt-5 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
+        <div className="mt-1 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><FolderOpen className="h-8 w-8 text-primary" /></span>
           <p className="mt-5 text-[15px] font-semibold">Your folder is empty</p>
           <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">Tap the + button below to upload your first video, photo or document. Once it's here, tap the ⋮ menu to copy its share link.</p>
         </div>
       ) : (
-        <div className="mt-4 space-y-2.5">
+        <div className="mt-1 space-y-2.5">
           <p className="px-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{shown.length} {shown.length === 1 ? "item" : "items"}</p>
           {shown.map((f) => {
             const Icon = icons[f.file_type as keyof typeof icons] ?? FileText;

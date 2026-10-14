@@ -68,10 +68,10 @@ function Shared() {
 
   return <div className="mx-auto w-full max-w-3xl">
     <h1 className="hidden text-2xl font-bold tracking-tight md:block">Shared Files</h1>
-    {files.length === 0 ? <div className="mt-5 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
+    {files.length === 0 ? <div className="mt-1 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
       <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><Share2 className="h-8 w-8 text-primary" /></span>
       <p className="mt-5 text-[15px] font-semibold">{isPending ? "Loading…" : "Nothing shared yet"}</p>
-    </div> : <div className="mt-4 space-y-2.5">
+    </div> : <div className="mt-1 space-y-2.5">
       {(files as Row[]).map(f => {
         const Icon = icons[f.file_type] ?? FileText;
         return <button key={f.id} type="button" onClick={() => setActive(f)} className="flex w-full items-center gap-3 rounded-2xl border bg-card p-3.5 text-left shadow-sm transition-colors hover:bg-muted/40 active:bg-muted/60">
