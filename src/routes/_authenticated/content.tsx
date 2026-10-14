@@ -45,6 +45,7 @@ type FileRow = {
 function Content() {
   const { kind, upload } = Route.useSearch();
   const qc = useQueryClient();
+  const app = useInstalledApp();
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => { if (upload) input.current?.click(); }, [upload]);
   const [uploading, setUploading] = useState<{ name: string; size: number; step: string; pct: number } | null>(null);
@@ -55,6 +56,8 @@ function Content() {
   const [pickingExpiry, setPickingExpiry] = useState(false);
   const [showingDetails, setShowingDetails] = useState(false);
   const [makingLink, setMakingLink] = useState(false);
+  const [query, setQuery] = useState("");
+  const [sourceFilter, setSourceFilter] = useState<"all" | "original" | "converted">("all");
 
   const { data: files = [] } = useQuery({
     queryKey: ["files"],
