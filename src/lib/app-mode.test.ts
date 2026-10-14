@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { hostRedirect } from "./app-mode";
+import { hostRedirect, WEB_ONLY_PATHS } from "./app-mode";
 const M = "https://tanyora.com", W = "https://app.tanyora.com";
+describe("installed app subscriptions", () => {
+  it("allows Go Ad Free to open the subscription page", () => {
+    expect(WEB_ONLY_PATHS.includes("/plans")).toBe(false);
+  });
+});
 describe("hostRedirect", () => {
   it("keeps landing on main domain", () => expect(hostRedirect("tanyora.com", "/", M, W)).toBeNull());
   it("keeps share links on main domain", () => expect(hostRedirect("tanyora.com", "/s/abc", M, W)).toBeNull());
