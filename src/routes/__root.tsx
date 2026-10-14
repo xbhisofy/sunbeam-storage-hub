@@ -133,7 +133,8 @@ function RootComponent() {
   useEffect(() => {
     // Main domain = landing + share links; web subdomain = login/dashboard. Installed app stays put.
     Promise.all([import("@/lib/app-mode"), import("@/lib/site")]).then(([m, { site }]) => {
-      if (m.isInstalledApp()) return;
+      // Inside the installed app the landing page is never shown; go straight to the files.
+      if (m.isInstalledApp()) { if (location.pathname === "/") router.navigate({ to: "/dashboard", replace: true }); return; }
       const to = m.hostRedirect(location.host, location.pathname, site.shareUrl, site.webUrl);
       if (to) location.replace(to + location.search + location.hash);
     });
