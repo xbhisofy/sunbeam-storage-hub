@@ -164,17 +164,39 @@ function Content() {
     try { await navigator.clipboard.writeText(url); toast.success("Link copied"); } catch { /* clipboard may be unavailable */ }
   }
 
-  const shown = files.filter((f) => (!kind || f.file_type === kind));
+  const shown = files.filter((f) => (!kind || f.file_type === kind))
+    .filter((f) => app || sourceFilter === "all" || (f.source ?? "original") === sourceFilter)
+    .filter((f) => app || !query.trim() || f.name.toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
     <div className="mx-auto w-full max-w-3xl">
       <div className="hidden items-center justify-between md:flex">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">My Files</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Your uploaded files.</p>
+          <h1 className="text-2xl font-bold tracking-tight">{app ? "My Files" : "My Content"}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{app ? "Your uploaded files." : "Everything in your account with a shareable link. Upload a file and get a link back instantly."}</p>
         </div>
-        <Button className="gap-2" onClick={() => input.current?.click()} disabled={!!uploading}><Upload className="h-4 w-4" />Upload files</Button>
+        {app && <Button className="gap-2" onClick={() => input.current?.click()} disabled={!!uploading}><Upload className="h-4 w-4" />Upload files</Button>}
       </div>
+      {!app && <>
+        <div className="mt-4 flex w-fit rounded-xl border bg-card p-1">
+          <Button size="sm" className="rounded-lg">All Content</Button>
+          <Button variant="ghost" size="sm" asChild className="rounded-lg"><Link to="/content/convert">Convert Link</Link></Button>
+        </div>
+        <div className="mt-4 rounded-2xl border bg-card p-3 shadow-sm">
+          <Button className="gap-2" onClick={() => input.current?.click()} disabled={!!uploading}><Upload className="h-4 w-4" />Upload files</Button>
+        </div>
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by file name" className="h-11 w-full rounded-xl border bg-card pl-10 pr-4 text-sm shadow-sm outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+          <div className="flex w-fit rounded-xl border bg-card p-1 shadow-sm">
+            {(["all", "original", "converted"] as const).map((s) => (
+              <button key={s} type="button" onClick={() => setSourceFilter(s)} className={`rounded-lg px-3.5 py-1.5 text-sm font-medium capitalize transition-colors ${sourceFilter === s ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>{s === "all" ? "All" : s}</button>
+            ))}
+          </div>
+        </div>
+      </>}
       {kind && <div className="flex items-center justify-between"><h2 className="font-semibold capitalize">{kind === "pdf" ? "Documents" : kind}</h2><Button variant="link" asChild><Link to="/content">All files</Link></Button></div>}
 
       {/* Upload (hidden input — triggered by the + button or the desktop Upload button) */}
