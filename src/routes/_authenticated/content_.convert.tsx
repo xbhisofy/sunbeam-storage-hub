@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatSize, formatFileDate } from "@/lib/format";
 
-export const Route = createFileRoute("/_authenticated/content/convert")({
+export const Route = createFileRoute("/_authenticated/content_/convert")({
   head: () => pageHead("Convert Link", "Turn any Tanyora share link into your own.", undefined, true),
   component: ConvertLink,
 });
