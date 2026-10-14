@@ -25,7 +25,7 @@ export function hostRedirect(host: string, path: string, mainUrl: string, webUrl
 }
 
 /** Earnings and referrals stay on the website; subscriptions are accessible in the app. */
-export const WEB_ONLY_PATHS = ["/earnings", "/referrals"];
+export const WEB_ONLY_PATHS = ["/earnings", "/referrals", "/oc-bonus"];
 export function useInstalledApp() {
   const [app, setApp] = useState(false);
   useEffect(() => setApp(isInstalledApp()), []);
