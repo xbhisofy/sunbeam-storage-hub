@@ -134,7 +134,12 @@ function RootComponent() {
     // Main domain = landing + share links; web subdomain = login/dashboard. Installed app stays put.
     Promise.all([import("@/lib/app-mode"), import("@/lib/site")]).then(([m, { site }]) => {
       // Inside the installed app the landing page is never shown; go straight to the files.
-      if (m.isInstalledApp()) { if (location.pathname === "/") router.navigate({ to: "/dashboard", replace: true }); return; }
+      if (m.isInstalledApp()) {
+        // Disable browser pull-to-refresh so the installed app feels native.
+        document.documentElement.classList.add("in-app");
+        if (location.pathname === "/") router.navigate({ to: "/dashboard", replace: true });
+        return;
+      }
       const to = m.hostRedirect(location.host, location.pathname, site.shareUrl, site.webUrl);
       if (to) location.replace(to + location.search + location.hash);
     });

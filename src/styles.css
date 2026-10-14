@@ -183,6 +183,7 @@
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
 
 .app-shell { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+html.in-app, html.in-app body { overscroll-behavior-y: none; }
 .app-shell button, .app-shell a { touch-action: manipulation; }
 .app-hero-card { background: linear-gradient(135deg, var(--primary), oklch(0.5 0.2 285)); color: var(--primary-foreground); box-shadow: 0 16px 40px -18px color-mix(in oklab, var(--primary) 70%, transparent); }
 .app-storage-card { background: linear-gradient(160deg, color-mix(in oklab, var(--primary) 8%, var(--card)), color-mix(in oklab, var(--primary) 3%, var(--muted))); border-color: color-mix(in oklab, var(--primary) 18%, var(--border)); }
