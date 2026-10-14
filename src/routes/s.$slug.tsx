@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Download, Smartphone } from "lucide-react";
+import { Lock, Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/Brand";
@@ -9,6 +9,7 @@ import { LegalFooter } from "@/components/LegalFooter";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ReportFile } from "@/components/ReportFile";
 import { pageHead, site } from "@/lib/site";
+import { currentUserId } from "@/lib/session";
 
 const AD_SECONDS = 5;
 const APP_ID = site.androidPackage;
@@ -32,8 +33,10 @@ function SharePage() {
     enabled: isApp,
     staleTime: 60_000,
     queryFn: async () => {
-      const { data: f } = await supabase.from("files").select("name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text,expires_at").eq("slug", slug).maybeSingle();
+      const { data: f } = await supabase.from("files").select("owner_id,name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text,expires_at").eq("slug", slug).maybeSingle();
       if (!f) return null;
+      // Owners cannot preview their own uploads without a subscription.
+      if (f.owner_id && f.owner_id === (await currentUserId())) return { ownFile: true as const, name: f.name };
       if (f.expires_at && new Date(f.expires_at).getTime() < Date.now()) return { expired: true as const };
       if (!f.storage_path) return { ...f, url: f.external_url ?? "" };
       const { data: s } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 60 * 60 * 3);
@@ -49,7 +52,7 @@ function SharePage() {
 
   function play() {
     supabase.rpc("record_view", { _slug: slug });
-    if (data && !("expired" in data) && data.source === "converted" && data.url) { window.location.href = data.url; return; }
+    if (data && !("expired" in data) && !("ownFile" in data) && data.source === "converted" && data.url) { window.location.href = data.url; return; }
     setOpen(true);
   }
 
@@ -74,6 +77,13 @@ function SharePage() {
           </div>
         ) : isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
           <p className="text-center text-muted-foreground">This file doesn't exist or was deleted.</p>
+        ) : "ownFile" in data ? (
+          <div className="rounded-2xl border bg-card p-8 text-center">
+            <Lock className="mx-auto h-10 w-10 text-primary" />
+            <h1 className="mt-4 truncate text-xl font-semibold">{data.name}</h1>
+            <p className="mt-2 text-sm text-muted-foreground">This is your own upload. Viewing your own files requires a subscription.</p>
+            <Button className="mt-5" asChild><Link to="/plans">View plans</Link></Button>
+          </div>
         ) : "expired" in data ? (
           <div className="rounded-2xl border bg-card p-8 text-center">
             <h1 className="text-xl font-semibold">This link has expired</h1>
@@ -96,13 +106,10 @@ function SharePage() {
           <div>
             <h1 className="mb-4 truncate text-xl font-semibold">{data.name}</h1>
             {data.file_type === "video" && <VideoPlayer src={data.url} title={data.name} />}
-            {data.file_type === "image" && <img src={data.url} alt={data.name} className="max-h-[80vh] w-full rounded-xl object-contain" />}
-            {data.file_type === "audio" && <audio src={data.url} controls autoPlay className="w-full" />}
-            {data.file_type === "other" && <p className="rounded-xl border bg-card p-6 text-muted-foreground">Preview not available. Use Download below.</p>}
-            {data.file_type === "pdf" && <iframe src={data.url} title={data.name} className="h-[80vh] w-full rounded-xl border" />}
-            {data.file_type !== "video" && <Button variant="outline" className="mt-4" asChild>
-              <a href={data.url} target="_blank" rel="noreferrer"><Download className="h-4 w-4" /> Download</a>
-            </Button>}
+            {data.file_type === "image" && <img src={data.url} alt={data.name} draggable={false} onContextMenu={(e) => e.preventDefault()} className="max-h-[80vh] w-full rounded-xl object-contain" />}
+            {data.file_type === "audio" && <audio src={data.url} controls controlsList="nodownload" onContextMenu={(e) => e.preventDefault()} autoPlay className="w-full" />}
+            {data.file_type === "other" && <p className="rounded-xl border bg-card p-6 text-muted-foreground">Preview is not available for this file type.</p>}
+            {data.file_type === "pdf" && <iframe src={`${data.url}#toolbar=0`} title={data.name} className="h-[80vh] w-full rounded-xl border" />}
             <ReportFile slug={slug} name={data.name} />
           </div>
         )}

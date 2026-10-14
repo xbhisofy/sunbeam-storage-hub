@@ -78,7 +78,7 @@ function AuthPage() {
             <h2 className="text-4xl font-extrabold leading-tight">Upload once.<br /><span className="landing-text">Share anywhere.</span></h2>
             <p className="mt-4 max-w-md text-muted-foreground">Keep your videos, photos and documents in one place and send a single link to anyone.</p>
             <ul className="mt-8 space-y-3 text-sm">
-              <li>Upload videos, photos and documents</li><li>One simple share link for every file</li><li>Download your files anytime</li>
+              <li>Upload videos, photos and documents</li><li>One simple share link for every file</li><li>Access your files from app and web</li>
             </ul>
           </div>
         ) : (
