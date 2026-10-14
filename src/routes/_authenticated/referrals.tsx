@@ -1,11 +1,9 @@
 import { pageHead, site } from "@/lib/site";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Copy, Link2, Wallet, CalendarDays, Users, Sun, UserPlus } from "lucide-react";
+import { Copy, Link2, Wallet, CalendarDays, Users, UserPlus, Clock, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useProfile } from "./route";
 import { money } from "@/lib/format";
 import { currentUserId } from "@/lib/session";
@@ -36,41 +34,51 @@ function Referrals() {
   const joinedToday = people.filter(x => x.joined.slice(0, 10) === today).length;
   const link = p ? `${site.publicUrl}/auth?mode=signup&ref=${p.referral_code}` : "";
 
+  const { data: wd = [] } = useQuery({
+    queryKey: ["my-withdrawals"],
+    queryFn: async () => (await supabase.from("withdrawals").select("*").order("created_at", { ascending: false }).limit(50)).data ?? [],
+  });
+  const onHold = wd.filter(w => w.status === "pending" || w.status === "approved").reduce((s, w) => s + Number(w.amount), 0);
+
   const cards = [
-    { icon: Wallet, label: "Total earned", value: money(Number(p?.referral_earnings ?? 0)) },
-    { icon: Sun, label: "Today", value: money(sumDay(today)) },
-    { icon: CalendarDays, label: "Yesterday", value: money(sumDay(yesterday)) },
-    { icon: Users, label: "People invited", value: String(people.length), note: joinedToday ? `+${joinedToday} today` : undefined },
+    { icon: Wallet, label: "Total earnings", value: money(Number(p?.referral_earnings ?? 0)), tone: "bg-emerald-500/10 text-emerald-600" },
+    { icon: CalendarDays, label: "Yesterday's earnings", value: money(sumDay(yesterday)), tone: "bg-amber-500/10 text-amber-500" },
+    { icon: Users, label: "Successfully invited", value: String(people.length), note: joinedToday ? `+${joinedToday} today` : undefined, tone: "bg-primary/10 text-primary" },
   ];
+  const status = [
+    { icon: Clock, label: "On hold", value: money(onHold), note: "Pending admin review", tone: "bg-amber-500/10 text-amber-500" },
+    { icon: Wallet, label: "Available to withdraw", value: money(Number(p?.balance ?? 0)), tone: "bg-emerald-500/10 text-emerald-600" },
+    { icon: CheckCircle2, label: "Paid", value: money(Number(p?.paid_total ?? 0)), tone: "bg-primary/10 text-primary" },
+  ];
+  type StatT = { icon: typeof Wallet; label: string; value: string; note?: string | undefined; tone: string };
+  const Stat = ({ c }: { c: StatT }) => (
+    <div className="flex gap-4 rounded-2xl border bg-card p-5">
+      <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${c.tone}`}><c.icon className="h-5 w-5" /></span>
+      <div><div className="text-sm text-muted-foreground">{c.label}</div><div className="text-2xl font-bold">{c.value}</div>{c.note && <div className="text-sm text-muted-foreground">{c.note}</div>}</div>
+    </div>
+  );
 
   return (
-    <div className="max-w-5xl">
-      <h1 className="text-2xl font-bold md:text-3xl">Referral Program</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {p?.plan === "referral" ? "You earn $0.10 for every new signup with your link, plus 10% of their view earnings." : "You earn 10% of the view earnings of everyone who joins with your link."}
+    <div className="max-w-6xl">
+      <h1 className="text-3xl font-bold">Referral Program</h1>
+      <p className="mt-1 text-muted-foreground">
+        {p?.plan === "referral" ? "Share your referral link. You earn $0.10 for every new user who signs up with it, plus 10% of their view earnings, credited automatically." : "Share your referral link. Whenever someone you invite earns from approved views, you're automatically credited 10% of it, with no cost to them."}
       </p>
 
-      <div className="mt-5 rounded-2xl border bg-card p-5">
+      <div className="mt-6 rounded-2xl border bg-card p-5">
         <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-accent text-accent-foreground"><Link2 className="h-5 w-5" /></span>
-          <div><div className="font-semibold">Your referral link</div><div className="text-sm text-muted-foreground">Share it to start earning.</div></div>
+          <span className="grid h-11 w-11 place-items-center rounded-full bg-primary/10 text-primary"><Link2 className="h-5 w-5" /></span>
+          <div><div className="font-semibold">Your referral link</div><div className="text-sm text-muted-foreground">Share it to start earning from your referrals.</div></div>
         </div>
-        <div className="mt-4 flex gap-2">
-          <Input readOnly value={link} className="font-mono text-sm" />
-          <Button variant="outline" aria-label="Copy referral link" onClick={() => { navigator.clipboard.writeText(link); toast.success("Link copied"); }}><Copy className="h-4 w-4" /></Button>
+        <div className="mt-4 flex items-center gap-2 rounded-xl bg-muted px-4 py-3">
+          <code className="min-w-0 flex-1 truncate font-mono text-sm">{link}</code>
+          <button aria-label="Copy referral link" className="rounded-lg p-2 text-muted-foreground hover:bg-background hover:text-foreground" onClick={() => { navigator.clipboard.writeText(link); toast.success("Link copied"); }}><Copy className="h-4 w-4" /></button>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-        {cards.map((c) => (
-          <div key={c.label} className="rounded-2xl border bg-card p-4">
-            <c.icon className="h-5 w-5 text-primary" />
-            <div className="mt-3 text-xs text-muted-foreground">{c.label}</div>
-            <div className="text-xl font-bold">{c.value}</div>
-            {c.note && <div className="text-xs font-medium text-primary">{c.note}</div>}
-          </div>
-        ))}
-      </div>
+      <div className="mt-6 grid gap-4 md:grid-cols-3">{cards.map((c) => <Stat key={c.label} c={c} />)}</div>
+      <h2 className="mt-8 text-lg font-semibold">Commission status</h2>
+      <div className="mt-3 grid gap-4 md:grid-cols-3">{status.map((c) => <Stat key={c.label} c={c} />)}</div>
 
       <h2 className="mt-8 font-semibold">People you invited</h2>
       <div className="mt-3 overflow-hidden rounded-2xl border bg-card">
