@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Replace dark public website with the supplied EfilerBox-style light design, Tanyora app links and matching footer; verify desktop/mobile.
 - [x] Custom shared-video player with 2x/3x speeds, remove player Download button, verify controls with compatible sample video and update VPS; original MP4 playback unverified in sandbox browser.
 - [x] Hide app file views, standardize upload metadata, verify and update VPS.
 - [x] Test main/subdomain split using two Lovable addresses until tanyora.com is bought
