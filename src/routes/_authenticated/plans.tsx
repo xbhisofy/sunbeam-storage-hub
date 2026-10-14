@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/plans")({
 
 // Placeholder pricing until Google Play subscription products are created.
 const plans = [
-  { id: "free", name: "Free", price: "$0", period: "forever", icon: Zap, perks: ["1 TB per file", "Share links", "Earn from views & signups"], current: true },
+  { id: "free", name: "Free", price: "$0", period: "forever", icon: Zap, perks: ["1 TB per file", "Share links", "Custom video player"], current: true },
   { id: "plus", name: "Plus", price: "$1.99", period: "per month", icon: Sparkles, perks: ["1 TB per file", "100 GB storage", "No ads while browsing", "Priority uploads"], popular: true },
   { id: "pro", name: "Pro", price: "$4.99", period: "per month", icon: Crown, perks: ["1 TB per file", "1 TB storage", "No ads", "Priority support"] },
 ];
@@ -28,9 +28,9 @@ function Plans() {
         <div className="flex items-center gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-primary"><p.icon className="h-5 w-5" /></span><h2 className="text-lg font-bold">{p.name}</h2></div>
         <p className="mt-4 text-3xl font-bold">{p.price} <span className="text-sm font-normal text-muted-foreground">{p.period}</span></p>
         <ul className="mt-4 space-y-2 text-sm">{p.perks.map(k => <li key={k} className="flex items-center gap-2"><Check className="h-4 w-4 shrink-0 text-primary" />{k}</li>)}</ul>
-        <Button className="mt-5 h-12 w-full rounded-xl" variant={p.current ? "outline" : "default"} disabled>{p.current ? "Current plan" : "Available soon on Google Play"}</Button>
+        <Button className="mt-5 h-12 w-full rounded-xl" variant={p.current ? "outline" : "default"} disabled>{p.current ? "Current plan" : "Coming soon"}</Button>
       </div>)}
     </div>
-    <p className="text-center text-xs text-muted-foreground">Subscriptions will be billed through Google Play once the Android app is live.</p>
+    <p className="text-center text-xs text-muted-foreground">Premium plans are not available for purchase yet. When they launch, they will be billed through Google Play.</p>
   </div>;
 }
