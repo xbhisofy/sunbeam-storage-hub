@@ -211,10 +211,10 @@
 .splash-underline { width: 232px; height: 24px; margin-top: -2px; filter: drop-shadow(var(--splash-line-glow)); }
 .splash-bottom { position: absolute; inset: auto 0 0; height: min(35%, 340px); min-height: 210px; }
 .splash-clouds { position: absolute; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; mask-image: linear-gradient(to bottom, transparent, var(--splash-paper) 25%); }
-.splash-tagline { position: absolute; bottom: max(60px, calc(env(safe-area-inset-bottom) + 44px)); left: 16px; right: 16px; text-align: center; line-height: 1.15; letter-spacing: 0; color: var(--splash-ink); animation: splash-rise .7s cubic-bezier(.2,.8,.2,1) .35s both; }
-.splash-tagline-title { display: block; font-size: 32px; font-weight: 900; }
-.splash-tagline-second { display: block; margin-top: 2px; font-size: 34px; font-weight: 400; font-style: italic; }
-.splash-tagline-second strong { font-weight: 1000; background: var(--splash-simple-gradient); background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(var(--splash-line-glow)); }
+.splash-tagline { position: absolute; bottom: max(60px, calc(env(safe-area-inset-bottom) + 44px)); left: 16px; right: 16px; text-align: center; font-family: 'Montserrat', 'Nunito Sans', system-ui, sans-serif; line-height: 1.15; letter-spacing: 0; color: var(--splash-ink); animation: splash-rise .7s cubic-bezier(.2,.8,.2,1) .35s both; }
+.splash-tagline-title { display: block; font-size: 30px; font-weight: 800; }
+.splash-tagline-second { display: block; margin-top: 2px; font-size: 34px; font-weight: 300; font-style: italic; }
+.splash-tagline-second strong { font-weight: 800; background: var(--splash-simple-gradient); background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(var(--splash-line-glow)); }
 @keyframes splash-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (max-width: 359px) { .splash-word { font-size: 44px; } .splash-tagline-title { font-size: 28px; } .splash-tagline-second { font-size: 30px; } }
 @media (max-height: 560px) { .splash-center { transform: translateY(-52px); } .splash-logo { width: 88px; height: 88px; border-radius: 22px; } .splash-word { font-size: 36px; } .splash-bottom { min-height: 140px; } .splash-tagline { bottom: max(22px, env(safe-area-inset-bottom)); } .splash-tagline-title, .splash-tagline-second { font-size: 26px; } }
