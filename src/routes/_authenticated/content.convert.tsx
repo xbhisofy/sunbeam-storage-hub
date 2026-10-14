@@ -44,7 +44,8 @@ function ConvertLink() {
   async function convert() {
     const input = url.trim();
     const match = input.match(/\/s\/([A-Za-z0-9_-]+)/);
-    if (!match) { toast.error("Paste a valid Tanyora share link", { description: "It should look like https://tanyora.com/s/…" }); return; }
+    const slug = match?.[1];
+    if (!slug) { toast.error("Paste a valid Tanyora share link", { description: "It should look like https://tanyora.com/s/…" }); return; }
     setBusy(true);
     const uid = await currentUserId();
     if (!uid) { setBusy(false); return; }
