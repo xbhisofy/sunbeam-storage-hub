@@ -58,7 +58,7 @@ function Shell() {
     if (error) { setLeaving(false); return; }
     navigate({ to: "/auth", replace: true });
   }
-  const title = [...nav, ...appNav].find(n => n.to === pathname)?.label ?? "Admin";
+  const title = pathname === "/content/convert" ? "Convert Link" : [...nav, ...appNav].find(n => n.to === pathname)?.label ?? "Admin";
   const row = "group relative flex h-12 w-full items-center gap-3 rounded-xl px-2 text-[15px] font-medium text-foreground/85 outline-none transition-colors active:bg-accent/60 focus-visible:ring-2 focus-visible:ring-ring [@media(hover:hover)]:hover:bg-accent/50";
   const active = "data-[status=active]:bg-primary/10 data-[status=active]:font-semibold data-[status=active]:text-primary";
   const tile = "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-data-[status=active]:bg-primary group-data-[status=active]:text-primary-foreground";
