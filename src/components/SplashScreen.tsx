@@ -4,10 +4,10 @@ import logoImg from "@/assets/tanyora-logo.jpg";
 
 /**
  * App-open splash, Terabox style: logo on top, the TANYORA wordmark sitting
- * still beneath it (no letter-by-letter typing), then the tagline rising in
- * below — on a flat white background matching the Android launch screen.
+ * still beneath it, then the big bold tagline rising in near the bottom —
+ * on a flat white background matching the Android launch screen.
  * Shown once per session on app screens.
- */
+  */
 export function SplashScreen() {
   const [state, setState] = useState<"hidden" | "show" | "leave">("hidden");
   useEffect(() => {
@@ -27,7 +27,6 @@ export function SplashScreen() {
         <p className="splash-word">Tanyo<span className="splash-word-accent">ra</span></p>
         <p className="splash-tagline">Cloud Sharing, Made Simple</p>
       </div>
-      <p className="splash-footer">from Tanyora</p>
     </div>
   );
 }
