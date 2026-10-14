@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useInstalledApp } from "@/lib/app-mode";
+import { PAYOUT_METHODS_SENTENCE } from "@/lib/payouts";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: z.object({ mode: z.enum(["login", "signup"]).optional(), ref: z.string().max(20).optional() }),
@@ -85,7 +86,7 @@ function AuthPage() {
             <h2 className="text-4xl font-extrabold leading-tight">Upload once.<br /><span className="landing-text">Earn from every view.</span></h2>
             <p className="mt-4 max-w-md text-muted-foreground">Share videos, audio and PDFs with a single link. Track views, referrals and payouts from one dashboard.</p>
             <ul className="mt-8 space-y-3 text-sm">
-              <li>$3.00 per 1,000 views</li><li>10% referral commission</li><li>Withdraw from $5 via UPI, PayPal or bank</li>
+              <li>$3.00 per 1,000 views</li><li>10% referral commission</li><li>Withdraw from $5 via {PAYOUT_METHODS_SENTENCE}</li>
             </ul>
           </div>
         )}
