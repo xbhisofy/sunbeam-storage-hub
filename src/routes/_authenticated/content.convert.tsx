@@ -49,7 +49,7 @@ function ConvertLink() {
     setBusy(true);
     const uid = await currentUserId();
     if (!uid) { setBusy(false); return; }
-    const { data: source, error } = await supabase.from("files").select("*").eq("slug", match[1]).maybeSingle();
+    const { data: source, error } = await supabase.from("files").select("*").eq("slug", slug).maybeSingle();
     if (error || !source) { setBusy(false); toast.error("Link not found", { description: "This share link does not exist or has expired." }); return; }
     if (source.owner_id === uid) { setBusy(false); toast.error("This is your own file", { description: "You already have a share link for it." }); return; }
     const { data: existing } = await supabase.from("files").select("id").eq("owner_id", uid).eq("storage_path", source.storage_path ?? "").eq("source", "converted").maybeSingle();
