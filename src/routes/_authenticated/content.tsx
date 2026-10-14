@@ -53,6 +53,7 @@ function Content() {
   const [newName, setNewName] = useState("");
   const [savingName, setSavingName] = useState(false);
   const [pickingExpiry, setPickingExpiry] = useState(false);
+  const [showingDetails, setShowingDetails] = useState(false);
   const [makingLink, setMakingLink] = useState(false);
 
   const { data: files = [] } = useQuery({
@@ -230,7 +231,7 @@ function Content() {
       )}
 
       {/* File actions — bottom sheet */}
-      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); setPickingExpiry(false); } }}>
+      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); setPickingExpiry(false); setShowingDetails(false); } }}>
         <SheetContent side="bottom" className="rounded-t-3xl px-2 pb-8 pt-3">
           {active && (
             <>
