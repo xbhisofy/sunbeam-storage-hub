@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_authenticated")({
 });
 const nav = [
   { to: "/dashboard", label: "Home", icon: Home },
-  { to: "/content", label: "My Files", icon: FolderOpen },
+  { to: "/content", label: "My Content", icon: FolderOpen },
   { to: "/earnings", label: "Earnings", icon: Wallet },
   { to: "/oc-bonus", label: "OC Bonus", icon: Gift },
   { to: "/referrals", label: "Referrals", icon: Users },
@@ -66,11 +66,15 @@ function Shell() {
   const menu = <nav className="flex flex-1 flex-col p-3" aria-label="Account navigation">
     <p className="px-3 pb-1.5 pt-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Menu</p>
     <div className="space-y-1">
-      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false, exact: n.to === "/content" }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><n.icon className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>{n.label}</Link>)}
-      {!app && <div className="ml-6 space-y-0.5 border-l pl-3">
-        <Link to="/content" activeOptions={{ exact: true }} onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 data-[status=active]:text-primary">All Content</Link>
-        <Link to="/content/convert" onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 data-[status=active]:text-primary">Convert Link</Link>
-      </div>}
+      {items.map(n => app
+        ? <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false, exact: n.to === "/content" }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><n.icon className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>{n.label}</Link>
+        : <div key={n.to}>
+            <Link to={n.to} activeOptions={{ includeSearch: false }} onClick={() => setDrawer(false)} className={`${row} gap-3.5 px-3 ${active}`}><n.icon className="h-5 w-5 shrink-0" strokeWidth={2} />{n.label}</Link>
+            {n.to === "/content" && <div className="my-1 ml-[22px] space-y-0.5 border-l pl-4">
+              <Link to="/content" activeOptions={{ exact: true }} onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground data-[status=active]:text-primary">All Content</Link>
+              <Link to="/content/convert" onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground data-[status=active]:text-primary">Convert Link</Link>
+            </div>}
+          </div>)}
     </div>
     {(!app || isAdmin) && <>
       <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
