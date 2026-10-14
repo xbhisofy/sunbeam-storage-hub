@@ -24,8 +24,8 @@ export function hostRedirect(host: string, path: string, mainUrl: string, webUrl
   return null;
 }
 
-/** Earnings, referrals and premium live only on the website; the installed app hides them. */
-export const WEB_ONLY_PATHS = ["/earnings", "/referrals", "/plans"];
+/** Earnings and referrals stay on the website; subscriptions are accessible in the app. */
+export const WEB_ONLY_PATHS = ["/earnings", "/referrals"];
 export function useInstalledApp() {
   const [app, setApp] = useState(false);
   useEffect(() => setApp(isInstalledApp()), []);

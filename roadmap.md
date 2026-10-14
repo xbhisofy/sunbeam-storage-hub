@@ -1,4 +1,6 @@
 # Roadmap
+- [x] Restore light app background, deepen only four Home category tiles, allow subscription plans in the app; tests passed and VPS updated.
+- [ ] Signed-in Go Ad Free tap verification (blocked: preview has no requesting-user account/session; owner must check in installed app).
 - [x] Replace dark public website with supplied EfilerBox-style light design, Tanyora app links and matching footer; desktop/mobile, FAQ and assets verified on VPS. Final Play listing URL awaits owner; Apple Coming soon.
 - [x] Custom shared-video player with 2x/3x speeds, remove player Download button, verify controls with compatible sample video and update VPS; original MP4 playback unverified in sandbox browser.
 - [x] Hide app file views, standardize upload metadata, verify and update VPS.
