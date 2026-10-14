@@ -301,7 +301,7 @@
 .website-paypal-mark { width:64px; height:72px; }
 .website-bank-mark { width:64px; height:64px; display:grid; place-items:center; border-radius:50%; background:var(--primary); color:var(--primary-foreground); box-shadow:var(--website-cta-shadow); }
 .website-bank-mark svg { width:29px; height:29px; stroke-width:2; }
-.website-usdt-mark { width:64px; height:64px; display:grid; place-items:center; border-radius:50%; background:var(--color-payout-usdt); color:var(--primary-foreground); box-shadow:var(--website-cta-shadow); font-size:34px; font-weight:700; line-height:1; }
+.website-usdt-mark { width:64px; height:64px; border-radius:50%; box-shadow:var(--website-cta-shadow); }
 .website-payouts h3 { font-size:22px; line-height:1.3; }
 .website-payouts p { font-size:14px; margin-top:6px; }
 .website-payout-note { display:flex; width:fit-content; max-width:100%; align-items:center; gap:12px; padding:18px 26px; border-radius:40px; border:1px solid var(--border); background:var(--card); margin:48px auto 0; font-size:14px; box-shadow:var(--website-shadow); }
@@ -423,7 +423,7 @@
  .website-payout-section .website-section-heading { margin-bottom:32px; }
  .website-payouts { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; } .website-payouts article { padding:24px 12px; border-radius:22px; }
  .website-payouts h3 { font-size:18px; } .website-payouts p { font-size:13px; }
- .website-payment-mark { height:64px; margin-bottom:16px; } .website-upi-mark { width:125px; height:50px; } .website-paypal-mark { width:52px; height:60px; } .website-bank-mark { width:58px; height:58px; } .website-usdt-mark { width:58px; height:58px; font-size:30px; }
+ .website-payment-mark { height:64px; margin-bottom:16px; } .website-upi-mark { width:125px; height:50px; } .website-paypal-mark { width:52px; height:60px; } .website-bank-mark { width:58px; height:58px; } .website-usdt-mark { width:58px; height:58px; }
  .website-payout-note { border-radius:18px; padding:16px; font-size:13px; margin-top:30px; }
  .website-download h2 { font-size:31px; } .website-download-phone { margin-top:12px; }
  .website-previews { gap:25px 14px; } .website-previews .website-phone { width:150px; height:303px; border-width:4px; border-radius:23px; padding:6px; }
