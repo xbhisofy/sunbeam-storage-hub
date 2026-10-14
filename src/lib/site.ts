@@ -2,8 +2,7 @@ export const site = {
   name: "Tanyora", intendedDomain: "tanyora.com",
   // Verified custom domains — split is live.
   publicUrl: "https://tanyora.com",
-  operator: "Abhishek kumar", location: "Vadodara, Gujarat, India",
-  supportEmail: "tanyora@support.com", updated: "October 9, 2026",
+  supportEmail: "tanyora@support.com", updated: "October 14, 2026",
   appId: "com.tanyora.app", appScheme: "tanyora",
   // Installed Android package (PWABuilder TWA); Play Store links must use this.
   androidPackage: "app.lovable.tanyora.twa",
