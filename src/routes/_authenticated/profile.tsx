@@ -3,9 +3,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Share2, Star, Info } from "lucide-react";
+import { Share2, Star, Info, Mail } from "lucide-react";
 import { useInstalledApp } from "@/lib/app-mode";
-import { Cloud, Wallet, Users, ShieldCheck, HelpCircle, ChevronRight, LogOut, Trash2, Pencil, Loader2, Crown } from "lucide-react";
+import { Cloud, Wallet, Users, ShieldCheck, HelpCircle, ChevronRight, LogOut, Trash2, Pencil, Loader2, Crown, BadgeCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,31 +66,9 @@ function Profile() {
     catch (e) { toast.error(e instanceof Error ? e.message : "Could not delete account"); setBusy(false); }
   }
   const app = useInstalledApp();
-  const account: Item[] = app
-    ? [
-      { to: "/content", title: "Storage", sub: "Manage your files", icon: Cloud },
-      { to: "/shared", title: "Shared files", sub: "Links you have shared", icon: Share2 },
-      { title: "Free Plan", sub: "Upgrade to unlock all features", icon: Star, action: () => setSheet("plan") },
-    ]
-    : [
-      { to: "/content", title: "Storage", sub: "Manage your storage", icon: Cloud },
-      { to: "/earnings", title: "Earnings", sub: "Track your balance and payouts", icon: Wallet },
-      { to: "/referrals", title: "Referrals", sub: "Invite friends and earn", icon: Users },
-      { title: "Free Plan", sub: "Upgrade to unlock all features", icon: Star, action: () => setSheet("plan") },
-    ];
-  const preferences: Item[] = [
-    { to: "/contact", title: "Help & support", sub: "Get help with the app", icon: HelpCircle },
-    { to: "/privacy", title: "Privacy policy", sub: "Read our privacy policy", icon: ShieldCheck },
-    { to: "/terms", title: "Terms of service", sub: "Read our terms of service", icon: ShieldCheck },
-    { title: "About", sub: "Learn more about the app", icon: Info, action: () => setSheet("about") },
-  ];
-  return <div className="mx-auto max-w-2xl space-y-6">
-    <h1 className="hidden text-3xl font-bold md:block">Profile</h1>
-    <section className="app-hero-card rounded-2xl p-5 text-primary-foreground"><div className="flex items-center gap-4"><span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary-foreground/20 text-2xl font-semibold">{p?.display_name?.[0]?.toUpperCase() ?? "T"}</span><div className="min-w-0 flex-1"><h2 className="truncate text-xl font-semibold">{p?.display_name ?? "Your account"}</h2><p className="mt-1 truncate text-sm text-primary-foreground/90">{p?.email}</p></div><Button size="icon" variant="ghost" aria-label="Edit profile" onClick={() => setEditing(true)} className="shrink-0 text-primary-foreground hover:bg-primary-foreground/20"><Pencil className="h-5 w-5" /></Button></div><div className="mt-5 flex items-center justify-between gap-3 border-t border-primary-foreground/20 pt-4"><p className="flex min-w-0 items-center gap-2 text-sm font-semibold"><Crown className="h-4 w-4 shrink-0" />Free Plan</p><Button size="sm" variant="secondary" asChild className="shrink-0 rounded-full"><Link to="/plans">Upgrade</Link></Button></div></section>
-    <section><h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Account</h2><MenuList items={account} /></section>
-    <section><h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preferences</h2><MenuList items={preferences} /></section>
-    <section><h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Danger zone</h2><div className="divide-y overflow-hidden rounded-2xl border border-destructive/20 bg-card"><Button variant="ghost" disabled={busy} className="h-16 w-full justify-start gap-4 rounded-none px-4 text-destructive" onClick={signOut}>{busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}Log out</Button><Button variant="ghost" disabled={busy} className="h-16 w-full justify-start gap-4 rounded-none px-4 text-destructive" onClick={removeAccount}><Trash2 className="h-5 w-5" />Delete account</Button></div></section>
+  const initial = p?.display_name?.[0]?.toUpperCase() ?? "T";
 
+  const sheets = <>
     <Sheet open={editing} onOpenChange={setEditing}><SheetContent side="bottom" className="mx-auto max-w-lg"><SheetTitle>Edit profile</SheetTitle><SheetDescription>Account details</SheetDescription><label htmlFor="display-name" className="mb-2 mt-6 block text-sm font-medium">Display name</label><Input id="display-name" value={name} onChange={e => setName(e.target.value)} maxLength={60} /><Button className="mt-5 w-full" disabled={busy || !name.trim()} onClick={save}>{busy && <Loader2 className="h-4 w-4 animate-spin" />}Save changes</Button></SheetContent></Sheet>
 
     <Sheet open={sheet === "plan"} onOpenChange={o => !o && setSheet(null)}><SheetContent side="bottom" className="mx-auto max-w-lg">
@@ -115,5 +93,59 @@ function Profile() {
         <p className="flex justify-between"><span className="text-muted-foreground">Support</span><span className="font-medium">Help & support page</span></p>
       </div>
     </SheetContent></Sheet>
+  </>;
+
+  if (!app) {
+    return <div className="mx-auto max-w-2xl space-y-6">
+      <section className="app-hero-card relative rounded-2xl px-5 pb-8 pt-10 text-center text-primary-foreground">
+        <Button size="icon" variant="ghost" aria-label="Edit profile" onClick={() => setEditing(true)} className="absolute right-4 top-4 text-primary-foreground hover:bg-primary-foreground/20"><Pencil className="h-5 w-5" /></Button>
+        <span className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-primary-foreground/20 text-3xl font-semibold">{initial}</span>
+        <h2 className="mt-4 truncate text-xl font-semibold">{p?.display_name ?? "Your account"}</h2>
+        <p className="mt-1 truncate text-sm text-primary-foreground/90">{p?.email}</p>
+        <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/20 px-3 py-1 text-xs font-semibold"><BadgeCheck className="h-3.5 w-3.5" />Verified</span>
+      </section>
+
+      <section className="divide-y overflow-hidden rounded-2xl border bg-card">
+        <div className="flex items-center gap-4 px-5 py-4">
+          <Mail className="h-5 w-5 shrink-0 text-muted-foreground" />
+          <div className="min-w-0"><p className="text-xs text-muted-foreground">Email</p><p className="truncate font-medium">{p?.email}</p></div>
+        </div>
+        <Button variant="ghost" asChild className="h-auto w-full justify-start gap-4 rounded-none px-5 py-4">
+          <Link to="/earnings">
+            <Wallet className="h-5 w-5 shrink-0 text-muted-foreground" />
+            <span className="min-w-0 text-left"><span className="block text-xs font-normal text-muted-foreground">Earnings & payouts</span><span className="block font-medium">View details</span></span>
+          </Link>
+        </Button>
+      </section>
+
+      <section>
+        <h2 className="mb-2 px-1 text-sm font-medium text-muted-foreground">Danger zone</h2>
+        <div className="space-y-3">
+          <Button variant="outline" disabled={busy} className="h-12 w-full gap-2 text-destructive hover:text-destructive" onClick={signOut}>{busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}Log out</Button>
+          <Button variant="outline" disabled={busy} className="h-12 w-full gap-2 text-destructive hover:text-destructive" onClick={removeAccount}><Trash2 className="h-5 w-5" />Delete account</Button>
+        </div>
+      </section>
+      {sheets}
+    </div>;
+  }
+
+  const account: Item[] = [
+    { to: "/content", title: "Storage", sub: "Manage your files", icon: Cloud },
+    { to: "/shared", title: "Shared files", sub: "Links you have shared", icon: Share2 },
+    { title: "Free Plan", sub: "Upgrade to unlock all features", icon: Star, action: () => setSheet("plan") },
+  ];
+  const preferences: Item[] = [
+    { to: "/contact", title: "Help & support", sub: "Get help with the app", icon: HelpCircle },
+    { to: "/privacy", title: "Privacy policy", sub: "Read our privacy policy", icon: ShieldCheck },
+    { to: "/terms", title: "Terms of service", sub: "Read our terms of service", icon: ShieldCheck },
+    { title: "About", sub: "Learn more about the app", icon: Info, action: () => setSheet("about") },
+  ];
+  return <div className="mx-auto max-w-2xl space-y-6">
+    <h1 className="hidden text-3xl font-bold md:block">Profile</h1>
+    <section className="app-hero-card rounded-2xl p-5 text-primary-foreground"><div className="flex items-center gap-4"><span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary-foreground/20 text-2xl font-semibold">{initial}</span><div className="min-w-0 flex-1"><h2 className="truncate text-xl font-semibold">{p?.display_name ?? "Your account"}</h2><p className="mt-1 truncate text-sm text-primary-foreground/90">{p?.email}</p></div><Button size="icon" variant="ghost" aria-label="Edit profile" onClick={() => setEditing(true)} className="shrink-0 text-primary-foreground hover:bg-primary-foreground/20"><Pencil className="h-5 w-5" /></Button></div><div className="mt-5 flex items-center justify-between gap-3 border-t border-primary-foreground/20 pt-4"><p className="flex min-w-0 items-center gap-2 text-sm font-semibold"><Crown className="h-4 w-4 shrink-0" />Free Plan</p><Button size="sm" variant="secondary" asChild className="shrink-0 rounded-full"><Link to="/plans">Upgrade</Link></Button></div></section>
+    <section><h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Account</h2><MenuList items={account} /></section>
+    <section><h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Preferences</h2><MenuList items={preferences} /></section>
+    <section><h2 className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Danger zone</h2><div className="divide-y overflow-hidden rounded-2xl border border-destructive/20 bg-card"><Button variant="ghost" disabled={busy} className="h-16 w-full justify-start gap-4 rounded-none px-4 text-destructive" onClick={signOut}>{busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogOut className="h-5 w-5" />}Log out</Button><Button variant="ghost" disabled={busy} className="h-16 w-full justify-start gap-4 rounded-none px-4 text-destructive" onClick={removeAccount}><Trash2 className="h-5 w-5" />Delete account</Button></div></section>
+    {sheets}
   </div>;
 }
