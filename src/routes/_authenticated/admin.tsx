@@ -84,6 +84,7 @@ function Admin() {
     { id: "withdrawals", label: "Payouts", icon: CreditCard, badge: s?.pending_count },
     { id: "users", label: "Users", icon: Users },
     { id: "files", label: "Content", icon: FolderOpen },
+    { id: "reports", label: "Reports", icon: Flag, badge: openReports },
   ];
 
   return (
@@ -99,7 +100,7 @@ function Admin() {
         </Button>
       </div>
 
-      <div className="mt-6 grid grid-cols-4 gap-1 rounded-2xl border bg-card p-1">
+      <div className="mt-6 grid grid-cols-5 gap-1 rounded-2xl border bg-card p-1">
         {tabs.map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`relative flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-xs font-medium transition-colors sm:flex-row sm:gap-2 sm:text-sm ${tab === t.id ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
@@ -115,6 +116,7 @@ function Admin() {
         {tab === "withdrawals" && <Withdrawals />}
         {tab === "users" && <UsersTab />}
         {tab === "files" && <FilesTab />}
+        {tab === "reports" && <ReportsTab />}
       </div>
     </div>
   );
