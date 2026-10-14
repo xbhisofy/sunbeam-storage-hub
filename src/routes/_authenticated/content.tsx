@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil, Clock, Eye, Search } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Link2, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil, Clock, Eye, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -118,14 +118,6 @@ function Content() {
     toast.success("Moved to trash", { description: f.name });
   }
 
-  async function download(f: FileRow) {
-    setActive(null);
-    if (!f.storage_path) return;
-    const { data, error } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 300, { download: f.name });
-    if (error || !data) { toast.error("Could not download the file"); return; }
-    window.location.href = data.signedUrl;
-  }
-
   function copyLink(f: FileRow) {
     setActive(null);
     navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`);
@@ -184,6 +176,16 @@ function Content() {
         </div>
         <div className="mt-4 rounded-2xl border bg-card p-3 shadow-sm">
           <Button className="gap-2" onClick={() => input.current?.click()} disabled={!!uploading}><Upload className="h-4 w-4" />Upload files</Button>
+          {uploading && (
+            <div role="status" aria-live="polite" className="mt-3 rounded-xl border px-4 py-3">
+              <div className="flex items-center justify-between gap-3">
+                <p className="truncate text-sm font-medium">{uploading.name}</p>
+                <span className="shrink-0 text-xs font-medium tabular-nums text-muted-foreground">{uploading.pct >= 100 ? "Finishing" : `${Math.round(uploading.pct)}%`}</span>
+              </div>
+              <Progress value={uploading.pct} className="mt-2 h-1.5" />
+            </div>
+          )}
+          <p className="mt-2 text-xs text-muted-foreground">Files you upload here also appear in the Tanyora app, and app uploads appear here.</p>
         </div>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
@@ -201,7 +203,7 @@ function Content() {
 
       {/* Upload (hidden input — triggered by the + button or the desktop Upload button) */}
       <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-      {uploading && (
+      {uploading && app && (
         <div role="status" aria-live="polite" className="fixed inset-x-3 bottom-24 z-40 mx-auto max-w-md rounded-2xl border bg-card p-4 shadow-xl md:bottom-6">
           <div className="flex items-center gap-3">
             <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -349,11 +351,6 @@ function Content() {
                 <button type="button" onClick={() => setShowingDetails(true)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Info className="h-5 w-5 text-muted-foreground" /> Details
                 </button>
-                {active.storage_path && (
-                  <button type="button" onClick={() => download(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
-                    <Download className="h-5 w-5 text-muted-foreground" /> Download
-                  </button>
-                )}
                 <button type="button" onClick={() => { setNewName(active.name); setRenaming(true); }} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Pencil className="h-5 w-5 text-muted-foreground" /> Rename
                 </button>
