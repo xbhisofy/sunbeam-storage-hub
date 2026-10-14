@@ -17,6 +17,13 @@ function Dashboard() {
     const uid = await currentUserId(); if (!uid) return [];
     return (await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false })).data ?? [];
   } });
+  const { data: watched = [] } = useQuery({ queryKey: ["recently-watched"], queryFn: async () => {
+    const uid = await currentUserId(); if (!uid) return [];
+    const { data: events } = await supabase.from("view_events").select("file_slug, day").eq("viewer_id", uid).order("day", { ascending: false }).limit(10);
+    const slugs = [...new Set((events ?? []).map(e => e.file_slug))].slice(0, 5);
+    if (!slugs.length) return [];
+    return (await supabase.from("files").select("*").in("slug", slugs)).data ?? [];
+  } });
   const used = files.reduce((s, f) => s + Number(f.size ?? 0), 0);
   const categories = [
     { label: "Documents", kind: "pdf", icon: FileText, tone: "category-document" },
