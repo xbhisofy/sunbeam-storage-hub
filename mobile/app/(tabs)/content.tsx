@@ -29,7 +29,7 @@ type FileRow = {
   size: number;
 };
 
-const MAX_SIZE = 50 * 1024 * 1024; // 50 MB — same limit as the website
+const MAX_SIZE = 1024 ** 4; // 1 TB — same limit as the website
 
 function typeOf(mime: string): string {
   if (mime.startsWith("video/")) return "video";
@@ -70,7 +70,7 @@ export default function Content() {
     if (result.canceled) return;
     const file = result.assets[0];
     if ((file.size ?? 0) > MAX_SIZE) {
-      Alert.alert("File too large", "You can upload files up to 50 MB.");
+      Alert.alert("File too large", "You can upload files up to 1 TB.");
       return;
     }
     setBusy(true);
