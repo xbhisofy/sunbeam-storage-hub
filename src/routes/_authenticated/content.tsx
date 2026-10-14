@@ -10,8 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { fileKind, formatSize, formatFileDate, fileMetadata } from "@/lib/format";
-import { isInstalledApp } from "@/lib/app-mode";
+import { fileKind, formatSize, formatFileDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/content")({
   validateSearch: z.object({ kind: z.enum(["pdf", "video", "audio", "image", "link"]).optional(), upload: z.enum(["video", "audio", "image", "document"]).optional() }),
@@ -53,6 +52,7 @@ function Content() {
   const [newName, setNewName] = useState("");
   const [savingName, setSavingName] = useState(false);
   const [pickingExpiry, setPickingExpiry] = useState(false);
+  const [showingDetails, setShowingDetails] = useState(false);
   const [makingLink, setMakingLink] = useState(false);
 
   const { data: files = [] } = useQuery({
@@ -230,7 +230,7 @@ function Content() {
       )}
 
       {/* File actions — bottom sheet */}
-      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); setPickingExpiry(false); } }}>
+      <Sheet open={!!active} onOpenChange={(o) => { if (!o) { setActive(null); setRenaming(false); setPickingExpiry(false); setShowingDetails(false); } }}>
         <SheetContent side="bottom" className="rounded-t-3xl px-2 pb-8 pt-3">
           {active && (
             <>
@@ -245,7 +245,36 @@ function Content() {
                   </div>
                 </div>
               </SheetHeader>
-              {pickingExpiry ? (
+              {showingDetails ? (
+                <div className="mt-1 px-4 pb-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">File details</p>
+                  <div className="mt-3 divide-y rounded-2xl border">
+                    <div className="flex items-center justify-between gap-4 px-4 py-3">
+                      <span className="text-sm text-muted-foreground">Name</span>
+                      <span className="max-w-[60%] truncate text-sm font-medium">{active.name}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4 px-4 py-3">
+                      <span className="text-sm text-muted-foreground">Type</span>
+                      <span className="text-sm font-medium capitalize">{active.file_type}</span>
+                    </div>
+                    {active.storage_path && (
+                      <div className="flex items-center justify-between gap-4 px-4 py-3">
+                        <span className="text-sm text-muted-foreground">Size</span>
+                        <span className="text-sm font-medium">{formatSize(active.size)}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between gap-4 px-4 py-3">
+                      <span className="text-sm text-muted-foreground">Uploaded</span>
+                      <span className="text-sm font-medium">{formatFileDate(active.created_at)}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4 px-4 py-3">
+                      <span className="text-sm text-muted-foreground">Source</span>
+                      <span className="text-sm font-medium capitalize">{active.storage_path ? "Uploaded file" : "Converted link"}</span>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="mt-3 w-full rounded-xl" onClick={() => setShowingDetails(false)}>Back</Button>
+                </div>
+              ) : pickingExpiry ? (
                 <div className="mt-1 px-4 pb-2">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">How long should the link work?</p>
                   <div className="mt-2 space-y-1">
@@ -282,9 +311,9 @@ function Content() {
                 </div>
               ) : (
               <div className="mt-1">
-                <Button variant="ghost" onClick={() => { setActive(null); toast.info(active.name, { description: fileMetadata(active, isInstalledApp()) }); }} className="flex h-auto w-full items-center justify-start gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium">
+                <button type="button" onClick={() => setShowingDetails(true)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                   <Info className="h-5 w-5 text-muted-foreground" /> Details
-                </Button>
+                </button>
                 {active.storage_path && (
                   <button type="button" onClick={() => download(active)} className="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-left text-[15px] font-medium transition-colors hover:bg-muted/60 active:bg-muted">
                     <Download className="h-5 w-5 text-muted-foreground" /> Download
