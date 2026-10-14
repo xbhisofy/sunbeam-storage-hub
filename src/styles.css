@@ -196,14 +196,12 @@
 .splash-leave { opacity: 0; pointer-events: none; }
 .splash-center { display: flex; flex-direction: column; align-items: center; gap: 0; }
 .splash-logo { width: 104px; height: 104px; border-radius: 26px; box-shadow: 0 16px 40px rgba(15, 23, 42, .16); animation: splash-pop .6s cubic-bezier(.2,.8,.2,1) both; }
-.splash-word { margin-top: 22px; font-size: clamp(30px, 9vw, 42px); font-weight: 800; letter-spacing: -.01em; color: oklch(0.2 0.02 255); }
+.splash-word { margin-top: 10px; font-size: clamp(30px, 9vw, 42px); font-weight: 800; letter-spacing: -.01em; color: oklch(0.2 0.02 255); }
 .splash-word-accent { color: var(--primary); }
-.splash-tagline { margin-top: 10px; font-size: clamp(17px, 4.6vw, 21px); font-weight: 500; letter-spacing: .01em; color: oklch(0.5 0.02 255); opacity: 0; animation: splash-rise .7s cubic-bezier(.2,.8,.2,1) .35s both; }
-.splash-footer { position: absolute; bottom: max(28px, env(safe-area-inset-bottom)); font-size: 13px; font-weight: 600; letter-spacing: .04em; color: oklch(0.55 0.02 255); opacity: 0; animation: splash-letter .5s ease .9s forwards; }
+.splash-tagline { position: absolute; bottom: max(44px, calc(env(safe-area-inset-bottom) + 36px)); left: 0; right: 0; text-align: center; padding: 0 24px; font-size: clamp(26px, 8vw, 40px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; color: oklch(0.2 0.02 255); opacity: 0; animation: splash-rise .7s cubic-bezier(.2,.8,.2,1) .35s both; }
 @keyframes splash-pop { from { transform: scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes splash-rise { from { transform: translateY(18px); opacity: 0; filter: blur(4px); } to { transform: none; opacity: 1; filter: none; } }
-@keyframes splash-letter { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .splash-tagline, .splash-logo, .splash-footer { animation: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .splash-tagline, .splash-logo { animation: none; opacity: 1; } }
 
 
 /* EfilerBox-inspired public website; isolated from the installed app. */
