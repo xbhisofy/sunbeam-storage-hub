@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
+import { VideoPlayer } from "@/components/VideoPlayer";
 import { pageHead, site } from "@/lib/site";
 import { formatSize } from "@/lib/format";
 
@@ -95,14 +96,14 @@ function SharePage() {
         ) : (
           <div>
             <h1 className="mb-4 truncate text-xl font-semibold">{data.name}</h1>
-            {data.file_type === "video" && <video src={data.url} controls autoPlay className="w-full rounded-xl bg-foreground" />}
+            {data.file_type === "video" && <VideoPlayer src={data.url} title={data.name} />}
             {data.file_type === "image" && <img src={data.url} alt={data.name} className="max-h-[80vh] w-full rounded-xl object-contain" />}
             {data.file_type === "audio" && <audio src={data.url} controls autoPlay className="w-full" />}
             {data.file_type === "other" && <p className="rounded-xl border bg-card p-6 text-muted-foreground">Preview not available. Use Download below.</p>}
             {data.file_type === "pdf" && <iframe src={data.url} title={data.name} className="h-[80vh] w-full rounded-xl border" />}
-            <Button variant="outline" className="mt-4" asChild>
+            {data.file_type !== "video" && <Button variant="outline" className="mt-4" asChild>
               <a href={data.url} target="_blank" rel="noreferrer"><Download className="h-4 w-4" /> Download</a>
-            </Button>
+            </Button>}
           </div>
         )}
         <p className="mt-6 text-center text-sm"><Link className="text-primary underline" to="/copyright">Copyright & safety complaints</Link></p>
