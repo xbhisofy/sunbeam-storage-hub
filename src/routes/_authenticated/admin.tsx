@@ -19,6 +19,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { StatusBadge } from "@/components/StatusBadge";
 import { money, formatSize } from "@/lib/format";
 import { ReportsTab, useOpenReports } from "@/components/AdminReports";
+import { MessagesTab, useNewMessages } from "@/components/AdminMessages";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => pageHead("Admin", "Tanyora admin panel.", undefined, true),
@@ -38,7 +39,7 @@ export function useIsAdmin() {
   });
 }
 
-type Tab = "overview" | "withdrawals" | "users" | "files" | "reports";
+type Tab = "overview" | "withdrawals" | "users" | "files" | "reports" | "messages";
 type Stats = { users: number; users_today: number; files: number; files_today: number; views: number; balance_total: number; paid_total: number; pending_count: number; pending_amount: number };
 
 const PAGE = 25;
@@ -70,6 +71,7 @@ function Admin() {
   const qc = useQueryClient();
   const { data: s } = useStats();
   const { data: openReports } = useOpenReports(!!isAdmin);
+  const { data: newMessages } = useNewMessages(!!isAdmin);
 
   if (isLoading) return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-32 w-full rounded-2xl" /></div>;
   if (!isAdmin) return (
@@ -87,6 +89,7 @@ function Admin() {
     { id: "users", label: "Users", icon: Users },
     { id: "files", label: "Content", icon: FolderOpen },
     { id: "reports", label: "Reports", icon: Flag, badge: openReports },
+    { id: "messages", label: "Messages", icon: Inbox, badge: newMessages },
   ];
 
   return (
@@ -102,7 +105,7 @@ function Admin() {
         </Button>
       </div>
 
-      <div className="mt-6 grid grid-cols-5 gap-1 rounded-2xl border bg-card p-1">
+      <div className="mt-6 grid grid-cols-3 gap-1 sm:grid-cols-6 rounded-2xl border bg-card p-1">
         {tabs.map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`relative flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-xs font-medium transition-colors sm:flex-row sm:gap-2 sm:text-sm ${tab === t.id ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
@@ -119,6 +122,7 @@ function Admin() {
         {tab === "users" && <UsersTab />}
         {tab === "files" && <FilesTab />}
         {tab === "reports" && <ReportsTab />}
+        {tab === "messages" && <MessagesTab />}
       </div>
     </div>
   );
