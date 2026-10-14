@@ -20,6 +20,7 @@ const nav = [
   { to: "/dashboard", label: "Home", icon: Home },
   { to: "/content", label: "My Files", icon: FolderOpen },
   { to: "/earnings", label: "Earnings", icon: Wallet },
+  { to: "/oc-bonus", label: "OC Bonus", icon: Gift },
   { to: "/referrals", label: "Referrals", icon: Users },
   { to: "/profile", label: "Profile", icon: User },
   { to: "/plans", label: "Premium", icon: Crown },

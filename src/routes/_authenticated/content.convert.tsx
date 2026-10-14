@@ -62,6 +62,7 @@ function ConvertLink() {
       size: source.size,
       storage_path: source.storage_path,
       source: "converted",
+      parent_file_id: source.id,
     });
     setBusy(false);
     if (e2) { toast.error("Could not convert", { description: e2.message }); return; }
