@@ -191,17 +191,34 @@
 .app-bottom { backdrop-filter: blur(14px); background: color-mix(in oklab, var(--card) 92%, transparent); }
 @media (max-width: 767px) { .app-main { padding-left: 16px; padding-right: 16px; } }
 
-/* App-open splash, Terabox style — big logo, still wordmark below, tagline rising in. Flat white matches the Android launch screen (#ffffff) */
-.splash { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: #ffffff; transition: opacity .45s ease; }
+/* Splash-only palette stays white to match the native launch screen. */
+:root, .dark {
+  --splash-paper: oklch(1 0 0);
+  --splash-ink: oklch(0.19 0.045 265);
+  --splash-blue: oklch(0.51 0.26 263);
+  --splash-sky: oklch(0.75 0.14 231);
+  --splash-word-gradient: linear-gradient(105deg, var(--splash-ink), var(--splash-blue) 68%);
+  --splash-simple-gradient: linear-gradient(165deg, var(--splash-sky), var(--splash-blue) 70%);
+  --splash-logo-glow: 0 0 48px color-mix(in oklab, var(--splash-sky) 38%, transparent), 0 10px 24px color-mix(in oklab, var(--splash-blue) 14%, transparent);
+  --splash-line-glow: 0 3px 5px color-mix(in oklab, var(--splash-sky) 45%, transparent);
+}
+.splash { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--splash-paper); transition: opacity .45s ease; font-family: 'Nunito Sans', system-ui, sans-serif; }
 .splash-leave { opacity: 0; pointer-events: none; }
-.splash-center { display: flex; flex-direction: column; align-items: center; gap: 0; }
-.splash-logo { width: 104px; height: 104px; border-radius: 26px; box-shadow: 0 16px 40px rgba(15, 23, 42, .16); animation: splash-pop .6s cubic-bezier(.2,.8,.2,1) both; }
-.splash-word { margin-top: 10px; font-size: clamp(30px, 9vw, 42px); font-weight: 800; letter-spacing: -.01em; color: oklch(0.2 0.02 255); }
-.splash-word-accent { color: var(--primary); }
-.splash-tagline { position: absolute; bottom: max(44px, calc(env(safe-area-inset-bottom) + 36px)); left: 0; right: 0; text-align: center; padding: 0 24px; font-size: clamp(26px, 8vw, 40px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; color: oklch(0.2 0.02 255); opacity: 0; animation: splash-rise .7s cubic-bezier(.2,.8,.2,1) .35s both; }
-@keyframes splash-pop { from { transform: scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
-@keyframes splash-rise { from { transform: translateY(18px); opacity: 0; filter: blur(4px); } to { transform: none; opacity: 1; filter: none; } }
-@media (prefers-reduced-motion: reduce) { .splash-tagline, .splash-logo { animation: none; opacity: 1; } }
+.splash-center { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0; transform: translateY(-28px); }
+.splash-logo { width: 124px; height: 124px; border-radius: 30px; box-shadow: var(--splash-logo-glow); }
+.splash-word { margin-top: 8px; font-size: 48px; font-weight: 1000; letter-spacing: 0; line-height: 1.12; color: var(--splash-ink); }
+.splash-word-accent { background: var(--splash-word-gradient); background-clip: text; -webkit-text-fill-color: transparent; }
+.splash-underline { width: 232px; height: 24px; margin-top: -2px; filter: drop-shadow(var(--splash-line-glow)); }
+.splash-bottom { position: absolute; inset: auto 0 0; height: min(35%, 340px); min-height: 210px; }
+.splash-clouds { position: absolute; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; mask-image: linear-gradient(to bottom, transparent, var(--splash-paper) 25%); }
+.splash-tagline { position: absolute; bottom: max(60px, calc(env(safe-area-inset-bottom) + 44px)); left: 16px; right: 16px; text-align: center; line-height: 1.15; letter-spacing: 0; color: var(--splash-ink); animation: splash-rise .7s cubic-bezier(.2,.8,.2,1) .35s both; }
+.splash-tagline-title { display: block; font-size: 32px; font-weight: 900; }
+.splash-tagline-second { display: block; margin-top: 2px; font-size: 34px; font-weight: 400; font-style: italic; }
+.splash-tagline-second strong { font-weight: 1000; background: var(--splash-simple-gradient); background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(var(--splash-line-glow)); }
+@keyframes splash-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (max-width: 359px) { .splash-word { font-size: 44px; } .splash-tagline-title { font-size: 28px; } .splash-tagline-second { font-size: 30px; } }
+@media (max-height: 560px) { .splash-center { transform: translateY(-52px); } .splash-logo { width: 88px; height: 88px; border-radius: 22px; } .splash-word { font-size: 36px; } .splash-bottom { min-height: 140px; } .splash-tagline { bottom: max(22px, env(safe-area-inset-bottom)); } .splash-tagline-title, .splash-tagline-second { font-size: 26px; } }
+@media (prefers-reduced-motion: reduce) { .splash-tagline { animation: none; opacity: 1; } }
 
 
 /* EfilerBox-inspired public website; isolated from the installed app. */
