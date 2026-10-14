@@ -445,8 +445,16 @@
  .website-section { padding-block:54px; } .website-section-heading { margin-bottom:32px; }
  .website-section-heading h2 { font-size:28px; } .website-section-heading p { font-size:15px; }
  .website-two-grid,.website-three-grid,.website-comparison,.website-download { grid-template-columns:1fr; gap:24px; }
- .website-step .website-feature { height:auto; padding-top:46px; } .website-step:not(:last-child)::after { display:none; } .website-step-number { width:55px; height:55px; font-size:23px; margin-bottom:-27px; box-shadow:var(--website-cta-shadow), 0 0 0 5px var(--background); }
- .website-feature { padding:28px 22px; } .website-feature h3 { font-size:21px; }
+ .website-two-grid,.website-three-grid { gap:14px; margin-top:0; }
+ .website-feature { display:grid; grid-template-columns:52px minmax(0,1fr); column-gap:16px; align-items:start; text-align:left; padding:20px 18px; border-radius:20px; }
+ .website-feature .website-icon { grid-row:span 2; width:52px; height:52px; border-radius:16px; margin:0; }
+ .website-icon svg { width:22px; height:22px; }
+ .website-feature h3 { font-size:17px; line-height:1.3; margin:2px 0 6px; }
+ .website-feature p { font-size:13.5px; line-height:1.55; margin:0; }
+ .website-feature:hover { transform:none; }
+ .website-step .website-feature { height:auto; padding:20px 18px; padding-right:52px; }
+ .website-step:not(:last-child)::after { display:block; top:auto; bottom:-14px; left:44px; width:0; height:14px; border-top:0; border-left:2px dashed color-mix(in oklab,var(--primary) 35%,var(--border)); }
+ .website-step-number { position:absolute; top:14px; right:14px; width:28px; height:28px; margin:0; font-size:13px; box-shadow:none; }
  .website-payout-section .website-section-heading { margin-bottom:32px; }
  .website-payouts { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; } .website-payouts article { padding:24px 12px; border-radius:22px; }
  .website-payouts h3 { font-size:18px; } .website-payouts p { font-size:13px; }
