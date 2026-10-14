@@ -65,7 +65,11 @@ function Shell() {
   const menu = <nav className="flex flex-1 flex-col p-3" aria-label="Account navigation">
     <p className="px-3 pb-1.5 pt-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Menu</p>
     <div className="space-y-1">
-      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><n.icon className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>{n.label}</Link>)}
+      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false, exact: n.to === "/content" }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><n.icon className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>{n.label}</Link>)}
+      {!app && <div className="ml-6 space-y-0.5 border-l pl-3">
+        <Link to="/content" activeOptions={{ exact: true }} onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 data-[status=active]:text-primary">All Content</Link>
+        <Link to="/content/convert" onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 data-[status=active]:text-primary">Convert Link</Link>
+      </div>}
     </div>
     {(!app || isAdmin) && <>
       <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
