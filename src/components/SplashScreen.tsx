@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { isInstalledApp } from "@/lib/app-mode";
 import logoImg from "@/assets/tanyora-logo.jpg";
+import cloudWaves from "@/assets/splash-cloud-waves.jpg";
 
 /**
- * App-open splash, Terabox style: logo on top, the TANYORA wordmark sitting
- * still beneath it, then the big bold tagline rising in near the bottom —
- * on a flat white background matching the Android launch screen.
+ * App-open splash: static brand above a softly illustrated tagline.
  * Shown once per session on app screens.
   */
 export function SplashScreen() {
@@ -24,8 +23,15 @@ export function SplashScreen() {
     <div aria-hidden className={`splash ${state === "leave" ? "splash-leave" : ""}`}>
       <div className="splash-center">
         <img src={logoImg} alt="" className="splash-logo" />
-        <p className="splash-word">Tanyo<span className="splash-word-accent">ra</span></p>
-        <p className="splash-tagline">Cloud Sharing, Made Simple</p>
+        <p className="splash-word">Tany<span className="splash-word-accent">ora</span></p>
+        <svg className="splash-underline" viewBox="0 0 320 32" fill="none">
+          <defs><linearGradient id="splash-line"><stop stopColor="var(--splash-sky)" stopOpacity="0"/><stop offset=".3" stopColor="var(--splash-blue)"/><stop offset=".75" stopColor="var(--splash-sky)"/><stop offset="1" stopColor="var(--splash-sky)" stopOpacity="0"/></linearGradient></defs>
+          <path d="M8 14 C95 -12 185 48 312 10" stroke="url(#splash-line)" strokeWidth="3.5" strokeLinecap="round"/>
+        </svg>
+      </div>
+      <div className="splash-bottom">
+        <img src={cloudWaves} alt="" width={1536} height={1024} className="splash-clouds" />
+        <p className="splash-tagline"><span className="splash-tagline-title">Cloud Sharing,</span><span className="splash-tagline-second">Made <strong>Simple</strong></span></p>
       </div>
     </div>
   );
