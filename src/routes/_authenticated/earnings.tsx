@@ -97,7 +97,7 @@ function Earnings() {
       </div>
 
       <h2 className="mt-8 text-lg font-semibold">Current balance</h2>
-      <div className="mt-3 grid gap-4 md:grid-cols-3">
+      <div className="mt-3 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {stats.map((s) => (
           <div key={s.label} className="flex gap-4 rounded-2xl border bg-card p-5">
             <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${s.tone}`}><s.icon className="h-5 w-5" /></span>

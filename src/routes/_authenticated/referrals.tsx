@@ -76,9 +76,9 @@ function Referrals() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-3">{cards.map((c) => <Stat key={c.label} c={c} />)}</div>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{cards.map((c) => <Stat key={c.label} c={c} />)}</div>
       <h2 className="mt-8 text-lg font-semibold">Commission status</h2>
-      <div className="mt-3 grid gap-4 md:grid-cols-3">{status.map((c) => <Stat key={c.label} c={c} />)}</div>
+      <div className="mt-3 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{status.map((c) => <Stat key={c.label} c={c} />)}</div>
 
       <h2 className="mt-8 font-semibold">People you invited</h2>
       <div className="mt-3 overflow-hidden rounded-2xl border bg-card">
