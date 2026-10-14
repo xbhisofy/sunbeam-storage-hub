@@ -14,6 +14,7 @@
 - Format file dates and app-safe file metadata through src/lib/format.ts so Home, file lists and details remain consistent without exposing website-only analytics in the app.
 - Centralize brand, operator contacts and the verified public host in src/lib/site.ts; keep intended domains separate to avoid unverified canonical and app links.
 - Use Brand and LegalFooter for shared branding and legal navigation; legal claims must match shipped functionality.
+- Public landing visuals are scoped to .landing; use StoreBadges for centralized store destinations and WebsiteAppPreview for explicitly illustrative previews without affecting installed-app screens.
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
 - Fetch shared-file details and start countdowns only inside the native app because browser share links only offer installation.
 - The Android app is a separate Expo (React Native) codebase in `mobile/` sharing the same Lovable Cloud backend; keep mobile code out of `src/` and never import it into the website.

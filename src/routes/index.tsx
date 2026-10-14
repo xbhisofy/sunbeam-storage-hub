@@ -1,195 +1,57 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { currentUserId } from "@/lib/session";
-import { isInstalledApp } from "@/lib/app-mode";
-import { Upload, Share2, Wallet, Users, UserPlus, Smartphone, BarChart3, ShieldCheck, Gift, Headphones, ArrowRight, CheckCircle2, Link2, DollarSign, Eye, Zap } from "lucide-react";
-import { Brand } from "@/components/Brand";
-import { LegalFooter } from "@/components/LegalFooter";
-import { site } from "@/lib/site";
-import { Button } from "@/components/ui/button";
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
+import { Upload, Share2, TrendingUp, HardDrive, ArrowRight, CheckCircle2, XCircle, Landmark, Wallet, CreditCard, Play, Download, ShieldCheck, Menu, X, Clock, FolderOpen } from 'lucide-react';
+import { currentUserId } from '@/lib/session';
+import { isInstalledApp } from '@/lib/app-mode';
+import { Brand } from '@/components/Brand';
+import { LegalFooter } from '@/components/LegalFooter';
+import { StoreBadges } from '@/components/StoreBadges';
+import { WebsiteAppPreview } from '@/components/WebsiteAppPreview';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { pageHead, site } from '@/lib/site';
+import sharingHero from '@/assets/sharing-hero.jpg';
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Tanyora — Secure cloud storage and file sharing" },
-      { name: "description", content: "Private cloud storage for videos, photos, audio and documents with expiring share links." },
-      { property: "og:title", content: "Tanyora — Secure cloud storage and file sharing" },
-      { property: "og:description", content: "Private cloud storage with expiring share links on web and Android." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: site.publicUrl + "/" },
-    ],
-    links: [{ rel: "canonical", href: site.publicUrl + "/" }],
-    scripts: [{
-      type: "application/ld+json",
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        name: "Tanyora",
-        applicationCategory: "UtilitiesApplication",
-        operatingSystem: "Web, Android",
-        description: "Private cloud storage for videos, photos, audio and documents with expiring share links.",
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      }),
-    }],
-  }),
+export const Route = createFileRoute('/')({
+  head: () => pageHead('Upload, share & monetize your content', 'Upload files, create expiring share links and manage your creator earnings with Tanyora on web and Android.', '/'),
   component: Home,
 });
-
+const signup = `${site.webUrl}/auth?mode=signup`;
+const navigation = [{label:'Features',id:'features'}, {label:'How It Works',id:'how-it-works'}, {label:'Download App',id:'download-app'}, {label:'Compare',id:'compare'}, {label:'FAQ',id:'faq'}];
 const steps = [
-  { icon: UserPlus, title: "1. Create an account", text: "Sign up free in 30 seconds with your name, email and password." },
-  { icon: Upload, title: "2. Upload & share", text: "Upload videos, audio or PDFs and copy your unique share link." },
-  { icon: Share2, title: "3. Share safely", text: "Pick how long a link works — 1 hour to never — and remove it anytime." },
+  { icon: Upload, title: 'Upload Your Files', text: 'Upload videos, images, audio and documents from your dashboard. Keep your files together, up to 50 MB each.' },
+  { icon: Share2, title: 'Share Your Links', text: 'Choose how long your link stays available. Share it in chats, groups, channels or directly with friends.' },
+  { icon: TrendingUp, title: 'Monetize Your Views', text: 'Track eligible views and creator earnings on the website. Request a payout when your balance reaches $5.' },
 ];
-const why = [
-  { icon: Smartphone, title: "Native app playback", text: "Viewers open your videos, audio and PDFs directly in the Tanyora Android app." },
-  { icon: BarChart3, title: "Organised library", text: "Browse documents, images, videos and music by category, rename and download any time." },
-  { icon: ShieldCheck, title: "Secure private storage", text: "Files are stored privately and are only reachable through your share link." },
-  { icon: Gift, title: "Expiring links", text: "Every share link can expire after 1 hour, 24 hours, 7 days or 30 days." },
-  { icon: Wallet, title: "You stay in control", text: "Delete files, remove shares or delete your whole account from settings." },
-  { icon: Headphones, title: "Dedicated support", text: `Questions? Reach our team at ${site.supportEmail}.` },
+const faqs = [
+  ['What is Tanyora and how does it work?', 'Tanyora brings your files into one library. Upload from your account, create a share link and choose when it expires. Your creator earnings and views are available on the website.'],
+  ['What can I upload, and how big?', 'Upload videos, images, audio, documents and archives, up to 50 MB per file. Only upload content you own or have permission to share.'],
+  ['How do people open my shared files?', 'Share links open in the Tanyora Android app. People opening a link in a browser are offered the Android app installation page.'],
+  ['Can I set a time limit on a link?', 'Yes. Choose 1 hour, 24 hours, 7 days, 30 days or Never expires when sharing. You can also remove a share or delete the file.'],
+  ['How does the Creator Program work?', 'The website offers a View-Based Plan and a Signup Referral Plan. Earnings are subject to eligible activity, anti-fraud checks and our Terms of Service. The Android app focuses on file storage and sharing.'],
+  ['How do I request a payout?', 'Request a withdrawal from the website when your balance reaches $5. Available methods are UPI, PayPal and bank transfer. Requests are reviewed before payment.'],
+  ['Can I invite other creators?', 'Yes. Your website account includes a referral link and referral tracking. Your referral rewards depend on the current program rules in your account.'],
+  ['How do I report a file or get help?', 'Visit Report content for a content concern, or Contact support for account and product questions. Copyright requests can be submitted through the Copyright & DMCA page.'],
 ];
-
+function Tag({ children }: { children: React.ReactNode }) { return <span className="website-tag"><span />{children}</span>; }
+function CTA({children='Get Started Now'}:{children?:React.ReactNode}) {return <Button asChild size="lg" className="website-cta"><a href={signup}>{children}<ArrowRight aria-hidden="true" /></a></Button>;}
 function Home() {
   const navigate = useNavigate();
-  useEffect(() => {
-    // Installed web apps retain the existing start URL; route to the actual experience.
-    if (!isInstalledApp()) return;
-    currentUserId().then(uid => navigate({ to: uid ? "/dashboard" : "/auth", replace: true }));
-  }, [navigate]);
-  return (
-    <div className="landing relative min-h-screen">
-      <div className="landing-blob landing-blob-a -left-40 -top-40 h-[34rem] w-[34rem]" aria-hidden />
-      <div className="landing-blob landing-blob-b -right-40 top-[42rem] h-[30rem] w-[30rem]" aria-hidden />
-      <header className="sticky top-0 z-30 border-b border-transparent bg-background/60 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
-          <Brand />
-          <nav className="hidden gap-8 text-sm font-medium text-muted-foreground lg:flex">
-            <a href="#" className="hover:text-foreground">Home</a>
-            <a href="#features" className="hover:text-foreground">Features</a>
-            <a href="#rates" className="hover:text-foreground">Creator Program</a>
-            <a href="/faq" className="hover:text-foreground">FAQ</a>
-          </nav>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <Button variant="ghost" asChild className="hidden hover:bg-accent hover:text-foreground sm:inline-flex"><a href={`${site.webUrl}/auth`}>Log in</a></Button>
-            <Button asChild className="landing-shadow rounded-full px-5"><a href={`${site.webUrl}/auth?mode=signup`}>Get Started</a></Button>
-          </div>
-        </div>
-      </header>
-
-      <section className="relative">
-        <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-14 sm:px-5 md:pt-24 lg:grid-cols-2">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-sm font-medium text-accent-foreground"><span className="h-2 w-2 animate-pulse rounded-full bg-primary" />Store. Share. Stay in control.</span>
-            <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">Your files, safe and <span className="landing-text block">ready to share.</span></h1>
-            <p className="mt-6 max-w-lg text-base text-muted-foreground sm:text-lg">Upload videos, photos, audio and documents to private cloud storage. Create share links with an expiry time and open them anywhere on web or Android.</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><a href={`${site.webUrl}/auth?mode=signup`}>Get Started <ArrowRight className="h-4 w-4" /></a></Button>
-              <Button size="lg" variant="outline" asChild className="h-12 rounded-full border-primary/40 bg-transparent px-8 text-accent-foreground hover:bg-accent"><a href="#features">See features</a></Button>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success" />Free account</span>
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-success" />Expiring share links</span>
-            </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div className="landing-glass landing-float rounded-3xl p-6 shadow-2xl">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Storage used</p>
-                  <p className="mt-1 text-4xl font-bold">2.4 GB <span className="text-base font-normal text-muted-foreground">used</span></p>
-                </div>
-                <span className="rounded-full bg-success/15 px-2.5 py-1 text-xs font-semibold text-success">Synced</span>
-              </div>
-              <svg viewBox="0 0 300 120" className="mt-5 h-36 w-full rounded-2xl bg-background/50 p-3" aria-hidden>
-                <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stopColor="var(--primary)" /><stop offset="1" stopColor="oklch(0.66 0.21 300)" /></linearGradient></defs>
-                <path d="M5 100 C 50 90, 70 110, 110 80 S 170 20, 200 70 S 250 110, 290 15" fill="none" stroke="url(#lg)" strokeWidth="4" strokeLinecap="round" />
-              </svg>
-              <div className="mt-5">
-                <div className="flex justify-between text-xs text-muted-foreground"><span>Documents · Images · Videos</span><span></span></div>
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-background/60"><div className="h-full w-[48%] rounded-full" style={{ backgroundImage: "var(--landing-text)" }} /></div>
-              </div>
-            </div>
-            <div className="landing-glass landing-float-slow absolute -left-4 -top-14 flex items-center gap-3 rounded-2xl p-3 pr-5 shadow-xl sm:-left-10">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-accent-foreground"><Link2 className="h-5 w-5" /></span>
-              <div><p className="text-sm font-semibold">Share link created</p><p className="text-[11px] uppercase tracking-wider text-muted-foreground">tanyora · /s/xy92p</p></div>
-            </div>
-            <div className="landing-glass landing-float-slow absolute -bottom-6 -right-2 flex items-center gap-3 rounded-2xl p-3 pr-5 shadow-xl sm:-right-8">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-success/15 text-success"><ShieldCheck className="h-5 w-5" /></span>
-              <div><p className="text-sm font-semibold">Link expires in 7 days</p><p className="text-[11px] uppercase tracking-wider text-muted-foreground">You can remove it anytime</p></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative mx-auto max-w-6xl px-4 py-20 sm:px-5">
-        <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Simple 3-Step Process</h2>
-        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Get started in under a minute — no technical knowledge needed.</p>
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {steps.map((f) => (
-            <div key={f.title} className="landing-card rounded-3xl p-7 text-center">
-              <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary/15 text-accent-foreground"><f.icon className="h-6 w-6" /></span>
-              <h3 className="mt-5 text-xl font-bold">{f.title}</h3>
-              <p className="mt-2 text-muted-foreground">{f.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-20">
-        <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Why Tanyora</h2>
-        <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Everything you need to store and share files, in one place.</p>
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {why.map((f) => (
-            <div key={f.title} className="landing-card rounded-2xl p-7">
-              <span className="grid h-12 w-12 place-items-center rounded-xl bg-accent text-accent-foreground"><f.icon className="h-5 w-5" /></span>
-              <h3 className="mt-5 text-lg font-bold">{f.title}</h3>
-              <p className="mt-2 text-muted-foreground">{f.text}</p>
-            </div>
-          ))}
-        </div>
-        <div className="landing-glow mt-12 flex flex-col items-center gap-5 rounded-3xl border p-8 sm:p-12 text-center">
-          <h3 className="text-3xl font-bold">Start storing your files today</h3>
-          <Button size="lg" asChild className="landing-shadow h-12 rounded-full px-8"><a href={`${site.webUrl}/auth?mode=signup`}>Create free account <ArrowRight className="h-4 w-4" /></a></Button>
-        </div>
-      </section>
-      <section id="rates" className="relative scroll-mt-20 py-20">
-        <div className="mx-auto max-w-5xl px-5">
-          <h2 className="text-center text-3xl font-extrabold sm:text-5xl">Creator Program</h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-muted-foreground">Optional for creators: earn from genuine views or referrals. Rewards are subject to our Terms and anti-fraud checks. Switch plans up to 3 times.</p>
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
-            {[
-              { icon: Users, name: "Signup Referral", sub: "Maximize referral growth", price: "$0.10", unit: "per new signup", focus: "User growth" },
-              { icon: Eye, name: "View-Based", sub: "Scale high-traffic links", price: "$3.00", unit: "per 1,000 views", focus: "Views & scaling" },
-            ].map((p) => (
-              <div key={p.name} className="landing-card rounded-3xl p-6 sm:p-7">
-                <div className="flex items-center gap-4">
-                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent text-accent-foreground"><p.icon className="h-6 w-6" /></span>
-                  <div><h3 className="text-2xl font-bold">Plan: {p.name}</h3><p className="text-sm text-muted-foreground">{p.sub}</p></div>
-                </div>
-                <div className="mt-6 rounded-2xl border bg-background/60 p-5">
-                  <p className="flex items-center gap-2 text-sm text-muted-foreground"><Zap className="h-4 w-4 text-primary" />Earnings</p>
-                  <p className="mt-1 text-3xl font-bold">{p.price} <span className="text-base font-normal text-muted-foreground">{p.unit}</span></p>
-                </div>
-                <div className="mt-6 grid grid-cols-2 gap-4 border-t pt-5 text-sm">
-                  <div><p className="text-xs uppercase tracking-wider text-muted-foreground">Payout</p><p className="mt-1 font-semibold">On-demand, min $5</p></div>
-                  <div><p className="text-xs uppercase tracking-wider text-muted-foreground">Focus</p><p className="mt-1 font-semibold">{p.focus}</p></div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div id="referral" className="mt-6 scroll-mt-24 landing-card rounded-3xl p-6 sm:p-7">
-            <div className="flex items-center gap-4">
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent text-accent-foreground"><Share2 className="h-6 w-6" /></span>
-              <div><h3 className="text-2xl font-bold">Referral Program</h3><p className="text-sm text-muted-foreground">Earn from the users you invite</p></div>
-            </div>
-            <p className="mt-5 text-3xl font-bold">10% <span className="text-base font-normal text-muted-foreground">of their view earnings</span></p>
-            <p className="mt-3 text-muted-foreground">Share your permanent referral link. Whenever someone who joined through it earns from views, 10% is credited to your balance automatically, on top of their earnings, not taken from them.</p>
-          </div>
-        </div>
-      </section>
-
-      <LegalFooter />
-    </div>
-  );
+  const [menu, setMenu] = useState(false);
+  useEffect(() => { if (isInstalledApp()) currentUserId().then(uid => navigate({ to: uid ? '/dashboard' : '/auth', replace: true })); }, [navigate]);
+  return <div className="landing">
+    <a href="#main" className="website-skip">Skip to content</a>
+    <header className="website-header"><div className="website-container website-header-inner"><Link to="/" aria-label="Tanyora home"><Brand /></Link><nav aria-label="Main navigation" className="website-desktop-nav">{navigation.map(n=><a key={n.id} href={`#${n.id}`}>{n.label}</a>)}<Link to="/terms">Terms</Link><Link to="/copyright">DMCA</Link></nav><div className="website-header-actions"><Button asChild variant="ghost" className="website-signin"><a href={`${site.webUrl}/auth`}>Sign in</a></Button><Button asChild className="website-join"><a href={signup}>Join us</a></Button><Button size="icon" variant="ghost" className="website-menu-button" aria-label={menu?'Close navigation':'Open navigation'} aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</Button></div></div>{menu&&<nav className="website-mobile-nav" aria-label="Mobile navigation">{navigation.map(n=><a key={n.id} href={`#${n.id}`} onClick={()=>setMenu(false)}>{n.label}</a>)}<Link to="/terms">Terms</Link><Link to="/copyright">DMCA</Link></nav>}</header>
+    <main id="main">
+      <section className="website-hero website-container"><div className="website-hero-copy"><Tag>Upload, Share & Monetize</Tag><h1>Share Files,<br/><span>Monetize Views</span><br/>With Tanyora</h1><p>Store your files, share one link, and keep everything in your control. <strong>Turn eligible views into earnings</strong> with our website Creator Program.</p><Button asChild className="website-cta" size="lg"><a href={signup}><Upload aria-hidden="true"/>Start for Free</a></Button><div className="website-facts"><div><span><HardDrive/></span><p><strong>50 MB</strong><small>per file</small></p></div><div><span><TrendingUp/></span><p><strong>Views</strong><small>website tracking</small></p></div></div><StoreBadges/></div><div className="website-hero-art"><img src={sharingHero} alt="Illustrative file cards and a weekly views chart showing 8,400 example views" width={1200} height={1008}/></div></section>
+      <section id="features" className="website-section website-container"><div className="website-section-heading"><Tag>Cloud Storage</Tag><h2>Why Tanyora Cloud Storage?</h2></div><div className="website-two-grid">{[{icon:HardDrive,title:'Store Files of Any Format',text:'Upload videos, images, audio, documents and archives, up to 50 MB each. Everything you share lives in one organised library.'},{icon:Share2,title:'Seamless Sharing',text:'Share any file with a simple link. Choose an expiry time and open shared content in the Tanyora Android app.'}].map(f=><article className="website-feature" key={f.title}><span className="website-icon"><f.icon/></span><h3>{f.title}</h3><p>{f.text}</p></article>)}</div></section>
+      <section id="how-it-works" className="website-section website-container"><div className="website-section-heading"><h2>Start Sharing in <span>3 Simple Steps</span></h2><p>From your first upload to your next shared link, it's as easy as 1–2–3.</p></div><div className="website-three-grid">{steps.map((f,i)=><article className="website-step" key={f.title}><div className="website-step-number">{i+1}</div><div className="website-feature"><span className="website-icon"><f.icon/></span><h3>{f.title}</h3><p>{f.text}</p></div></article>)}</div><div className="website-centered"><CTA/></div></section>
+      <section id="compare" className="website-section website-container"><div className="website-section-heading"><h2>Why Choose <span>Tanyora?</span></h2><p>A closer look at the tools available for your files.</p></div><div className="website-comparison"><article className="website-compare-card website-preferred"><span className="website-label">ALL IN ONE PLACE</span><span className="website-compare-icon"><CheckCircle2/></span><h3>Tanyora</h3><ul>{['Videos, photos, audio and documents','Views and earnings on the website','Expiring links with flexible time limits','Rename and organise your files','Custom video controls with 2x and 3x','Web dashboard and Android app'].map(t=><li key={t}><CheckCircle2/>{t}</li>)}</ul><CTA/></article><article className="website-compare-card"><span className="website-compare-icon website-neutral"><FolderOpen/></span><h3>Basic File Sharing</h3><ul>{['Send separate attachments to each person','Track shared content manually','Resend files when attachments expire','Keep copies across chats and folders','Playback depends on the receiving app','Features vary between providers'].map(t=><li key={t}><XCircle/>{t}</li>)}</ul></article></div></section>
+      <section className="website-section website-tinted"><div className="website-container"><div className="website-section-heading"><h2>Flexible <span>Payout Options</span></h2><p>Request your creator earnings from the website using your preferred payout method.</p></div><div className="website-payouts">{[{icon:CreditCard,name:'UPI',hint:'India'},{icon:Wallet,name:'PayPal',hint:'PayPal account'},{icon:Landmark,name:'Bank Transfer',hint:'Direct to your bank'}].map(p=><article key={p.name}><span className="website-icon"><p.icon/></span><h3>{p.name}</h3><p>{p.hint}</p></article>)}</div><p className="website-payout-note"><ShieldCheck/>Minimum withdrawal $5 · Requests are reviewed before payment</p></div></section>
+      <section id="download-app" className="website-section website-container website-download"><div><Tag>Download Our App</Tag><h2>Access Files Anywhere<br/>with <span>Tanyora Mobile</span></h2><p>Watch and open shared files on the go. Keep your library close, wherever the day takes you.</p><ul className="website-mobile-features">{[{icon:Play,title:'Custom Video Playback',text:'Play, seek and choose playback speeds up to 3x.'},{icon:Download,title:'File Downloads',text:'Download your files to your device whenever you need them.'},{icon:Clock,title:'Share on Your Terms',text:'Choose how long a link works, from 1 hour to never.'}].map(f=><li key={f.title}><span><f.icon/></span><div><h3>{f.title}</h3><p>{f.text}</p></div></li>)}</ul><StoreBadges/></div><div className="website-download-phone"><WebsiteAppPreview/></div></section>
+      <section className="website-section website-container"><div className="website-section-heading"><Tag>Inside the App</Tag><h2>See Tanyora in Action</h2><p>Your files, shared content and account, brought together in one app.</p></div><div className="website-previews">{[{screen:'home' as const,title:'Your files at a glance',text:'Find your recent files and browse by category.'},{screen:'files' as const,title:'An organised library',text:'Rename, download and manage your uploaded files.'},{screen:'share' as const,title:'Made for sharing',text:'Play shared videos with your own custom controls.'},{screen:'profile' as const,title:'Your account, together',text:'Storage, your plan and support in one place.'}].map(p=><article key={p.screen}><WebsiteAppPreview screen={p.screen}/><h3>{p.title}</h3><p>{p.text}</p></article>)}</div><p className="website-example-note">Illustrative app previews with sample files. Figures marked “Example” are illustrative.</p></section>
+      <section id="faq" className="website-section website-tinted"><div className="website-container"><div className="website-section-heading"><Tag>Help</Tag><h2>Frequently Asked <span>Questions</span></h2><p>Can't find an answer? <Link to="/contact">Contact support.</Link></p></div><Accordion type="single" collapsible defaultValue="faq-0" className="website-faq">{faqs.map(([q,a],i)=><AccordionItem value={`faq-${i}`} key={q}><AccordionTrigger>{q}</AccordionTrigger><AccordionContent>{a}{i===7&&<Link to="/content-reporting" className="website-report-link">Report content <ArrowRight size={14}/></Link>}</AccordionContent></AccordionItem>)}</Accordion></div></section>
+      <section className="website-final website-container"><div><Tag>Free to Join</Tag><h2>Ready to Share Your First File?</h2><p>Free to join and free to upload. Creator earnings are subject to our <Link to="/terms">Terms of Service.</Link></p></div><CTA>Create Free Account</CTA></section>
+    </main><LegalFooter variant="marketing"/>
+  </div>;
 }
