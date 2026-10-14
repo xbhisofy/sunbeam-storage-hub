@@ -13,6 +13,7 @@ import { pageHead, site } from '@/lib/site';
 import sharingHero from '@/assets/sharing-hero.jpg';
 import upiLogo from '@/assets/payout-upi.svg.asset.json';
 import paypalLogo from '@/assets/payout-paypal-mark.png.asset.json';
+import tetherLogo from '@/assets/tether.png.asset.json';
 import { PAYOUT_METHODS, PAYOUT_METHODS_SENTENCE } from '@/lib/payouts';
 
 export const Route = createFileRoute('/')({
