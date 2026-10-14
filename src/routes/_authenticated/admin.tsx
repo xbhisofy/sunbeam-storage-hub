@@ -4,7 +4,7 @@ import { useEffect, useState, type ComponentType } from "react";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import {
   Users, FileText, Eye, Wallet, Clock, CheckCircle2, ShieldAlert, Search, Trash2,
-  RefreshCw, LayoutDashboard, CreditCard, FolderOpen, Ban, ExternalLink, Copy, ArrowUpRight, Inbox,
+  RefreshCw, LayoutDashboard, CreditCard, FolderOpen, Ban, ExternalLink, Copy, ArrowUpRight, Inbox, Flag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { pageHead } from "@/lib/site";
@@ -37,7 +37,7 @@ export function useIsAdmin() {
   });
 }
 
-type Tab = "overview" | "withdrawals" | "users" | "files";
+type Tab = "overview" | "withdrawals" | "users" | "files" | "reports";
 type Stats = { users: number; users_today: number; files: number; files_today: number; views: number; balance_total: number; paid_total: number; pending_count: number; pending_amount: number };
 
 const PAGE = 25;
@@ -68,6 +68,12 @@ function Admin() {
   const [tab, setTab] = useState<Tab>("overview");
   const qc = useQueryClient();
   const { data: s } = useStats();
+  const { data: openReports } = useQuery({
+    queryKey: ["admin-reports-open"],
+    enabled: !!isAdmin,
+    refetchInterval: 30_000,
+    queryFn: async () => (await supabase.from("reports").select("id", { count: "exact", head: true }).eq("status", "open")).count ?? 0,
+  });
 
   if (isLoading) return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-32 w-full rounded-2xl" /></div>;
   if (!isAdmin) return (
