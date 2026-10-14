@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { site } from "@/lib/site";
+import { Brand } from "@/components/Brand";
+import { StoreBadges } from "@/components/StoreBadges";
 
 type Item = { to: string; label: string };
 const groups: { title: string; items: Item[] }[] = [
@@ -23,7 +25,8 @@ const groups: { title: string; items: Item[] }[] = [
   ] },
 ];
 
-export function LegalFooter() {
+export function LegalFooter({ variant = "default" }: { variant?: "default" | "marketing" }) {
+  if (variant === "marketing") return <footer className="website-footer"><div className="website-container website-footer-grid"><div className="website-footer-brand"><Brand /><p>Tanyora helps you upload, share and manage your files with a fast, simple experience.</p><StoreBadges /></div><nav aria-label="Quick links"><h3>Quick Links</h3><a href={`${site.webUrl}/content`}>Upload Files</a><a href={`${site.webUrl}/dashboard`}>Dashboard</a><a href={`${site.webUrl}/auth`}>Sign In</a><a href={site.playStoreUrl} target="_blank" rel="noopener noreferrer">Android App</a></nav><nav aria-label="Resources"><h3>Resources</h3><a href="#how-it-works">How It Works</a><Link to="/faq">FAQ</Link><Link to="/acceptable-use">Content Rules</Link><Link to="/content-reporting">Report a File</Link><Link to="/contact">Contact Support</Link></nav><nav aria-label="Legal"><h3>Legal</h3><Link to="/terms">Terms of Service</Link><Link to="/privacy">Privacy Policy</Link><Link to="/copyright">Copyright & DMCA</Link><Link to="/child-safety">Child Safety</Link><Link to="/delete-account">Delete Account</Link></nav></div><div className="website-container website-footer-bottom"><span>© {new Date().getFullYear()} {site.name} · Operated by {site.operator}</span><div><Link to="/cookies">Cookies</Link><Link to="/security">Security</Link><Link to="/grievance">Grievance Officer</Link><Link to="/data-retention">Data Retention</Link><Link to="/community-guidelines">Community Guidelines</Link><Link to="/refunds">Refunds</Link><Link to="/law-enforcement">Law Enforcement</Link></div></div></footer>;
   return (
     <footer className="border-t bg-card/40 px-5 pb-8 pt-12 text-sm text-muted-foreground">
       <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-5">
