@@ -301,7 +301,7 @@
 .website-paypal-mark { width:64px; height:72px; }
 .website-bank-mark { width:64px; height:64px; display:grid; place-items:center; border-radius:50%; background:var(--primary); color:var(--primary-foreground); box-shadow:var(--website-cta-shadow); }
 .website-bank-mark svg { width:29px; height:29px; stroke-width:2; }
-.website-usdt-mark { width:64px; height:64px; display:grid; place-items:center; border-radius:50%; background:var(--color-payout-usdt); color:var(--primary-foreground); box-shadow:var(--website-cta-shadow); font-size:34px; font-weight:700; line-height:1; }
+.website-usdt-mark { width:64px; height:64px; border-radius:50%; box-shadow:var(--website-cta-shadow); }
 .website-payouts h3 { font-size:22px; line-height:1.3; }
 .website-payouts p { font-size:14px; margin-top:6px; }
 .website-payout-note { display:flex; width:fit-content; max-width:100%; align-items:center; gap:12px; padding:18px 26px; border-radius:40px; border:1px solid var(--border); background:var(--card); margin:48px auto 0; font-size:14px; box-shadow:var(--website-shadow); }
