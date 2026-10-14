@@ -179,7 +179,7 @@
 .category-video { color: var(--file-video); background: color-mix(in oklab, var(--file-video) 16%, var(--card)); }
 .category-audio { color: var(--file-audio); background: color-mix(in oklab, var(--file-audio) 16%, var(--card)); }
 .app-bottom { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-@media (max-width: 767px) { .app-main { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } .app-topbar { padding-top: env(safe-area-inset-top); height: calc(64px + env(safe-area-inset-top)); } }
+@media (max-width: 1023px) { .app-main { padding-bottom: calc(100px + env(safe-area-inset-bottom)); } .app-topbar { padding-top: env(safe-area-inset-top); height: calc(64px + env(safe-area-inset-top)); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
 
 .app-shell { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
