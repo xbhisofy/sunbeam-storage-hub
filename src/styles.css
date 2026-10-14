@@ -432,6 +432,7 @@
  .website-previews { grid-template-columns:repeat(2,1fr); gap:36px; } .website-previews .website-phone { width:245px; height:480px; }
  .website-section-heading h2 { font-size:32px; } .website-download h2 { font-size:32px; }
  .website-three-grid { gap:15px; } .website-feature { padding:25px 18px; } .website-feature h3 { font-size:19px; }
+ .website-step .website-feature { padding-top:52px; } .website-step-number { width:56px; height:56px; font-size:22px; margin-bottom:-28px; } .website-step:not(:last-child)::after { top:28px; left:calc(50% + 36px); width:calc(100% - 72px); }
  .website-footer-grid { grid-template-columns:1.5fr 1fr; gap:32px; } .website-footer-bottom { flex-direction:column; } .website-footer-bottom > div { justify-content:flex-start; }
 }
 @media(max-width:600px) {
