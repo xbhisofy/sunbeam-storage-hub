@@ -52,7 +52,7 @@ function SharePage() {
 
   function play() {
     supabase.rpc("record_view", { _slug: slug });
-    if (data && !("expired" in data) && data.source === "converted" && data.url) { window.location.href = data.url; return; }
+    if (data && !("expired" in data) && !("ownFile" in data) && data.source === "converted" && data.url) { window.location.href = data.url; return; }
     setOpen(true);
   }
 
