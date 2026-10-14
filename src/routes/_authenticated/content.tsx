@@ -246,6 +246,15 @@ function Content() {
                     {f.storage_path ? `${formatSize(f.size)} · ` : ""}{formatFileDate(f.created_at)}
                   </span>
                 </span>
+                {!app && <span className="hidden shrink-0 items-center gap-1.5 text-xs text-muted-foreground sm:flex"><Eye className="h-3.5 w-3.5" />{f.views ?? 0}</span>}
+                {!app && <span className="hidden shrink-0 rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium capitalize text-muted-foreground sm:inline-block">{f.source ?? "original"}</span>}
+                {!app && <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => { e.stopPropagation(); copyLink(f); }}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); copyLink(f); } }}
+                  className="hidden shrink-0 items-center gap-1.5 rounded-xl border bg-card px-3 py-2 text-sm font-medium text-primary shadow-sm transition-colors hover:bg-muted/60 sm:flex"
+                ><Copy className="h-3.5 w-3.5" />Copy Link</span>}
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground" aria-hidden>
                   <MoreVertical className="h-5 w-5" />
                 </span>
