@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Custom shared-video player with 2x/3x speeds, remove player Download button, verify and update VPS.
+- [x] Custom shared-video player with 2x/3x speeds, remove player Download button, verify controls with compatible sample video and update VPS; original MP4 playback unverified in sandbox browser.
 - [x] Hide app file views, standardize upload metadata, verify and update VPS.
 - [x] Test main/subdomain split using two Lovable addresses until tanyora.com is bought
 - [x] Fix mobile responsiveness on landing + all signed-in screens
