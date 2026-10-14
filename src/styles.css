@@ -376,7 +376,7 @@
 .phone-nav { position:absolute; bottom:0; left:0; right:0; height:52px; display:flex; justify-content:space-around; align-items:center; background:var(--card); border-top:1px solid var(--border); }
 .phone-nav > span { display:flex; align-items:center; flex-direction:column; gap:3px; color:var(--muted-foreground); }
 .phone-nav small { font-size:7px; }
-.phone-nav .phone-plus { width:32px; height:32px; border-radius:50%; background:var(--primary); color:var(--primary-foreground); }
+.phone-nav .phone-plus { width:32px; height:32px; border-radius:50%; background:var(--primary); color:var(--primary-foreground); display:grid; place-items:center; gap:0; flex-direction:row; }
 .phone-profile { text-align:center; padding:12px 7px; border:1px solid var(--border); border-radius:12px; margin-bottom:12px; }
 .phone-avatar { width:46px; height:46px; border-radius:50%; background:var(--accent); color:var(--primary); display:grid; place-items:center; margin:0 auto 9px; font-weight:800; font-size:22px; }
 .phone-profile > strong { display:block; font-size:14px; }
