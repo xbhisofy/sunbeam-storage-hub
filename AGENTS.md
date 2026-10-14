@@ -28,3 +28,4 @@
 - Share links use `site.shareUrl` (main domain, opens the app) and the dashboard uses `site.webUrl` (web subdomain); installed-app detection lives in src/lib/app-mode.ts so browsers get the Play Store page while the TWA plays files.
 
 - The VPS deployment uses a self-hosted backend (Docker in /opt/tanyora-backend, served at app.tanyora.com/backend) with storage on Cloudflare R2; the VPS .env overrides backend URLs at build time, so app code must keep using the generated client and never hardcode backend URLs.
+- Payout methods are declared once in `src/lib/payouts.ts` and must stay identical to the `request_withdrawal` backend whitelist; the withdrawal form, admin note and landing page all read that list so a method can never appear in the UI and be rejected by the backend.

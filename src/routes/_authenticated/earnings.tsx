@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/StatusBadge";
 import { useProfile } from "./route";
 import { money } from "@/lib/format";
+import { PAYOUT_METHODS, payoutMethod, type PayoutValue } from "@/lib/payouts";
 
 export const Route = createFileRoute("/_authenticated/earnings")({
   head: () => pageHead("Earnings", "Your balance and payouts.", undefined, true),
@@ -37,7 +38,7 @@ function Earnings() {
   const [changing, setChanging] = useState(false);
   const [busy, setBusy] = useState(false);
   const [amount, setAmount] = useState("");
-  const [method, setMethod] = useState("upi");
+  const [method, setMethod] = useState<PayoutValue>("upi");
   const [details, setDetails] = useState("");
   const { data: wd } = useQuery({
     queryKey: ["my-withdrawals"],
@@ -110,16 +111,16 @@ function Earnings() {
           </div>
           <div>
             <span className="mb-1.5 block text-sm font-medium">Payout method</span>
-            <div role="radiogroup" className="grid grid-cols-3 gap-2">
-              {[{ v: "upi", l: "UPI" }, { v: "paypal", l: "PayPal" }, { v: "bank", l: "Bank" }].map((o) => (
-                <button key={o.v} type="button" role="radio" aria-checked={method === o.v} onClick={() => setMethod(o.v)}
-                  className={`h-12 rounded-xl border text-sm font-semibold transition-colors ${method === o.v ? "border-primary bg-primary/10 text-primary" : "bg-background text-muted-foreground"}`}>{o.l}</button>
+            <div role="radiogroup" aria-label="Payout method" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {PAYOUT_METHODS.map((o) => (
+                <button key={o.value} type="button" role="radio" aria-checked={method === o.value} onClick={() => setMethod(o.value)}
+                  className={`h-12 rounded-xl border text-sm font-semibold transition-colors ${method === o.value ? "border-primary bg-primary/10 text-primary" : "bg-background text-muted-foreground"}`}>{o.label}</button>
               ))}
             </div>
           </div>
           <div>
-            <label htmlFor="wd-details" className="mb-1.5 block text-sm font-medium">{method === "upi" ? "UPI ID" : method === "paypal" ? "PayPal email" : "Bank details"}</label>
-            <Input id="wd-details" required maxLength={300} className="h-12 rounded-xl text-base" placeholder={method === "upi" ? "name@bank" : method === "paypal" ? "you@example.com" : "Account no, IFSC, account name"} value={details} onChange={(e) => setDetails(e.target.value)} />
+            <label htmlFor="wd-details" className="mb-1.5 block text-sm font-medium">{payoutMethod(method)?.detailsLabel ?? "Payout details"}</label>
+            <Input id="wd-details" required maxLength={300} className="h-12 rounded-xl text-base" placeholder={payoutMethod(method)?.placeholder ?? "Your payout details"} value={details} onChange={(e) => setDetails(e.target.value)} />
           </div>
           <Button className="h-12 w-full rounded-xl text-base" disabled={busy || bal < 5}>{busy ? "Submitting..." : "Request withdrawal"}</Button>
           {bal < 5 && <p className="text-center text-xs text-muted-foreground">You need at least $5.00 to withdraw. Keep sharing to earn more.</p>}

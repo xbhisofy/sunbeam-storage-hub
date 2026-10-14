@@ -15,3 +15,4 @@
 - [ ] Compliance step 3: legal/delete/report links inside Android app profile + Play readiness checks
 - [ ] Compliance step 4: security audit (scan, RLS, signed URLs) and final report
 - [ ] Real support email on own domain (blocked: user must create e.g. support@tanyora.com)
+- [x] USDT (TRC-20) payout method: withdrawal form, landing payout cards, both backends; verified live on tanyora.com
