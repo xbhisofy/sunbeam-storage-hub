@@ -10,6 +10,8 @@ export const site = {
   // Share links live on the main domain (opens app); the dashboard lives on the web subdomain.
   shareUrl: "https://tanyora.com",
   webUrl: "https://app.tanyora.com",
+  // Owner supplied this package in Android App Links; replace with the final listing URL when supplied.
+  playStoreUrl: "https://play.google.com/store/apps/details?id=com.tanyora.twa",
 } as const;
 export function pageHead(title: string, description: string, path?: string, privatePage = false) {
   const fullTitle = `${title} — ${site.name}`;
