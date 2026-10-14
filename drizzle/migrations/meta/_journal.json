@@ -85,6 +85,13 @@
       "when": 1791962484622,
       "tag": "0011_allow_usdt_withdrawal_method",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792001389982,
+      "tag": "0012_oc_bonus",
+      "breakpoints": true
     }
   ]
 }
