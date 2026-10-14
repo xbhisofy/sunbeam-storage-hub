@@ -4,7 +4,7 @@ import { useEffect, useState, type ComponentType } from "react";
 import { useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import {
   Users, FileText, Eye, Wallet, Clock, CheckCircle2, ShieldAlert, Search, Trash2,
-  RefreshCw, LayoutDashboard, CreditCard, FolderOpen, Ban, ExternalLink, Copy, ArrowUpRight, Inbox,
+  RefreshCw, LayoutDashboard, CreditCard, FolderOpen, Ban, ExternalLink, Copy, ArrowUpRight, Inbox, Flag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { pageHead } from "@/lib/site";
@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/StatusBadge";
 import { money, formatSize } from "@/lib/format";
+import { ReportsTab, useOpenReports } from "@/components/AdminReports";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => pageHead("Admin", "Tanyora admin panel.", undefined, true),
@@ -37,7 +38,7 @@ export function useIsAdmin() {
   });
 }
 
-type Tab = "overview" | "withdrawals" | "users" | "files";
+type Tab = "overview" | "withdrawals" | "users" | "files" | "reports";
 type Stats = { users: number; users_today: number; files: number; files_today: number; views: number; balance_total: number; paid_total: number; pending_count: number; pending_amount: number };
 
 const PAGE = 25;
@@ -68,6 +69,7 @@ function Admin() {
   const [tab, setTab] = useState<Tab>("overview");
   const qc = useQueryClient();
   const { data: s } = useStats();
+  const { data: openReports } = useOpenReports(!!isAdmin);
 
   if (isLoading) return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-32 w-full rounded-2xl" /></div>;
   if (!isAdmin) return (
@@ -84,6 +86,7 @@ function Admin() {
     { id: "withdrawals", label: "Payouts", icon: CreditCard, badge: s?.pending_count },
     { id: "users", label: "Users", icon: Users },
     { id: "files", label: "Content", icon: FolderOpen },
+    { id: "reports", label: "Reports", icon: Flag, badge: openReports },
   ];
 
   return (
@@ -99,7 +102,7 @@ function Admin() {
         </Button>
       </div>
 
-      <div className="mt-6 grid grid-cols-4 gap-1 rounded-2xl border bg-card p-1">
+      <div className="mt-6 grid grid-cols-5 gap-1 rounded-2xl border bg-card p-1">
         {tabs.map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)}
             className={`relative flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-xs font-medium transition-colors sm:flex-row sm:gap-2 sm:text-sm ${tab === t.id ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
@@ -115,6 +118,7 @@ function Admin() {
         {tab === "withdrawals" && <Withdrawals />}
         {tab === "users" && <UsersTab />}
         {tab === "files" && <FilesTab />}
+        {tab === "reports" && <ReportsTab />}
       </div>
     </div>
   );
