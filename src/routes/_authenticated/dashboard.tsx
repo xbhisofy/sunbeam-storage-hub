@@ -33,16 +33,16 @@ function Dashboard() {
   ] as const;
   return <div className="space-y-7">
     <div className="hidden md:block"><h1 className="text-3xl font-bold">Your cloud</h1><p className="mt-1 text-muted-foreground">{p?.display_name ? `Welcome back, ${p.display_name}` : "Welcome to Tanyora"}</p></div>
-    <section className="rounded-2xl border bg-card p-5 shadow-sm">{(() => {
+    <section className="app-storage-card rounded-2xl border p-5 shadow-sm">{(() => {
       const total = 1024 * 1024 * 1024; // Free plan: 1 GB
       const pct = Math.min(100, Math.round((used / total) * 100));
       return <>
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild className="order-first rounded-full border-primary/30 text-primary"><Link to="/plans"><Sparkles className="h-3.5 w-3.5" />Go Ad Free</Link></Button>
-          <div className="ml-auto flex items-center gap-3"><h2 className="font-semibold">Storage</h2><span className="grid h-11 w-11 place-items-center rounded-xl bg-accent text-primary"><Cloud className="h-5 w-5" /></span></div>
+          <Button variant="outline" size="sm" asChild className="order-first rounded-full border-primary/25 bg-card/70 text-primary"><Link to="/plans"><Sparkles className="h-3.5 w-3.5" />Go Ad Free</Link></Button>
+          <div className="ml-auto flex items-center gap-3"><h2 className="font-semibold">Storage</h2><span className="grid h-11 w-11 place-items-center rounded-xl bg-card text-primary shadow-sm"><Cloud className="h-5 w-5" /></span></div>
         </div>
-        <div className="mt-5 h-2 overflow-hidden rounded-full bg-accent"><div className="h-full rounded-full bg-primary transition-all" style={{ width: `${Math.max(pct, 2)}%` }} /></div>
-        <div className="mt-3 flex items-center justify-between text-sm"><span className="font-medium text-primary">{pct}%</span><span className="text-muted-foreground">{isPending ? "Loading…" : `${formatSize(used)} of 1 GB used`}</span></div>
+        <div className="app-storage-track mt-5 h-2 overflow-hidden rounded-full"><div className="h-full rounded-full bg-primary transition-all" style={{ width: `${Math.max(pct, 2)}%` }} /></div>
+        <div className="mt-3 flex items-center justify-between text-sm"><span className="font-semibold text-primary">{pct}%</span><span className="text-muted-foreground">{isPending ? "Loading…" : `${formatSize(used)} of 1 GB used`}</span></div>
       </>;
     })()}</section>
     {!app && <ViewStats />}
