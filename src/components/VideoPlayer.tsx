@@ -13,7 +13,8 @@ function clock(seconds: number) {
   return hours ? `${hours}:${String(minutes).padStart(2, "0")}:${rest}` : `${minutes}:${rest}`;
 }
 
-export function VideoPlayer({ src, title }: { src: string; title: string }) {
+export function VideoPlayer({ src, title, onStart }: { src: string; title: string; onStart?: () => void }) {
+  const started = useRef(false);
   const video = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -118,7 +119,7 @@ export function VideoPlayer({ src, title }: { src: string; title: string }) {
       onDurationChange={(event) => setDuration(event.currentTarget.duration)}
       onPlay={() => setPlaying(true)} onPause={() => { setPlaying(false); setVisible(true); }}
       onEnded={() => { setPlaying(false); setVisible(true); }}
-      onWaiting={() => setWaiting(true)} onPlaying={() => { setWaiting(false); setError(false); }}
+      onWaiting={() => setWaiting(true)} onPlaying={() => { setWaiting(false); setError(false); if (!started.current) { started.current = true; onStart?.(); } }}
       onCanPlay={() => setWaiting(false)} onError={() => { setError(true); setWaiting(false); setPlaying(false); }}
       onVolumeChange={(event) => { setMuted(event.currentTarget.muted); setVolume(event.currentTarget.volume); }}
       onRateChange={(event) => setSpeed(event.currentTarget.playbackRate)} />

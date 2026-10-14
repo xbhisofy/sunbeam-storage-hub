@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Lock, Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -50,9 +50,16 @@ function SharePage() {
     return () => clearTimeout(t);
   }, [left, isApp]);
 
-  function play() {
+  // A view counts only once the content actually starts playing or is shown.
+  const counted = useRef(false);
+  function countView() {
+    if (counted.current) return;
+    counted.current = true;
     supabase.rpc("record_view", { _slug: slug });
-    if (data && !("expired" in data) && !("ownFile" in data) && data.source === "converted" && data.url) { window.location.href = data.url; return; }
+  }
+
+  function play() {
+    if (data && !("expired" in data) && !("ownFile" in data) && data.source === "converted" && data.url) { countView(); window.location.href = data.url; return; }
     setOpen(true);
   }
 
@@ -107,11 +114,11 @@ function SharePage() {
         ) : (
           <div>
             <h1 className="mb-4 truncate text-xl font-semibold">{data.name}</h1>
-            {data.file_type === "video" && <VideoPlayer src={data.url} title={data.name} />}
-            {data.file_type === "image" && <img src={data.url} alt={data.name} draggable={false} onContextMenu={(e) => e.preventDefault()} className="max-h-[80vh] w-full rounded-xl object-contain" />}
-            {data.file_type === "audio" && <audio src={data.url} controls controlsList="nodownload" onContextMenu={(e) => e.preventDefault()} autoPlay className="w-full" />}
+            {data.file_type === "video" && <VideoPlayer src={data.url} title={data.name} onStart={countView} />}
+            {data.file_type === "image" && <img onLoad={countView} src={data.url} alt={data.name} draggable={false} onContextMenu={(e) => e.preventDefault()} className="max-h-[80vh] w-full rounded-xl object-contain" />}
+            {data.file_type === "audio" && <audio onPlaying={countView} src={data.url} controls controlsList="nodownload" onContextMenu={(e) => e.preventDefault()} autoPlay className="w-full" />}
             {data.file_type === "other" && <p className="rounded-xl border bg-card p-6 text-muted-foreground">Preview is not available for this file type.</p>}
-            {data.file_type === "pdf" && <iframe src={`${data.url}#toolbar=0`} title={data.name} className="h-[80vh] w-full rounded-xl border" />}
+            {data.file_type === "pdf" && <iframe onLoad={countView} src={`${data.url}#toolbar=0`} title={data.name} className="h-[80vh] w-full rounded-xl border" />}
             <ReportFile slug={slug} name={data.name} />
           </div>
         )}
