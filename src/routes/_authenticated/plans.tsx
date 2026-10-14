@@ -10,9 +10,9 @@ export const Route = createFileRoute("/_authenticated/plans")({
 
 // Placeholder pricing until Google Play subscription products are created.
 const plans = [
-  { id: "free", name: "Free", price: "$0", period: "forever", icon: Zap, perks: ["50 MB per file", "Share links", "Earn from views & signups"], current: true },
-  { id: "plus", name: "Plus", price: "$1.99", period: "per month", icon: Sparkles, perks: ["500 MB per file", "100 GB storage", "No ads while browsing", "Priority uploads"], popular: true },
-  { id: "pro", name: "Pro", price: "$4.99", period: "per month", icon: Crown, perks: ["2 GB per file", "1 TB storage", "No ads", "Priority support"] },
+  { id: "free", name: "Free", price: "$0", period: "forever", icon: Zap, perks: ["1 TB per file", "Share links", "Earn from views & signups"], current: true },
+  { id: "plus", name: "Plus", price: "$1.99", period: "per month", icon: Sparkles, perks: ["1 TB per file", "100 GB storage", "No ads while browsing", "Priority uploads"], popular: true },
+  { id: "pro", name: "Pro", price: "$4.99", period: "per month", icon: Crown, perks: ["1 TB per file", "1 TB storage", "No ads", "Priority support"] },
 ];
 
 function Plans() {

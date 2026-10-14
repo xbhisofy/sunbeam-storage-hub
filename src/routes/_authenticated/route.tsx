@@ -91,7 +91,7 @@ function Shell() {
     <Sheet open={upload} onOpenChange={setUpload}><SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-3xl border-0 px-5 pb-8 pt-3">
       <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-muted" />
       <SheetTitle className="text-lg font-bold">Add to your files</SheetTitle>
-      <SheetDescription className="text-sm">Choose what you want to upload · up to 50 MB per file</SheetDescription>
+      <SheetDescription className="text-sm">Choose what you want to upload · up to 1 TB per file</SheetDescription>
       <div className="mt-5 grid grid-cols-2 gap-3">
         {([{ label: "Videos", hint: "MP4, MOV, MKV", kind: "video", icon: Video }, { label: "Images", hint: "JPG, PNG, WEBP", kind: "image", icon: ImageIcon }, { label: "Audio", hint: "MP3, WAV, M4A", kind: "audio", icon: Music }, { label: "Documents", hint: "PDF, DOC, ZIP", kind: "document", icon: FileText }] as const).map(item =>
           <button key={item.kind} type="button" onClick={() => { setUpload(false); navigate({ to: "/content", search: { upload: item.kind } }); }} className="flex flex-col items-start gap-3 rounded-2xl bg-accent/50 p-4 text-left transition-colors active:bg-accent">
