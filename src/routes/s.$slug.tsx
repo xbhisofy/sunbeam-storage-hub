@@ -8,7 +8,6 @@ import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { pageHead, site } from "@/lib/site";
-import { formatSize } from "@/lib/format";
 
 const AD_SECONDS = 5;
 const APP_ID = site.androidPackage;
@@ -59,7 +58,7 @@ function SharePage() {
         <Link to="/" className="flex items-center gap-2 font-semibold">
           <Brand />
         </Link>
-        <Button size="sm" asChild><Link to="/auth" search={{ mode: "signup" }}>Share & earn</Link></Button>
+        {!isApp && <Button size="sm" asChild><Link to="/auth" search={{ mode: "signup" }}>Share & earn</Link></Button>}
       </header>
       <main className="mx-auto max-w-4xl px-4 py-8">
         {!isApp ? (
@@ -87,7 +86,6 @@ function SharePage() {
               Your ad appears here
             </div>
             <h1 className="mt-6 truncate text-xl font-semibold">{data.name}</h1>
-            <p className="text-sm text-muted-foreground">{data.source === "converted" ? "Link" : formatSize(data.size)} · {data.views} views</p>
             <Button size="lg" className="mt-5" disabled={left > 0} onClick={play}>
               {left > 0 ? `Open in ${left}s` : "Open file"}
             </Button>
@@ -106,9 +104,9 @@ function SharePage() {
             </Button>}
           </div>
         )}
-        <p className="mt-6 text-center text-sm"><Link className="text-primary underline" to="/copyright">Copyright & safety complaints</Link></p>
+        {!isApp && <p className="mt-6 text-center text-sm"><Link className="text-primary underline" to="/copyright">Copyright & safety complaints</Link></p>}
       </main>
-      <LegalFooter />
+      {!isApp && <LegalFooter />}
     </div>
   );
 }

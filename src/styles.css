@@ -453,3 +453,12 @@
 .landing #features { padding-top:30px; }
 .website-hero { padding-bottom:40px; }
 .website-facts p strong { color:var(--foreground); }
+
+/* Rotated fallback when the device cannot lock orientation */
+.player-rotated {
+  top: 50%;
+  left: 50%;
+  width: 100dvh;
+  height: 100vw;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
