@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Flag } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { reportsTable } from "@/lib/reports";
 import { currentUserId } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ export function ReportFile({ slug, name }: { slug: string; name: string }) {
     if (e && !/^\S+@\S+\.\S+$/.test(e)) { toast.error("Enter a valid email or leave it blank"); return; }
     setBusy(true);
     const uid = await currentUserId();
-    const { error } = await supabase.from("reports").insert({
+    const { error } = await reportsTable().insert({
       file_slug: slug, file_name: name.slice(0, 300), reason,
       details: details.trim().slice(0, 1000) || null, email: e || null, reporter_id: uid,
     });

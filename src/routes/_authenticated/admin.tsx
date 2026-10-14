@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/StatusBadge";
 import { money, formatSize } from "@/lib/format";
+import { ReportsTab, useOpenReports } from "@/components/AdminReports";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => pageHead("Admin", "Tanyora admin panel.", undefined, true),
@@ -68,12 +69,7 @@ function Admin() {
   const [tab, setTab] = useState<Tab>("overview");
   const qc = useQueryClient();
   const { data: s } = useStats();
-  const { data: openReports } = useQuery({
-    queryKey: ["admin-reports-open"],
-    enabled: !!isAdmin,
-    refetchInterval: 30_000,
-    queryFn: async () => (await supabase.from("reports").select("id", { count: "exact", head: true }).eq("status", "open")).count ?? 0,
-  });
+  const { data: openReports } = useOpenReports(!!isAdmin);
 
   if (isLoading) return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-32 w-full rounded-2xl" /></div>;
   if (!isAdmin) return (
