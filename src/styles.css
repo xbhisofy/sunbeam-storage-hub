@@ -145,6 +145,23 @@
   }
 }
 
+@theme inline {
+  --color-player-background: var(--player-background);
+  --color-player-foreground: var(--player-foreground);
+  --color-player-muted: var(--player-muted);
+  --color-player-panel: var(--player-panel);
+}
+:root, .dark {
+  --player-background: oklch(0.12 0 0);
+  --player-foreground: oklch(0.99 0 0);
+  --player-muted: oklch(0.78 0 0);
+  --player-panel: oklch(0.22 0 0);
+  --player-scrim: linear-gradient(to top, oklch(0.08 0 0 / 95%), oklch(0.08 0 0 / 65%) 60%, transparent);
+}
+.player-controls { background: var(--player-scrim); padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+.tanyora-player:fullscreen { width: 100%; height: 100%; border-radius: 0; aspect-ratio: auto; }
+.tanyora-player video::-webkit-media-controls { display: none !important; }
+
 /* App presentation shares the website's functional screens. */
 @theme inline {
   --color-file-document: var(--file-document);
