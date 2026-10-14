@@ -32,7 +32,7 @@ function Referrals() {
   const sumDay = (day: string) => daily.filter(d => d.day === day).reduce((s, d) => s + Number(d.signup_bonus) + Number(d.commission), 0);
   const today = iso(new Date()), yesterday = iso(new Date(Date.now() - 864e5));
   const joinedToday = people.filter(x => x.joined.slice(0, 10) === today).length;
-  const link = p ? `${site.publicUrl}/auth?mode=signup&ref=${p.referral_code}` : "";
+  const link = p ? `${site.webUrl}/auth?mode=signup&ref=${p.referral_code}` : "";
 
   const { data: wd = [] } = useQuery({
     queryKey: ["my-withdrawals"],
