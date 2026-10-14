@@ -2,7 +2,7 @@ import { pageHead } from "@/lib/site";
 import { ViewStats } from "@/components/ViewStats";
 import { useInstalledApp } from "@/lib/app-mode";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Cloud, FileText, Film, Music, Image, ArrowUpRight, Wallet, Users, FolderOpen } from "lucide-react";
+import { Cloud, FileText, Film, Music, Image, ArrowUpRight, Wallet, Users, FolderOpen, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { currentUserId } from "@/lib/session";
