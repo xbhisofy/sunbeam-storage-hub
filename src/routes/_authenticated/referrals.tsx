@@ -50,7 +50,8 @@ function Referrals() {
     { icon: Wallet, label: "Available to withdraw", value: money(Number(p?.balance ?? 0)), tone: "bg-emerald-500/10 text-emerald-600" },
     { icon: CheckCircle2, label: "Paid", value: money(Number(p?.paid_total ?? 0)), tone: "bg-primary/10 text-primary" },
   ];
-  const Stat = ({ c }: { c: (typeof status)[number] }) => (
+  type StatT = { icon: typeof Wallet; label: string; value: string; note?: string | undefined; tone: string };
+  const Stat = ({ c }: { c: StatT }) => (
     <div className="flex gap-4 rounded-2xl border bg-card p-5">
       <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${c.tone}`}><c.icon className="h-5 w-5" /></span>
       <div><div className="text-sm text-muted-foreground">{c.label}</div><div className="text-2xl font-bold">{c.value}</div>{c.note && <div className="text-sm text-muted-foreground">{c.note}</div>}</div>
