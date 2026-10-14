@@ -59,6 +59,7 @@ export type Database = {
           mime: string | null
           name: string
           owner_id: string
+          parent_file_id: string | null
           size: number
           slug: string
           source: string
@@ -76,6 +77,7 @@ export type Database = {
           mime?: string | null
           name: string
           owner_id: string
+          parent_file_id?: string | null
           size?: number
           slug?: string
           source?: string
@@ -93,10 +95,32 @@ export type Database = {
           mime?: string | null
           name?: string
           owner_id?: string
+          parent_file_id?: string | null
           size?: number
           slug?: string
           source?: string
           storage_path?: string | null
+          views?: number
+        }
+        Relationships: []
+      }
+      oc_bonus_daily: {
+        Row: {
+          amount: number
+          day: string
+          owner_id: string
+          views: number
+        }
+        Insert: {
+          amount?: number
+          day?: string
+          owner_id: string
+          views?: number
+        }
+        Update: {
+          amount?: number
+          day?: string
+          owner_id?: string
           views?: number
         }
         Relationships: []
