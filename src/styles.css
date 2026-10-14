@@ -436,3 +436,6 @@
  .website-footer-bottom > span { flex-shrink:1; }
 }
 @media(max-width:360px) { .website-hero h1 { font-size:36px; } .website-previews { grid-template-columns:1fr; } .website-facts > div { padding-right:11px; } }
+.landing #features { padding-top:30px; }
+.website-hero { padding-bottom:40px; }
+.website-facts p strong { color:var(--foreground); }
