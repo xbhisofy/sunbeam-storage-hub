@@ -17,6 +17,13 @@ function Dashboard() {
     const uid = await currentUserId(); if (!uid) return [];
     return (await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false })).data ?? [];
   } });
+  const { data: watched = [] } = useQuery({ queryKey: ["recently-watched"], queryFn: async () => {
+    const uid = await currentUserId(); if (!uid) return [];
+    const { data: events } = await supabase.from("view_events").select("file_slug, day").eq("viewer_id", uid).order("day", { ascending: false }).limit(10);
+    const slugs = [...new Set((events ?? []).map(e => e.file_slug))].slice(0, 5);
+    if (!slugs.length) return [];
+    return (await supabase.from("files").select("*").in("slug", slugs)).data ?? [];
+  } });
   const used = files.reduce((s, f) => s + Number(f.size ?? 0), 0);
   const categories = [
     { label: "Documents", kind: "pdf", icon: FileText, tone: "category-document" },
@@ -30,7 +37,14 @@ function Dashboard() {
     {!app && <ViewStats />}
     <section><h2 className="mb-4 text-lg font-semibold">Categories</h2><div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{categories.map(c => <Button key={c.kind} variant="ghost" asChild className={`category-tile ${c.tone} h-auto items-start justify-start rounded-lg p-5`}><Link to="/content" search={{ kind: c.kind }}><span className="flex min-h-32 w-full flex-col items-start"><span className="mb-5 grid h-12 w-12 place-items-center rounded-lg bg-card/70"><c.icon className="h-6 w-6" /></span><span className="text-base font-semibold">{c.label}</span><span className="mt-1 text-sm">{files.filter(f => f.file_type === c.kind).length} files</span></span></Link></Button>)}</div></section>
     {!app && <section className="flex items-center justify-between gap-3 rounded-2xl border bg-card p-5"><div className="min-w-0"><p className="text-sm text-muted-foreground">Available balance</p><p className="mt-1 text-2xl font-bold">{money(Number(p?.balance ?? 0))}</p></div><Button variant="outline" asChild><Link to="/earnings"><Wallet className="h-4 w-4" />Earnings</Link></Button></section>}
-    <section><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold">Recent files</h2><Button variant="link" asChild><Link to="/content">View all</Link></Button></div>{files.length ? <div className="divide-y">{files.slice(0, 4).map(f => <Link key={f.id} to="/content" className="flex items-center gap-3 py-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-accent text-primary"><FileText className="h-6 w-6" /></span><div className="min-w-0 flex-1"><p className="truncate font-medium">{f.name}</p><p className="text-xs leading-relaxed text-muted-foreground">{fileMetadata(f, app)}</p></div><ArrowUpRight className="h-5 w-5 text-muted-foreground" /></Link>)}</div> : <div className="py-8 text-center"><FolderOpen className="mx-auto h-12 w-12 text-muted-foreground" /><p className="mt-3 font-medium">{isPending ? "Loading your files…" : "No files yet"}</p><Button variant="link" asChild className="mt-2"><Link to="/content" search={{ upload: "document" }}>Upload a file</Link></Button></div>}</section>
+    <section><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold">Recent files</h2><Button variant="link" asChild><Link to="/content">View all</Link></Button></div>{(() => {
+      const ownIds = new Set(files.map(f => f.id));
+      const recent = [
+        ...files.map(f => ({ ...f, kind: "yours" as const })),
+        ...watched.filter(w => !ownIds.has(w.id)).map(w => ({ ...w, kind: "watched" as const })),
+      ].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at)).slice(0, 5);
+      return recent.length ? <div className="divide-y">{recent.map(f => <Link key={`${f.kind}-${f.id}`} to={f.kind === "yours" ? "/content" : "/s/$slug"} params={f.kind === "watched" ? { slug: f.slug } : {}} className="flex items-center gap-3 py-4"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-accent text-primary">{f.file_type === "video" ? <Film className="h-6 w-6" /> : f.file_type === "image" ? <Image className="h-6 w-6" /> : f.file_type === "audio" ? <Music className="h-6 w-6" /> : <FileText className="h-6 w-6" />}</span><div className="min-w-0 flex-1"><p className="truncate font-medium">{f.name}</p><p className="text-xs leading-relaxed text-muted-foreground">{f.kind === "watched" ? "Watched · " : ""}{fileMetadata(f, app)}</p></div><ArrowUpRight className="h-5 w-5 text-muted-foreground" /></Link>)}</div> : <div className="py-8 text-center"><FolderOpen className="mx-auto h-12 w-12 text-muted-foreground" /><p className="mt-3 font-medium">{isPending ? "Loading your files…" : "No files yet"}</p><Button variant="link" asChild className="mt-2"><Link to="/content" search={{ upload: "document" }}>Upload a file</Link></Button></div>;
+    })()}</section>
     {!app && <Button variant="ghost" asChild className="h-14 w-full justify-between border-t"><Link to="/referrals"><span className="flex items-center gap-3"><Users className="h-5 w-5 text-primary" />Referrals</span><ArrowUpRight className="h-5 w-5" /></Link></Button>}
   </div>;
 }
