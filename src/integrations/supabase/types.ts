@@ -137,6 +137,42 @@ export type Database = {
         }
         Relationships: []
       }
+      reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          email: string | null
+          file_name: string | null
+          file_slug: string
+          id: string
+          reason: string
+          reporter_id: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          email?: string | null
+          file_name?: string | null
+          file_slug: string
+          id?: string
+          reason: string
+          reporter_id?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          email?: string | null
+          file_name?: string | null
+          file_slug?: string
+          id?: string
+          reason?: string
+          reporter_id?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
