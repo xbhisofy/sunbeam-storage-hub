@@ -438,7 +438,7 @@
  .website-previews { grid-template-columns:repeat(2,1fr); gap:36px; } .website-previews .website-phone { width:245px; height:480px; }
  .website-section-heading h2 { font-size:32px; } .website-download h2 { font-size:32px; }
  .website-three-grid { gap:15px; } .website-feature { padding:25px 18px; } .website-feature h3 { font-size:19px; }
- .website-step .website-feature { padding-top:52px; } .website-step-number { width:56px; height:56px; font-size:22px; margin-bottom:-28px; } .website-step:not(:last-child)::after { top:28px; left:calc(50% + 36px); width:calc(100% - 72px); }
+ .website-steps { gap:34px; } .website-step { padding:30px 20px 28px; } .website-step h3 { font-size:19px; } .website-step-ghost { font-size:72px; } .website-step-icon { width:62px; height:62px; border-radius:20px; margin-bottom:18px; } .website-step-icon svg { width:25px; height:25px; } .website-step-arrow { right:-30px; width:20px; height:20px; } .website-step-arrow svg { width:20px; height:20px; }
  .website-footer-grid { grid-template-columns:1.5fr 1fr; gap:32px; } .website-footer-bottom { flex-direction:column; } .website-footer-bottom > div { justify-content:flex-start; }
 }
 @media(max-width:600px) {
