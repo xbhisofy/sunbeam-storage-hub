@@ -92,9 +92,11 @@ function SharePage() {
         ) : !open ? (
           <div className="rounded-2xl border bg-card p-6 text-center">
             {data.header_text && <p className="mb-4 whitespace-pre-line text-sm">{data.header_text}</p>}
-            <div className="text-xs uppercase tracking-wider text-muted-foreground">Advertisement</div>
-            <div className="mt-3 grid aspect-video place-items-center rounded-xl bg-muted text-muted-foreground">
-              Your ad appears here
+            <div className="grid aspect-video place-items-center rounded-xl bg-muted">
+              <div className="text-center">
+                <Smartphone className="mx-auto h-10 w-10 text-primary" />
+                <p className="mt-3 text-sm font-medium text-muted-foreground">{left > 0 ? "Preparing your file…" : "Your file is ready"}</p>
+              </div>
             </div>
             <h1 className="mt-6 truncate text-xl font-semibold">{data.name}</h1>
             <Button size="lg" className="mt-5" disabled={left > 0} onClick={play}>
