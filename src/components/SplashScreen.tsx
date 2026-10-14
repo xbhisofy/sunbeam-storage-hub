@@ -3,9 +3,10 @@ import { isInstalledApp } from "@/lib/app-mode";
 import logoImg from "@/assets/tanyora-logo.jpg";
 
 /**
- * App-open splash: Tanyora logo with a stylish tagline — on a flat light
- * background matching the Android launch screen so the hand-off has no
- * colour flash. Shown once per session on app screens.
+ * App-open splash: Tanyora logo on top, the TANYORA wordmark typing in
+ * letter-by-letter, and a "from Tanyora" footer — on a flat light background
+ * matching the Android launch screen so the hand-off has no colour flash.
+ * Shown once per session on app screens.
  */
 export function SplashScreen() {
   const [state, setState] = useState<"hidden" | "show" | "leave">("hidden");
@@ -23,8 +24,13 @@ export function SplashScreen() {
     <div aria-hidden className={`splash ${state === "leave" ? "splash-leave" : ""}`}>
       <div className="splash-center">
         <img src={logoImg} alt="" className="splash-logo" />
-        <p className="splash-tagline">Cloud Sharing, Made Simple</p>
+        <p className="splash-word">
+          {"TANYORA".split("").map((c, i) => (
+            <span key={i} style={{ animationDelay: `${250 + i * 70}ms` }}>{c}</span>
+          ))}
+        </p>
       </div>
+      <p className="splash-footer">from Tanyora</p>
     </div>
   );
 }
