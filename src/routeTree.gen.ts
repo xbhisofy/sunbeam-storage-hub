@@ -37,6 +37,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
 import { Route as AuthenticatedSharedRouteImport } from './routes/_authenticated/shared'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as AuthenticatedContentConvertRouteImport } from './routes/_authenticated/content.convert'
 import { Route as ApiPublicDeleteAccountRouteImport } from './routes/api/public/delete-account'
 
 const IndexRoute = IndexRouteImport.update({
@@ -178,6 +179,12 @@ const SSlugRoute = SSlugRouteImport.update({
   path: '/s/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedContentConvertRoute =
+  AuthenticatedContentConvertRouteImport.update({
+    id: '/convert',
+    path: '/convert',
+    getParentRoute: () => AuthenticatedContentRoute,
+  } as any)
 const ApiPublicDeleteAccountRoute = ApiPublicDeleteAccountRouteImport.update({
   id: '/api/public/delete-account',
   path: '/api/public/delete-account',
@@ -204,7 +211,7 @@ export interface FileRoutesByFullPath {
   '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/content': typeof AuthenticatedContentRoute
+  '/content': typeof AuthenticatedContentRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/earnings': typeof AuthenticatedEarningsRoute
   '/plans': typeof AuthenticatedPlansRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/referrals': typeof AuthenticatedReferralsRoute
   '/shared': typeof AuthenticatedSharedRoute
   '/s/$slug': typeof SSlugRoute
+  '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
 export interface FileRoutesByTo {
@@ -234,7 +242,7 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/content': typeof AuthenticatedContentRoute
+  '/content': typeof AuthenticatedContentRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/earnings': typeof AuthenticatedEarningsRoute
   '/plans': typeof AuthenticatedPlansRoute
@@ -242,6 +250,7 @@ export interface FileRoutesByTo {
   '/referrals': typeof AuthenticatedReferralsRoute
   '/shared': typeof AuthenticatedSharedRoute
   '/s/$slug': typeof SSlugRoute
+  '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
 export interface FileRoutesById {
@@ -266,7 +275,7 @@ export interface FileRoutesById {
   '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/content': typeof AuthenticatedContentRoute
+  '/_authenticated/content': typeof AuthenticatedContentRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/earnings': typeof AuthenticatedEarningsRoute
   '/_authenticated/plans': typeof AuthenticatedPlansRoute
@@ -274,6 +283,7 @@ export interface FileRoutesById {
   '/_authenticated/referrals': typeof AuthenticatedReferralsRoute
   '/_authenticated/shared': typeof AuthenticatedSharedRoute
   '/s/$slug': typeof SSlugRoute
+  '/_authenticated/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
 export interface FileRouteTypes {
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/shared'
     | '/s/$slug'
+    | '/content/convert'
     | '/api/public/delete-account'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -336,6 +347,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/shared'
     | '/s/$slug'
+    | '/content/convert'
     | '/api/public/delete-account'
   id:
     | '__root__'
@@ -367,6 +379,7 @@ export interface FileRouteTypes {
     | '/_authenticated/referrals'
     | '/_authenticated/shared'
     | '/s/$slug'
+    | '/_authenticated/content/convert'
     | '/api/public/delete-account'
   fileRoutesById: FileRoutesById
 }
@@ -592,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/content/convert': {
+      id: '/_authenticated/content/convert'
+      path: '/convert'
+      fullPath: '/content/convert'
+      preLoaderRoute: typeof AuthenticatedContentConvertRouteImport
+      parentRoute: typeof AuthenticatedContentRoute
+    }
     '/api/public/delete-account': {
       id: '/api/public/delete-account'
       path: '/api/public/delete-account'
@@ -602,9 +622,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedContentRouteChildren {
+  AuthenticatedContentConvertRoute: typeof AuthenticatedContentConvertRoute
+}
+
+const AuthenticatedContentRouteChildren: AuthenticatedContentRouteChildren = {
+  AuthenticatedContentConvertRoute: AuthenticatedContentConvertRoute,
+}
+
+const AuthenticatedContentRouteWithChildren =
+  AuthenticatedContentRoute._addFileChildren(AuthenticatedContentRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedContentRoute: typeof AuthenticatedContentRoute
+  AuthenticatedContentRoute: typeof AuthenticatedContentRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEarningsRoute: typeof AuthenticatedEarningsRoute
   AuthenticatedPlansRoute: typeof AuthenticatedPlansRoute
@@ -615,7 +646,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedContentRoute: AuthenticatedContentRoute,
+  AuthenticatedContentRoute: AuthenticatedContentRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEarningsRoute: AuthenticatedEarningsRoute,
   AuthenticatedPlansRoute: AuthenticatedPlansRoute,

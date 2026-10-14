@@ -5,12 +5,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil, Clock } from "lucide-react";
+import { Copy, Trash2, Film, Music, FileText, Link2, Download, Image as ImageIcon, FolderOpen, Upload, MoreVertical, Share2, Info, Pencil, Clock, Eye, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { fileKind, formatSize, formatFileDate } from "@/lib/format";
+import { useInstalledApp } from "@/lib/app-mode";
 
 export const Route = createFileRoute("/_authenticated/content")({
   validateSearch: z.object({ kind: z.enum(["pdf", "video", "audio", "image", "link"]).optional(), upload: z.enum(["video", "audio", "image", "document"]).optional() }),
