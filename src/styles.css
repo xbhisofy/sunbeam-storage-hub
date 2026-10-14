@@ -424,7 +424,7 @@
  .website-section { padding-block:54px; } .website-section-heading { margin-bottom:32px; }
  .website-section-heading h2 { font-size:28px; } .website-section-heading p { font-size:15px; }
  .website-two-grid,.website-three-grid,.website-comparison,.website-download { grid-template-columns:1fr; gap:24px; }
- .website-step .website-feature { height:auto; } .website-step-number { width:55px; height:55px; font-size:23px; margin-bottom:16px; }
+ .website-step .website-feature { height:auto; padding-top:46px; } .website-step:not(:last-child)::after { display:none; } .website-step-number { width:55px; height:55px; font-size:23px; margin-bottom:-27px; box-shadow:var(--website-cta-shadow), 0 0 0 5px var(--background); }
  .website-feature { padding:28px 22px; } .website-feature h3 { font-size:21px; }
  .website-payout-section .website-section-heading { margin-bottom:32px; }
  .website-payouts { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; } .website-payouts article { padding:24px 12px; border-radius:22px; }
