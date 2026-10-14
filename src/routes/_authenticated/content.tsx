@@ -73,7 +73,7 @@ function Content() {
     for (let i = 0; i < arr.length; i++) {
       const f = arr[i];
       if (!f) continue;
-      if (f.size > 50 * 1024 * 1024) { toast.error("File too large", { description: `${f.name} is over the 50 MB limit` }); continue; }
+      if (f.size > 1024 ** 4) { toast.error("File too large", { description: `${f.name} is over the 1 TB limit` }); continue; }
       setUploading({ name: f.name, size: f.size, step: arr.length > 1 ? `${i + 1} of ${arr.length}` : "", pct: 5 });
       const tick = setInterval(() => setUploading((u) => (u ? { ...u, pct: Math.min(92, u.pct + (95 - u.pct) * 0.08) } : u)), 300);
       const path = `${uid}/${crypto.randomUUID()}-${f.name.replace(/[^\w.-]/g, "_")}`;

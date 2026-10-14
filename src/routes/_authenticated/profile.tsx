@@ -100,7 +100,7 @@ function Profile() {
         <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
           <li>• Upload videos, photos, audio and documents</li>
           <li>• Share files with a link</li>
-          <li>• Up to 50 MB per file</li>
+          <li>• Up to 1 TB per file</li>
         </ul>
       </div>
       <p className="mt-4 text-sm text-muted-foreground">Premium plans with more storage and bigger uploads are coming soon.</p>
