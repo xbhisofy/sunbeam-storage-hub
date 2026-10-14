@@ -58,14 +58,18 @@ function Shell() {
     if (error) { setLeaving(false); return; }
     navigate({ to: "/auth", replace: true });
   }
-  const title = [...nav, ...appNav].find(n => n.to === pathname)?.label ?? "Admin";
+  const title = pathname === "/content/convert" ? "Convert Link" : [...nav, ...appNav].find(n => n.to === pathname)?.label ?? "Admin";
   const row = "group relative flex h-12 w-full items-center gap-3 rounded-xl px-2 text-[15px] font-medium text-foreground/85 outline-none transition-colors active:bg-accent/60 focus-visible:ring-2 focus-visible:ring-ring [@media(hover:hover)]:hover:bg-accent/50";
   const active = "data-[status=active]:bg-primary/10 data-[status=active]:font-semibold data-[status=active]:text-primary";
   const tile = "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-colors group-data-[status=active]:bg-primary group-data-[status=active]:text-primary-foreground";
   const menu = <nav className="flex flex-1 flex-col p-3" aria-label="Account navigation">
     <p className="px-3 pb-1.5 pt-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Menu</p>
     <div className="space-y-1">
-      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><n.icon className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>{n.label}</Link>)}
+      {items.map(n => <Link key={n.to} to={n.to} activeOptions={{ includeSearch: false, exact: n.to === "/content" }} onClick={() => setDrawer(false)} className={`${row} ${active}`}><span className={tile}><n.icon className="h-[18px] w-[18px]" strokeWidth={2.2} /></span>{n.label}</Link>)}
+      {!app && <div className="ml-6 space-y-0.5 border-l pl-3">
+        <Link to="/content" activeOptions={{ exact: true }} onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 data-[status=active]:text-primary">All Content</Link>
+        <Link to="/content/convert" onClick={() => setDrawer(false)} className="block rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/50 data-[status=active]:text-primary">Convert Link</Link>
+      </div>}
     </div>
     {(!app || isAdmin) && <>
       <p className="px-3 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Tools</p>
