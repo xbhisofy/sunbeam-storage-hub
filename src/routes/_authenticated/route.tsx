@@ -76,7 +76,7 @@ function Shell() {
     </>}
     <div className="mt-auto border-t pt-3"><button type="button" className={`${row} text-destructive`} onClick={signOut} disabled={leaving}><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">{leaving ? <Loader2 className="h-[18px] w-[18px] animate-spin" /> : <LogOut className="h-[18px] w-[18px]" strokeWidth={2.2} />}</span>Log out</button></div>
   </nav>;
-  return <div className="app-shell flex min-h-dvh bg-background">
+  return <div className="app-shell app-bg flex min-h-dvh">
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card md:flex"><div className="p-6"><Brand /></div>{menu}<div className="mt-auto border-t p-5"><p className="truncate font-medium">{p?.display_name}</p><p className="truncate text-sm text-muted-foreground">{p?.email}</p></div></aside>
     <div className="min-w-0 flex-1">
       <header className="app-topbar relative sticky top-0 z-30 flex h-16 items-center border-b bg-card px-4 md:hidden"><Button size="icon" variant="ghost" className="h-12 w-12" aria-label="Open menu" onClick={() => setDrawer(true)}><Menu className="h-6 w-6" /></Button><span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-lg font-bold">{pathname === "/dashboard" ? "Tanyora" : title}</span></header>

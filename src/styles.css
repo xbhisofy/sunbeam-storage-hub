@@ -187,6 +187,7 @@
 .app-hero-card { background: linear-gradient(135deg, var(--primary), oklch(0.5 0.2 285)); color: var(--primary-foreground); box-shadow: 0 16px 40px -18px color-mix(in oklab, var(--primary) 70%, transparent); }
 .app-storage-card { background: linear-gradient(160deg, color-mix(in oklab, var(--primary) 8%, var(--card)), color-mix(in oklab, var(--primary) 3%, var(--muted))); border-color: color-mix(in oklab, var(--primary) 18%, var(--border)); }
 .app-storage-track { background: color-mix(in oklab, var(--primary) 14%, var(--card)); }
+.app-bg { background: oklch(0.958 0.01 255); }
 .app-bottom { backdrop-filter: blur(14px); background: color-mix(in oklab, var(--card) 92%, transparent); }
 @media (max-width: 767px) { .app-main { padding-left: 16px; padding-right: 16px; } }
 
