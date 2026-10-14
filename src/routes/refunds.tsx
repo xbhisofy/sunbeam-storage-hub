@@ -1,10 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { LegalPage } from "@/components/LegalPage";
-import { pageHead, site } from "@/lib/site";
+import { LegalDoc } from "@/components/LegalDoc";
+import { pageHead } from "@/lib/site";
+
 export const Route = createFileRoute("/refunds")({
-  head: () => pageHead("Refunds, Cancellation and Billing", "Billing, cancellation and refund terms for Tanyora.", "/refunds"),
-  component: () => <LegalPage title="Refunds, Cancellation and Billing"><p>Tanyora accounts are currently free. Paid storage plans are not yet available for purchase.</p>
-<h2>When paid plans launch</h2><p>Plans bought in the Android app will be billed through Google Play and follow Google Play's refund and cancellation rules; you can cancel anytime in Google Play subscriptions. Any plan bought on the website will show its price, renewal period and cancellation steps before payment.</p>
-<h2>Creator rewards</h2><p>Creator rewards are not purchases and are paid out according to the <Link className="text-primary underline" to="/terms">Terms</Link>. Rewards from invalid or fraudulent activity may be withheld.</p>
-<h2>Questions</h2><p>Email <a className="text-primary underline" href={`mailto:${site.supportEmail}`}>{site.supportEmail}</a>.</p></LegalPage>,
+  head: () => pageHead("Refunds, Cancellation and Billing", "Billing, cancellation and refund terms for Tanyora plans, and how creator payouts work.", "/refunds"),
+  component: Refunds,
 });
+
+function Refunds() {
+  return (
+    <LegalDoc
+      title="Refunds, Cancellation and Billing"
+      intro={<p>Tanyora accounts are currently free. Paid plans shown in the Service are not yet available for purchase, and no payment is taken today. This page explains how billing will work when they launch, in line with the Consumer Protection Act, 2019 and the Consumer Protection (E-Commerce) Rules, 2020.</p>}
+      sections={[
+        { id: "prices", title: "Prices and renewal", body: <p>Before you pay, we will clearly show the price (including taxes), the billing period, what the plan includes, and how renewal works. Subscriptions renew automatically until cancelled.</p> },
+        { id: "play", title: "Purchases in the Android app", body: <p>Plans bought in the app are billed by Google Play and follow Google Play's refund policy. Cancel anytime in Google Play → Payments & subscriptions. Refund requests for Play purchases are handled by Google.</p> },
+        { id: "web", title: "Purchases on the website", body: <ul><li>You can cancel anytime; you keep access until the end of the paid period.</li><li>If you were charged by mistake, charged twice, or the service did not work as described, request a refund within 7 days through the <Link to="/contact">contact form</Link>. Approved refunds are returned to the original payment method within 5–10 business days.</li><li>No refunds are given for accounts suspended for breaking our <Link to="/terms">Terms</Link>.</li></ul> },
+        { id: "rewards", title: "Creator rewards are not purchases", body: <p>Rewards and payouts are not payments for a purchase and are not refundable. They are governed by the rewards section of the <Link to="/terms">Terms</Link>. Rewards from invalid or fraudulent activity are withheld or reversed.</p> },
+        { id: "help", title: "Billing help", body: <p>Use the <Link to="/contact">contact form</Link> with topic "Earnings & payouts" or escalate to the <Link to="/grievance">Grievance Officer</Link>.</p> },
+      ]}
+    />
+  );
+}
