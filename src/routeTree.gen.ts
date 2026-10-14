@@ -38,7 +38,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
 import { Route as AuthenticatedSharedRouteImport } from './routes/_authenticated/shared'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
-import { Route as AuthenticatedContentConvertRouteImport } from './routes/_authenticated/content.convert'
+import { Route as AuthenticatedContentConvertRouteImport } from './routes/_authenticated/content_.convert'
 import { Route as ApiPublicDeleteAccountRouteImport } from './routes/api/public/delete-account'
 
 const IndexRoute = IndexRouteImport.update({
@@ -187,9 +187,9 @@ const SSlugRoute = SSlugRouteImport.update({
 } as any)
 const AuthenticatedContentConvertRoute =
   AuthenticatedContentConvertRouteImport.update({
-    id: '/convert',
-    path: '/convert',
-    getParentRoute: () => AuthenticatedContentRoute,
+    id: '/content_/convert',
+    path: '/content/convert',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const ApiPublicDeleteAccountRoute = ApiPublicDeleteAccountRouteImport.update({
   id: '/api/public/delete-account',
@@ -217,7 +217,7 @@ export interface FileRoutesByFullPath {
   '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/content': typeof AuthenticatedContentRouteWithChildren
+  '/content': typeof AuthenticatedContentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/earnings': typeof AuthenticatedEarningsRoute
   '/oc-bonus': typeof AuthenticatedOcBonusRoute
@@ -249,7 +249,7 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/content': typeof AuthenticatedContentRouteWithChildren
+  '/content': typeof AuthenticatedContentRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/earnings': typeof AuthenticatedEarningsRoute
   '/oc-bonus': typeof AuthenticatedOcBonusRoute
@@ -283,7 +283,7 @@ export interface FileRoutesById {
   '/security': typeof SecurityRoute
   '/terms': typeof TermsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/content': typeof AuthenticatedContentRouteWithChildren
+  '/_authenticated/content': typeof AuthenticatedContentRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/earnings': typeof AuthenticatedEarningsRoute
   '/_authenticated/oc-bonus': typeof AuthenticatedOcBonusRoute
@@ -292,7 +292,7 @@ export interface FileRoutesById {
   '/_authenticated/referrals': typeof AuthenticatedReferralsRoute
   '/_authenticated/shared': typeof AuthenticatedSharedRoute
   '/s/$slug': typeof SSlugRoute
-  '/_authenticated/content/convert': typeof AuthenticatedContentConvertRoute
+  '/_authenticated/content_/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
 }
 export interface FileRouteTypes {
@@ -391,7 +391,7 @@ export interface FileRouteTypes {
     | '/_authenticated/referrals'
     | '/_authenticated/shared'
     | '/s/$slug'
-    | '/_authenticated/content/convert'
+    | '/_authenticated/content_/convert'
     | '/api/public/delete-account'
   fileRoutesById: FileRoutesById
 }
@@ -624,12 +624,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/content/convert': {
-      id: '/_authenticated/content/convert'
-      path: '/convert'
+    '/_authenticated/content_/convert': {
+      id: '/_authenticated/content_/convert'
+      path: '/content/convert'
       fullPath: '/content/convert'
       preLoaderRoute: typeof AuthenticatedContentConvertRouteImport
-      parentRoute: typeof AuthenticatedContentRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/public/delete-account': {
       id: '/api/public/delete-account'
@@ -641,20 +641,9 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedContentRouteChildren {
-  AuthenticatedContentConvertRoute: typeof AuthenticatedContentConvertRoute
-}
-
-const AuthenticatedContentRouteChildren: AuthenticatedContentRouteChildren = {
-  AuthenticatedContentConvertRoute: AuthenticatedContentConvertRoute,
-}
-
-const AuthenticatedContentRouteWithChildren =
-  AuthenticatedContentRoute._addFileChildren(AuthenticatedContentRouteChildren)
-
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedContentRoute: typeof AuthenticatedContentRouteWithChildren
+  AuthenticatedContentRoute: typeof AuthenticatedContentRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEarningsRoute: typeof AuthenticatedEarningsRoute
   AuthenticatedOcBonusRoute: typeof AuthenticatedOcBonusRoute
@@ -662,11 +651,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedReferralsRoute: typeof AuthenticatedReferralsRoute
   AuthenticatedSharedRoute: typeof AuthenticatedSharedRoute
+  AuthenticatedContentConvertRoute: typeof AuthenticatedContentConvertRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedContentRoute: AuthenticatedContentRouteWithChildren,
+  AuthenticatedContentRoute: AuthenticatedContentRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEarningsRoute: AuthenticatedEarningsRoute,
   AuthenticatedOcBonusRoute: AuthenticatedOcBonusRoute,
@@ -674,6 +664,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedReferralsRoute: AuthenticatedReferralsRoute,
   AuthenticatedSharedRoute: AuthenticatedSharedRoute,
+  AuthenticatedContentConvertRoute: AuthenticatedContentConvertRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
