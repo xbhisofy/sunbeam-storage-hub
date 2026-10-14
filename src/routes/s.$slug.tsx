@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/Brand";
 import { LegalFooter } from "@/components/LegalFooter";
 import { VideoPlayer } from "@/components/VideoPlayer";
+import { ReportFile } from "@/components/ReportFile";
 import { pageHead, site } from "@/lib/site";
 
 const AD_SECONDS = 5;
@@ -102,6 +103,7 @@ function SharePage() {
             {data.file_type !== "video" && <Button variant="outline" className="mt-4" asChild>
               <a href={data.url} target="_blank" rel="noreferrer"><Download className="h-4 w-4" /> Download</a>
             </Button>}
+            <ReportFile slug={slug} name={data.name} />
           </div>
         )}
         {!isApp && <p className="mt-6 text-center text-sm"><Link className="text-primary underline" to="/copyright">Copyright & safety complaints</Link></p>}
