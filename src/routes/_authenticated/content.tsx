@@ -10,8 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { fileKind, formatSize, formatFileDate, fileMetadata } from "@/lib/format";
-import { isInstalledApp } from "@/lib/app-mode";
+import { fileKind, formatSize, formatFileDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/content")({
   validateSearch: z.object({ kind: z.enum(["pdf", "video", "audio", "image", "link"]).optional(), upload: z.enum(["video", "audio", "image", "document"]).optional() }),
