@@ -66,12 +66,11 @@ function Dashboard() {
     {recentSection}
   </div>;
   // Website home — earnings overview (TenBox-style)
-  const plan = p?.plan ?? "view";
   const onHold = wd.filter(w => w.status === "pending" || w.status === "approved").reduce((s, w) => s + Number(w.amount), 0);
   const balance = Number(p?.balance ?? 0);
   const paid = Number(p?.paid_total ?? 0);
   const views14 = trend.reduce((s, r) => s + r.views, 0);
-  const earnings14 = plan === "view" ? (views14 / 1000) * 3 : 0;
+  const earnings14 = (views14 / 1000) * 3;
   const stats = [
     { icon: Clock, label: "On hold", hint: "Released after review", value: onHold, tone: "bg-amber-100 text-amber-600" },
     { icon: Wallet, label: "Available to withdraw", hint: "Ready for payout", value: balance, tone: "bg-emerald-100 text-emerald-600" },
