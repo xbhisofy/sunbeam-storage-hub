@@ -389,7 +389,7 @@ function UsersTab() {
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center md:w-80">
-                    <Stat label="Plan" value={u.plan === "view" ? "Views" : "Referral"} />
+                    
                     <Stat label="Balance" value={money(Number(u.balance))} />
                     <Stat label="Paid" value={money(Number(u.paid_total))} />
                   </div>

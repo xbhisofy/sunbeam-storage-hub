@@ -32,7 +32,7 @@ const faqs = [
   ['What can I upload, and how big?', 'Upload videos, images, audio, documents and archives, up to 1 TB per file. Only upload content you own or have permission to share.'],
   ['How do people open my shared files?', 'Share links open in the Tanyora Android app. People opening a link in a browser are offered the Android app installation page.'],
   ['Can I set a time limit on a link?', 'Yes. Choose 1 hour, 24 hours, 7 days, 30 days or Never expires when sharing. You can also remove a share or delete the file.'],
-  ['How does the Creator Program work?', 'The website offers a View-Based Plan and a Signup Referral Plan. Earnings are subject to eligible activity, anti-fraud checks and our Terms of Service. The Android app focuses on file storage and sharing.'],
+  ['How does the Creator Program work?', 'On the website you earn from both eligible views and referral signups. Earnings are subject to eligible activity, anti-fraud checks and our Terms of Service. The Android app focuses on file storage and sharing.'],
   ['How do I request a payout?', `Request a withdrawal from the website when your balance reaches $5. Available methods are ${PAYOUT_METHODS_SENTENCE}. Requests are reviewed before payment.`],
   ['Can I invite other creators?', 'Yes. Your website account includes a referral link and referral tracking. Your referral rewards depend on the current program rules in your account.'],
   ['How do I report a file or get help?', 'Visit Report content for a content concern, or Contact support for account and product questions. Copyright requests can be submitted through the Copyright & DMCA page.'],

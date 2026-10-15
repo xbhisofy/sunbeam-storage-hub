@@ -19,8 +19,8 @@ export const Route = createFileRoute("/_authenticated/earnings")({
 });
 
 const plans = [
-  { id: "referral" as const, name: "Signup Referral Plan", desc: "Earn a fixed reward for every new user who signs up using your referral link." },
-  { id: "view" as const, name: "View-Based Plan", desc: "Earn revenue each time your shared files receive eligible views." },
+  { id: "view" as const, name: "View earnings", desc: "3.00 USD per 1,000 eligible views on your shared files." },
+  { id: "referral" as const, name: "Referral earnings", desc: "0.10 USD for every new user who signs up with your referral link." },
 ];
 
 function Earnings() {
@@ -120,26 +120,16 @@ function Earnings() {
       </div>
 
       <div className="mt-6 rounded-2xl border bg-card p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="text-sm text-muted-foreground">Your earning plan</div>
-            <div className="mt-1 text-lg font-bold">{plan === "view" ? "View-Based Plan" : "Signup Referral Plan"}</div>
-            <div className="text-sm text-muted-foreground">{plan === "view" ? "3.00 USD per 1,000 views" : "0.10 USD per signup"}</div>
-            <div className="mt-2 text-sm text-muted-foreground">{switches} of 3 switches remaining</div>
-          </div>
-          <Button variant="outline" className="h-11 rounded-xl px-6 text-primary" onClick={() => setChanging(!changing)}>Change</Button>
+        <div className="text-sm text-muted-foreground">Your earnings</div>
+        <div className="mt-1 text-lg font-bold">Views + Referrals</div>
+        <div className="mt-4 space-y-3">
+          {plans.map((pl) => (
+            <div key={pl.id} className="flex items-center justify-between gap-4 rounded-xl border border-primary bg-primary/5 p-4">
+              <div><div className="font-semibold">{pl.name}</div><div className="text-sm text-muted-foreground">{pl.desc}</div></div>
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"><Check className="h-3 w-3" /> Active</span>
+            </div>
+          ))}
         </div>
-        {changing && (
-          <div className="mt-4 space-y-3 border-t pt-4">
-            {plans.map((pl) => (
-              <button key={pl.id} disabled={busy || (pl.id !== plan && switches <= 0)} onClick={() => switchPlan(pl.id)}
-                className={`flex w-full items-center justify-between gap-4 rounded-xl border p-4 text-left transition ${pl.id === plan ? "border-primary bg-primary/5" : "hover:bg-muted"}`}>
-                <div><div className="font-semibold">{pl.name}</div><div className="text-sm text-muted-foreground">{pl.desc}</div></div>
-                {pl.id === plan && <span className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"><Check className="h-3 w-3" /> Active</span>}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       <h2 className="mt-8 text-lg font-semibold">Payout history</h2>
