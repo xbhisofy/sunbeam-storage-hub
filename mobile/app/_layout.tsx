@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import { Stack, router, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import type { Session } from "@supabase/supabase-js";
+import mobileAds from "react-native-google-mobile-ads";
 import { supabase } from "../lib/supabase";
 import { theme } from "../lib/theme";
 
@@ -15,43 +17,38 @@ export default function RootLayout() {
   const segments = useSegments();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setReady(true);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => { setSession(s); setReady(true); });
+    mobileAds().initialize().catch(() => {});
+    supabase.auth.getSession().then(({ data }) => { setSession(data.session); setReady(true); });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  // Signed-out users always land on /login; signed-in users go to the app.
+  // Signed-out users start at login; shared links (/s/...) stay reachable after login.
   useEffect(() => {
     if (!ready) return;
     const atLogin = segments[0] === "(auth)";
     if (!session && !atLogin) router.replace("/login");
     else if (session && atLogin) router.replace("/(tabs)");
-    else if (session && segments.length === 0) router.replace("/(tabs)");
   }, [ready, session, segments]);
 
   if (!ready) {
     return (
-      <View style={[styles.center, { backgroundColor: theme.bg }]}>
-        <ActivityIndicator color={theme.primary} size="large" />
+      <View style={styles.splash}>
+        <Image source={require("../assets/icon.png")} style={styles.logo} />
+        <ActivityIndicator color={theme.primary} style={{ marginTop: 24 }} />
       </View>
     );
   }
 
   return (
     <SessionContext.Provider value={session}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: theme.bg },
-        }}
-      />
+      <StatusBar style="dark" />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: theme.bg }, animation: "slide_from_right" }} />
     </SessionContext.Provider>
   );
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, alignItems: "center", justifyContent: "center" },
+  splash: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.card },
+  logo: { width: 96, height: 96, borderRadius: 24 },
 });

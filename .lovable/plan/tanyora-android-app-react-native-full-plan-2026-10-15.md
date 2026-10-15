@@ -49,12 +49,13 @@ Splash (Tanyora logo + animation)
 ## 5. Aapse mujhe kya chahiye
 
 **AdMob (admob.google.com):**
+
 1. AdMob account banao, "Add app" -> Android -> app abhi Play Store par nahi hai bolo.
 2. **App ID** (aisa dikhta hai: `ca-app-pub-1234567890123456~1234567890`)
 3. Ad units banao aur unke **Ad unit ID** do (`ca-app-pub-...../.....`):
-   - Interstitial (share link wala ad) — zaroori
-   - Banner — agar chahiye
-   - Rewarded — agar "ad dekho phir file" wala chahiye
+  - Interstitial (share link wala ad) — zaroori
+  - Banner — agar chahiye
+  - Rewarded — agar "ad dekho phir file" wala chahiye
 4. Batao kahan-kahan ad chahiye aur kitni baar.
 
 **App build ke liye (Expo account, free):**
@@ -65,13 +66,14 @@ Splash (Tanyora logo + animation)
 
 **Play Store ka purana app (bahut zaroori):**
 7. Kya aapki PWABuilder wali app Play Store par already live/testing me hai? Agar haan:
-   - Uska exact package name (jaise `com.tanyora.twa`)
-   - Uski **signing key** file (`.keystore`) aur uske passwords — PWABuilder zip ke andar milti hai
-   - Aakhri versionCode
+
+- Uska exact package name (jaise `com.tanyora.twa`)
+- Uski **signing key** file (`.keystore`) aur uske passwords — PWABuilder zip ke andar milti hai
+- Aakhri versionCode
    Bina same package name + same key ke, naya app purane app ko update nahi kar payega; Play Console me naya app banana padega.
 
 **Baaki:**
-8. Asli support email (tanyora@support.com aapka hai ya nahi?).
+8. Asli support email ([tanyora@support.com](mailto:tanyora@support.com) aapka hai ya nahi?).
 9. Privacy policy URL: app.tanyora.com/privacy (pehle se bana hai). AdMob ki wajah se usme ads wala hissa jodna padega — main kar dunga.
 
 ## 6. Kaam ka order (jab aap "build karo" bolo)
@@ -102,3 +104,11 @@ Time: Pehle APK tak kaafi bada kaam hai, thode rounds lagenge. Har build Expo ke
 - Android: intent filter only for `https://tanyora.com/s/*`; package name and versionCode set from the existing Play listing; upload keystore supplied to EAS credentials.
 - Builds: `eas build -p android --profile preview` (APK) and `--profile production` (AAB) using EXPO_TOKEN secret; GitHub push via connector/token to a new private repo containing only `mobile/` (or full repo — to confirm).
 - Remove the old Capacitor config and Google Sign-In package from the mobile app (login is email/password only).
+
+&nbsp;
+
+&nbsp;
+
+and ye proerly [app.tanyora.com](http://app.tanyora.com) ka hoga matlab yahan se hoga jaise koi login karen to wahan se ease kam karen and  matlab koi bhi chije falti ka nahi hoga sidha direct login signup se suru hoga and koi bhi website opne karen to wo proerly agar appp hai to app pe rediret matlab [tanyora.com](http://tanyora.com) nahi wahan pe to thik hai wo website pe bhi chalega sara chije ekdma but koi shared link hai to wo nahi khulega wo brouser me uska link dalne par bhi wo app par redirect karega ya nahi to play store par abhi palty par redirect karega wand prooerly ahan pe khul kar aayega ekdma achhe se and payemnt gateway renew ye sab webste se hi hoga upgrade paln ya ,kchh ease sab webste se manage hoga ease karna proerly achhe se 
+
+&nbsp;

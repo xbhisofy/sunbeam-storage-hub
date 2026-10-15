@@ -29,6 +29,12 @@ function SharePage() {
   const [open, setOpen] = useState(false);
   const [isApp] = useState(isNativeApp);
 
+  // Android browsers jump straight into the app, or to the Play Store when it isn't installed.
+  useEffect(() => {
+    if (isApp || !/Android/i.test(navigator.userAgent)) return;
+    window.location.href = `intent://${new URL(site.shareUrl).host}/s/${slug}#Intent;scheme=https;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`;
+  }, [isApp, slug]);
+
   const { data, isLoading } = useQuery({
     queryKey: ["share", slug],
     enabled: isApp,
