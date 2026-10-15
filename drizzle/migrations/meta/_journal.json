@@ -92,6 +92,13 @@
       "when": 1792001389982,
       "tag": "0012_oc_bonus",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792054642445,
+      "tag": "0013_zapupi_deposits",
+      "breakpoints": true
     }
   ]
 }
