@@ -15,7 +15,7 @@
     },
     "android": {
       "package": "com.tanyora.twa",
-      "versionCode": 2,
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000A2E"
@@ -61,8 +61,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": ""
-      }
-    }
+        "projectId": "e143658f-2a3f-49d7-b710-23db3c1e7943"
+      },
+      "router": {}
+    },
+    "owner": "tanyora"
   }
 }
