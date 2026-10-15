@@ -19,11 +19,11 @@
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
 - Fetch shared-file details and start countdowns only inside the native app because browser share links only offer installation.
 - The Android app is a separate native Expo (React Native) codebase in `mobile/` talking directly to the same backend as app.tanyora.com; keep mobile code out of `src/` and provide native account/content/earnings screens, with checkout and payouts on the external website to avoid duplicating payment logic.
-- Native account sections share focus/resume-aware loaders in `mobile/lib/account-data.ts` and the destination registry in `mobile/lib/feature-rules.ts` so website parity stays discoverable and balances refresh after browser actions.
+- The native app is cloud sharing only (Home, My Files, Upload, Shared, Profile); earnings, wallet, referrals, OC Bonus, plans and menu stay website-only for Play policy, and plan status is read from the profile so website upgrades reflect automatically.
+- Native local notifications go through `mobile/lib/notifications.ts` with one high-importance channel bound to the bundled sound; changing the sound requires a new channel id.
 - Native conversion preserves the parent file reference and never deletes shared storage when removing a converted row, so conversions retain original ownership and bonus attribution.
 - Native account screens share `useProfile` with focus/resume refresh so externally changed subscriptions are not stale; central account rules validate profile inputs and derive plan display.
 - Native entrance motion uses the system Reduce Motion preference and the native animation driver to keep interactions accessible and smooth.
-- Native external upgrade links are gated by build distribution: direct APKs may open the website; Play builds must not steer to external purchases without an eligible enrolled billing program.
 - The native root session gate owns post-login navigation and restores only validated `/s/<slug>` destinations so sign-in never loses shared files or accepts external redirects.
 - Android assetlinks must match the shipped APK signing certificate; add the Play App Signing certificate when available because mismatches prevent verified share links from opening the installed app.
 - Public API routes under `src/routes/api/public/*` must verify callers with `requireBearerUserId`; account-deletion logic lives only in `src/lib/delete-account.ts` so the web server function and the mobile-app route stay identical.

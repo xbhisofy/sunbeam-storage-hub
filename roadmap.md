@@ -32,3 +32,6 @@
 - [x] Previous APK/AAB versions built and delivered; Expo access available.
 - [ ] Private GitHub repo push (blocked: GitHub connection/token)
 - [x] Owner-supplied AdMob IDs configured; package and Expo signing key established.
+
+- [x] App 1.1.0: removed earnings/wallet/referrals/OC Bonus/plans/menu, premium Home, upload notifications with custom sound; final AAB build.
+- [ ] Server push notifications (blocked: Firebase project google-services.json from owner)
