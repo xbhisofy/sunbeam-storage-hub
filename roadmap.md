@@ -3,7 +3,7 @@
 - [x] Refresh website-purchased plan on app resume and provide a policy-safe upgrade entry (external website link only in direct APK).
 - [x] Preserve shared-file destination through sign-in; corrected APK signing fingerprint served live without stale proxy cache.
 - [ ] Verify shared-link app/store handoff on owner's phone; Play App Signing certificate required once app is published.
-- [ ] Build updated APK version 1.0.2 (Expo build eba4f841-6936-46af-8fff-21886aa152ad in progress); phone testing requires owner's device.
+- [x] Build updated APK version 1.0.2; Expo build finished, archive integrity and signing certificate verified, saved to Files. Native phone flows remain unverified without owner's device.
 - [x] Deploy latest splash artwork to VPS; live installed-app-mode splash, loaded artwork, dismissal and same-session suppression verified without changing launch timers.
 - [x] Restore light app background, deepen only four Home category tiles, allow subscription plans in the app; tests passed and VPS updated.
 - [ ] Signed-in Go Ad Free tap verification (blocked: preview has no requesting-user account/session; owner must check in installed app).
