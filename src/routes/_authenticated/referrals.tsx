@@ -62,7 +62,7 @@ function Referrals() {
     <div className="max-w-6xl">
       <h1 className="text-3xl font-bold">Referral Program</h1>
       <p className="mt-1 text-muted-foreground">
-        {p?.plan === "referral" ? "Share your referral link. You earn $0.10 for every new user who signs up with it, plus 10% of their view earnings, credited automatically." : "Share your referral link. Whenever someone you invite earns from approved views, you're automatically credited 10% of it, with no cost to them."}
+        Share your referral link. You earn $0.10 for every new user who signs up with it, plus 10% of their view earnings, credited automatically.
       </p>
 
       <div className="mt-6 rounded-2xl border bg-card p-5">

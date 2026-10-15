@@ -80,8 +80,8 @@ function Dashboard() {
   return <div className="space-y-7">
     <div><h1 className="text-2xl font-bold md:text-3xl">Hi, {p?.display_name ?? "there"}</h1><p className="mt-1 text-muted-foreground">Here's how your content is performing.</p></div>
     <div className="flex items-center justify-between gap-3">
-      <h2 className="font-semibold">{plan === "view" ? "View-Based Plan" : "Signup Referral Plan"}</h2>
-      <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{plan === "view" ? "View-based" : "Referral"}</span>
+      <h2 className="font-semibold">Views + Referrals</h2>
+      <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Both active</span>
     </div>
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{stats.map(s => <div key={s.label} className="rounded-2xl border bg-card p-5 shadow-sm">
       <div className="flex items-center gap-3"><span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${s.tone}`}><s.icon className="h-5 w-5" /></span><p className="text-sm font-medium text-muted-foreground">{s.label}</p></div>
