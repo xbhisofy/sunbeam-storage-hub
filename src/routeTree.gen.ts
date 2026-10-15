@@ -37,6 +37,7 @@ import { Route as AuthenticatedPlansRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
 import { Route as AuthenticatedSharedRouteImport } from './routes/_authenticated/shared'
+import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as AuthenticatedContentConvertRouteImport } from './routes/_authenticated/content_.convert'
 import { Route as ApiPublicDeleteAccountRouteImport } from './routes/api/public/delete-account'
@@ -181,6 +182,11 @@ const AuthenticatedSharedRoute = AuthenticatedSharedRouteImport.update({
   path: '/shared',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const SSlugRoute = SSlugRouteImport.update({
   id: '/s/$slug',
   path: '/s/$slug',
@@ -231,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
   '/shared': typeof AuthenticatedSharedRoute
+  '/wallet': typeof AuthenticatedWalletRoute
   '/s/$slug': typeof SSlugRoute
   '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
@@ -264,6 +271,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
   '/shared': typeof AuthenticatedSharedRoute
+  '/wallet': typeof AuthenticatedWalletRoute
   '/s/$slug': typeof SSlugRoute
   '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
@@ -299,6 +307,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/referrals': typeof AuthenticatedReferralsRoute
   '/_authenticated/shared': typeof AuthenticatedSharedRoute
+  '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/s/$slug': typeof SSlugRoute
   '/_authenticated/content_/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
@@ -334,6 +343,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/referrals'
     | '/shared'
+    | '/wallet'
     | '/s/$slug'
     | '/content/convert'
     | '/api/public/delete-account'
@@ -367,6 +377,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/referrals'
     | '/shared'
+    | '/wallet'
     | '/s/$slug'
     | '/content/convert'
     | '/api/public/delete-account'
@@ -401,6 +412,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/referrals'
     | '/_authenticated/shared'
+    | '/_authenticated/wallet'
     | '/s/$slug'
     | '/_authenticated/content_/convert'
     | '/api/public/delete-account'
@@ -630,6 +642,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSharedRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/wallet': {
+      id: '/_authenticated/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof AuthenticatedWalletRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/s/$slug': {
       id: '/s/$slug'
       path: '/s/$slug'
@@ -671,6 +690,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedReferralsRoute: typeof AuthenticatedReferralsRoute
   AuthenticatedSharedRoute: typeof AuthenticatedSharedRoute
+  AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
   AuthenticatedContentConvertRoute: typeof AuthenticatedContentConvertRoute
 }
 
@@ -684,6 +704,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedReferralsRoute: AuthenticatedReferralsRoute,
   AuthenticatedSharedRoute: AuthenticatedSharedRoute,
+  AuthenticatedWalletRoute: AuthenticatedWalletRoute,
   AuthenticatedContentConvertRoute: AuthenticatedContentConvertRoute,
 }
 
