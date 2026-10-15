@@ -10,7 +10,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     // Opaque sb_ keys are not JWTs: send as apikey, never as a bearer.
     fetch: (input, init) => {
       const h = new Headers(init?.headers);
-      if (h.get("Authorization") === `Bearer ${SUPABASE_PUBLISHABLE_KEY}`) h.delete("Authorization");
+      if (SUPABASE_PUBLISHABLE_KEY.startsWith("sb_") && h.get("Authorization") === `Bearer ${SUPABASE_PUBLISHABLE_KEY}`) h.delete("Authorization");
       h.set("apikey", SUPABASE_PUBLISHABLE_KEY);
       return fetch(input, { ...init, headers: h });
     },

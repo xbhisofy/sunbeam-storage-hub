@@ -6,23 +6,19 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "tanyora",
-    "userInterfaceStyle": "dark",
-    "backgroundColor": "#0B1220",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFFFFF",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0B1220"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.tanyora.app"
+      "backgroundColor": "#FFFFFF"
     },
     "android": {
       "package": "app.lovable.tanyora.twa",
       "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/splash-icon.png",
-        "backgroundColor": "#0B1220"
+        "backgroundColor": "#FFFFFF"
       },
       "intentFilters": [
         {
@@ -31,15 +27,35 @@
           "data": [
             {
               "scheme": "https",
-              "host": "tanyora.lovable.app",
-              "pathPrefix": "/s"
+              "host": "tanyora.com",
+              "pathPrefix": "/s/"
+            },
+            {
+              "scheme": "tanyora",
+              "host": "s"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
+      ],
+      "permissions": [
+        "INTERNET"
       ]
     },
-    "plugins": ["expo-router", "expo-video", "@react-native-google-signin/google-signin"],
+    "plugins": [
+      "expo-router",
+      "expo-video",
+      "expo-screen-orientation",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713"
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     },
