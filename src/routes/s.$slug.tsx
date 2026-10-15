@@ -35,8 +35,12 @@ function SharePage() {
     queryFn: async () => {
       const { data: f } = await supabase.from("files").select("owner_id,name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text,expires_at").eq("slug", slug).maybeSingle();
       if (!f) return null;
-      // Owners cannot preview their own uploads without a subscription.
-      if (f.owner_id && f.owner_id === (await currentUserId())) return { ownFile: true as const, name: f.name };
+      // Owners cannot preview their own uploads without an active premium plan.
+      const uid = await currentUserId();
+      if (f.owner_id && f.owner_id === uid) {
+        const { data: me } = await supabase.from("profiles").select("premium_tier,premium_until").eq("id", uid).maybeSingle();
+        if (!activePremium(me)) return { ownFile: true as const, name: f.name };
+      }
       if (f.expires_at && new Date(f.expires_at).getTime() < Date.now()) return { expired: true as const };
       if (!f.storage_path) return { ...f, url: f.external_url ?? "" };
       const { data: s } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 60 * 60 * 3);
