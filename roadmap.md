@@ -36,4 +36,5 @@
 - [x] App 1.1.0: removed earnings/wallet/referrals/OC Bonus/plans/menu, premium Home, upload notifications with custom sound; final AAB build.
 - [ ] Server push notifications (blocked: Firebase project google-services.json from owner)
 - [x] App 1.1.1: photo/video access notice + system photo picker (no gallery permission), legal pages updated for permissions, consent, storage plans and DMCA cloud content.
-- [ ] Google sign-in in app and website (blocked: Google Cloud OAuth Web client ID/secret + Android client with Play signing SHA-1, enabled on the VPS login server)
+- [ ] Google sign-in in app and website (blocked: Google Cloud OAuth Web client ID/secret + Android client with Play signing SHA-1, enabled on the VPS login server). Owner-domain callback: https://app.tanyora.com/backend/auth/v1/callback
+- [x] Remove Lovable-hosted addresses from live pages: Play badge and payout logos bundled in src/assets, capacitor/docs point at owner domains; verified zero references on tanyora.com and app.tanyora.com.

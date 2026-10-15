@@ -37,4 +37,5 @@
 - The installed-app website-only route guard excludes subscription plans so Home and Profile upgrade links remain usable.
 
 - The VPS deployment uses a self-hosted backend (Docker in /opt/tanyora-backend, served at app.tanyora.com/backend) with storage on Cloudflare R2; the VPS .env overrides backend URLs at build time, so app code must keep using the generated client and never hardcode backend URLs.
+- The site is self-hosted on the owner's own domains, so shipped pages, app config and store-listing docs must never reference a Lovable-hosted URL; bundle images under src/assets and build absolute links from src/lib/site.ts.
 - Payout methods are declared once in `src/lib/payouts.ts` and must stay identical to the `request_withdrawal` backend whitelist; the withdrawal form, admin note and landing page all read that list so a method can never appear in the UI and be rejected by the backend.
