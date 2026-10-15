@@ -1,192 +1,75 @@
-import { useState } from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Animated, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { supabase } from "../../lib/supabase";
-import { BRAND } from "../../lib/config";
 import { theme } from "../../lib/theme";
-import { signInWithNativeGoogle } from "../../lib/native-google";
+import { Button, Field } from "../../components/ui";
 
 export default function Login() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [ref, setRef] = useState("");
   const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState("");
+  const fade = useRef(new Animated.Value(0)).current;
 
-  async function google() {
-    if (busy) return;
-    setBusy(true);
-    setNotice("");
-    try {
-      const result = await signInWithNativeGoogle();
-      if (result === "signed-in") router.replace("/(tabs)");
-    } catch (error) {
-      Alert.alert("Google login", error instanceof Error ? error.message : "Please try again");
-    } finally {
-      setBusy(false);
-    }
-  }
+  useEffect(() => {
+    Animated.timing(fade, { toValue: 1, duration: 600, useNativeDriver: true }).start();
+  }, [fade]);
 
   async function submit() {
-    if (!email.trim() || !password) {
-      Alert.alert("Email aur password dono daalo");
-      return;
-    }
+    const e = email.trim();
+    if (mode === "signup" && !name.trim()) return Alert.alert("Name required", "Please enter your full name.");
+    if (!/^\S+@\S+\.\S+$/.test(e)) return Alert.alert("Invalid email", "Please enter a valid email address.");
+    if (password.length < 8) return Alert.alert("Password too short", "Password must be at least 8 characters.");
     setBusy(true);
-    setNotice("");
     try {
       if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
+        const { error } = await supabase.auth.signInWithPassword({ email: e, password });
         if (error) throw error;
-        router.replace("/(tabs)");
       } else {
-        const { data, error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: {
-            data: {
-              display_name: displayName.trim() || undefined,
-              ref: ref.trim() || undefined,
-            },
-          },
-        });
+        const { data, error } = await supabase.auth.signUp({ email: e, password, options: { data: { display_name: name.trim() } } });
         if (error) throw error;
-        if (data.session) {
-          router.replace("/(tabs)");
-        } else {
-          setNotice(
-            "Account created. You can now sign in.",
-          );
-          setMode("signin");
-        }
+        if (!data.session) { Alert.alert("Account created", "You can now sign in."); setMode("signin"); return; }
       }
-    } catch (e) {
-      Alert.alert("Problem", e instanceof Error ? e.message : "Something went wrong");
+      router.replace("/(tabs)");
+    } catch (err) {
+      Alert.alert("Unable to continue", err instanceof Error ? err.message : "Please try again.");
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.logo}>
-        <Text style={styles.logoMark}>T</Text>
-      </View>
-      <Text style={styles.title}>{BRAND.name}</Text>
-      <Text style={styles.subtitle}>
-        Share files and earn from every view — {mode === "signin" ? "sign in to continue" : "create your account"}
-      </Text>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: theme.card }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <ScrollView contentContainerStyle={styles.wrap} keyboardShouldPersistTaps="handled">
+        <Animated.View style={{ alignItems: "center", opacity: fade, transform: [{ translateY: fade.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }] }}>
+          <Image source={require("../../assets/icon.png")} style={styles.logo} />
+          <Text style={styles.brand}>TANYORA</Text>
+          <Text style={styles.sub}>{mode === "signin" ? "Welcome back. Sign in to your account." : "Create your account to start sharing."}</Text>
+        </Animated.View>
 
-      <Pressable accessibilityRole="button" accessibilityLabel="Continue with Google" style={[styles.googleButton, busy && styles.buttonDisabled]} onPress={google} disabled={busy}>
-        <Text style={styles.googleText}>Continue with Google</Text>
-      </Pressable>
+        <View style={{ gap: 14, marginTop: 28 }}>
+          {mode === "signup" && <Field label="Full name" value={name} onChangeText={setName} placeholder="Your name" autoComplete="name" />}
+          <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
+          <Field label="Password" value={password} onChangeText={setPassword} placeholder="At least 8 characters" secureTextEntry autoComplete="password" />
+          <Button label={mode === "signin" ? "Sign in" : "Create account"} onPress={submit} busy={busy} style={{ marginTop: 6 }} />
+        </View>
 
-      {mode === "signup" && (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Aapka naam"
-            placeholderTextColor={theme.muted}
-            value={displayName}
-            onChangeText={setDisplayName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Referral code (optional)"
-            placeholderTextColor={theme.muted}
-            autoCapitalize="none"
-            value={ref}
-            onChangeText={setRef}
-          />
-        </>
-      )}
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor={theme.muted}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor={theme.muted}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      {notice ? <Text style={styles.notice}>{notice}</Text> : null}
-
-      <Pressable style={[styles.button, busy && styles.buttonDisabled]} onPress={submit} disabled={busy}>
-        {busy ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>{mode === "signin" ? "Sign In" : "Create Account"}</Text>
-        )}
-      </Pressable>
-
-      <Pressable onPress={() => setMode(mode === "signin" ? "signup" : "signin")}>
-        <Text style={styles.switchText}>
-          {mode === "signin"
-            ? "New here? Create an account"
-            : "Already have an account? Sign in"}
-        </Text>
-      </Pressable>
-    </View>
+        <Pressable onPress={() => setMode(mode === "signin" ? "signup" : "signin")} style={{ marginTop: 22, alignSelf: "center", padding: 8 }}>
+          <Text style={{ color: theme.muted, fontSize: 15 }}>
+            {mode === "signin" ? "New to Tanyora? " : "Already have an account? "}
+            <Text style={{ color: theme.primary, fontWeight: "700" }}>{mode === "signin" ? "Create account" : "Sign in"}</Text>
+          </Text>
+        </Pressable>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: theme.bg, padding: 24, justifyContent: "center" },
-  logo: {
-    width: 72,
-    height: 72,
-    borderRadius: 18,
-    backgroundColor: theme.primary,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    marginBottom: 12,
-  },
-  logoMark: { color: "#E2E8F0", fontSize: 40, fontWeight: "800" },
-  title: { color: theme.text, fontSize: 28, fontWeight: "800", textAlign: "center" },
-  subtitle: { color: theme.muted, textAlign: "center", marginTop: 6, marginBottom: 24 },
-  input: {
-    backgroundColor: theme.card,
-    borderColor: theme.border,
-    borderWidth: 1,
-    borderRadius: 12,
-    color: theme.text,
-    padding: 14,
-    marginBottom: 12,
-  },
-  notice: { color: theme.success, marginBottom: 12, textAlign: "center" },
-  button: {
-    backgroundColor: theme.primary,
-    borderRadius: 12,
-    padding: 15,
-    alignItems: "center",
-    marginTop: 4,
-  },
-  buttonDisabled: { opacity: 0.6 },
-  googleButton: { minHeight: 48, borderColor: theme.border, borderWidth: 1, borderRadius: 8, alignItems: "center", justifyContent: "center", marginBottom: 20, backgroundColor: theme.card },
-  googleText: { color: theme.text, fontWeight: "700", fontSize: 16 },
-  buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
-  switchText: { color: theme.primary, textAlign: "center", marginTop: 18 },
+  wrap: { flexGrow: 1, justifyContent: "center", padding: 24 },
+  logo: { width: 80, height: 80, borderRadius: 22 },
+  brand: { marginTop: 16, fontSize: 28, fontWeight: "800", letterSpacing: 6, color: theme.text },
+  sub: { marginTop: 8, color: theme.muted, fontSize: 15, textAlign: "center" },
 });
