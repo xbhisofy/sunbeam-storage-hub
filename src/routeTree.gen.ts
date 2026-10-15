@@ -40,6 +40,7 @@ import { Route as AuthenticatedSharedRouteImport } from './routes/_authenticated
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as AuthenticatedContentConvertRouteImport } from './routes/_authenticated/content_.convert'
 import { Route as ApiPublicDeleteAccountRouteImport } from './routes/api/public/delete-account'
+import { Route as ApiPublicZapupiWebhookRouteImport } from './routes/api/public/zapupi-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -196,6 +197,11 @@ const ApiPublicDeleteAccountRoute = ApiPublicDeleteAccountRouteImport.update({
   path: '/api/public/delete-account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicZapupiWebhookRoute = ApiPublicZapupiWebhookRouteImport.update({
+  id: '/api/public/zapupi-webhook',
+  path: '/api/public/zapupi-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -228,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/s/$slug': typeof SSlugRoute
   '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
+  '/api/public/zapupi-webhook': typeof ApiPublicZapupiWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -260,6 +267,7 @@ export interface FileRoutesByTo {
   '/s/$slug': typeof SSlugRoute
   '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
+  '/api/public/zapupi-webhook': typeof ApiPublicZapupiWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/s/$slug': typeof SSlugRoute
   '/_authenticated/content_/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
+  '/api/public/zapupi-webhook': typeof ApiPublicZapupiWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -328,6 +337,7 @@ export interface FileRouteTypes {
     | '/s/$slug'
     | '/content/convert'
     | '/api/public/delete-account'
+    | '/api/public/zapupi-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -360,6 +370,7 @@ export interface FileRouteTypes {
     | '/s/$slug'
     | '/content/convert'
     | '/api/public/delete-account'
+    | '/api/public/zapupi-webhook'
   id:
     | '__root__'
     | '/'
@@ -393,6 +404,7 @@ export interface FileRouteTypes {
     | '/s/$slug'
     | '/_authenticated/content_/convert'
     | '/api/public/delete-account'
+    | '/api/public/zapupi-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -417,6 +429,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   SSlugRoute: typeof SSlugRoute
   ApiPublicDeleteAccountRoute: typeof ApiPublicDeleteAccountRoute
+  ApiPublicZapupiWebhookRoute: typeof ApiPublicZapupiWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -638,6 +651,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDeleteAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/zapupi-webhook': {
+      id: '/api/public/zapupi-webhook'
+      path: '/api/public/zapupi-webhook'
+      fullPath: '/api/public/zapupi-webhook'
+      preLoaderRoute: typeof ApiPublicZapupiWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -692,6 +712,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   SSlugRoute: SSlugRoute,
   ApiPublicDeleteAccountRoute: ApiPublicDeleteAccountRoute,
+  ApiPublicZapupiWebhookRoute: ApiPublicZapupiWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
