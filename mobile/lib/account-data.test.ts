@@ -60,7 +60,7 @@ describe("native account reads", () => {
     expect(profile.eq).toHaveBeenCalledWith("id", "viewer");
     expect(payouts.eq).toHaveBeenCalledWith("user_id", "viewer");
     expect(views.eq).toHaveBeenCalledWith("owner_id", "viewer");
-    expect(data.profile.balance).toBe(12);
+    expect(data.profile?.balance).toBe(12);
     expect(data.withdrawals[0].amount).toBe(5);
     expect(data.views[0].views).toBe(100);
   });
