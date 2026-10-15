@@ -1,6 +1,8 @@
 # Roadmap
-- [ ] Add native feature parity: complete menu, Home account summary, All Content/Convert Link, Earnings, Wallet, OC Bonus, Referrals, Profile and Premium; payments stay external and distribution-gated.
-- [ ] Verify new native data rules and navigation; phone end-to-end testing requires an Android device.
+- [x] Add native account sections: complete menu, Home account summary, All Content/Convert Link, Earnings, Wallet, OC Bonus, Referrals, Profile and Premium; payments stay external and distribution-gated.
+- [x] Verify native menu, conversion ownership/expiry and external-payment restrictions with automated tests.
+- [ ] Verify signed-in native navigation, conversion and browser-return balances end-to-end (blocked: Android device/emulator unavailable).
+- [ ] Build and deliver APK 1.0.3 with the new account sections.
 - [x] Polish native Home/Profile, accessible motion, profile editing and discoverable file rename; native typecheck and account-rule tests pass.
 - [x] Refresh website-purchased plan on app resume and provide a policy-safe upgrade entry (external website link only in direct APK).
 - [x] Preserve shared-file destination through sign-in; corrected APK signing fingerprint served live without stale proxy cache.
@@ -18,7 +20,6 @@
 - [x] Storage subscription plans page (Free/Plus/Pro)
 - [x] Deploy website + subdomain to own VPS with HTTPS (tanyora.com, app.tanyora.com, www)
 - [ ] Google Play Billing purchase (blocked: Play Console subscription products + app on Play Store)
-- [ ] Confirm Views chart is hidden inside the installed app (blocked: user must reopen app and report)
 - [ ] Backend independence: keep Lovable Cloud + take code/database backups, or rebuild backend elsewhere (blocked: needs user's decision)
 - [x] Compliance step 1: storage-first landing, professional footer, all legal pages (AUP, reporting, child safety, retention, security, law enforcement, grievance, cookies, refunds, FAQ)
 - [ ] Compliance step 2: in-app Report button + reports table + admin moderation tab

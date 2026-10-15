@@ -62,7 +62,7 @@ export async function loadReferrals(uid: string) {
     supabase.from("referral_daily").select("day,signup_bonus,commission").eq("referrer_id", uid).gte("day", new Date(Date.now() - 864e5).toISOString().slice(0, 10)),
     supabase.from("withdrawals").select("status,amount").eq("user_id", uid),
   ]);
-  return { profile: checked(profile), people: checked(people) ?? [], daily: checked(daily) ?? [], withdrawals: checked(withdrawals) ?? [] };
+  return { profile: checked(profile), people: (checked(people) ?? []) as { name: string; joined: string; earned: number }[], daily: checked(daily) ?? [], withdrawals: checked(withdrawals) ?? [] };
 }
 
 export async function convertLink(uid: string, input: string) {
@@ -72,7 +72,9 @@ export async function convertLink(uid: string, input: string) {
   if (!source) throw new Error("This shared file was not found.");
   const problem = conversionProblem(source, uid);
   if (problem) throw new Error(problem);
-  const existing = checked(await supabase.from("files").select("id").eq("owner_id", uid).eq("parent_file_id", source.id).eq("source", "converted").limit(1));
+  let duplicateQuery = supabase.from("files").select("id").eq("owner_id", uid).eq("source", "converted");
+  duplicateQuery = source.storage_path ? duplicateQuery.eq("storage_path", source.storage_path) : duplicateQuery.eq("parent_file_id", source.id);
+  const existing = checked(await duplicateQuery.limit(1));
   if (existing?.length) throw new Error("You have already converted this link.");
   const row = checked(await supabase.from("files").insert({ owner_id: uid, name: source.name, file_type: source.file_type, mime: source.mime, size: source.size, storage_path: source.storage_path, external_url: source.external_url, source: "converted", parent_file_id: source.id, expires_at: source.expires_at }).select("id,slug").single());
   if (!row) throw new Error("Could not create your share link.");

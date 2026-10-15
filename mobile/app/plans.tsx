@@ -1,10 +1,10 @@
-import { Linking, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Screen, Button } from "../components/ui";
+import { Screen } from "../components/ui";
 import { Motion } from "../components/Motion";
 import { useProfile } from "../lib/useProfile";
 import { currentPlan } from "../lib/account-rules";
-import { EXTERNAL_UPGRADES, WEB_URL } from "../lib/config";
+import { EXTERNAL_UPGRADES } from "../lib/config";
 import { theme } from "../lib/theme";
 import { PaymentAction } from "../components/AccountUI";
 
