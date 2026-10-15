@@ -37,9 +37,11 @@ import { Route as AuthenticatedPlansRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
 import { Route as AuthenticatedSharedRouteImport } from './routes/_authenticated/shared'
+import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as AuthenticatedContentConvertRouteImport } from './routes/_authenticated/content_.convert'
 import { Route as ApiPublicDeleteAccountRouteImport } from './routes/api/public/delete-account'
+import { Route as ApiPublicZapupiWebhookRouteImport } from './routes/api/public/zapupi-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -180,6 +182,11 @@ const AuthenticatedSharedRoute = AuthenticatedSharedRouteImport.update({
   path: '/shared',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const SSlugRoute = SSlugRouteImport.update({
   id: '/s/$slug',
   path: '/s/$slug',
@@ -194,6 +201,11 @@ const AuthenticatedContentConvertRoute =
 const ApiPublicDeleteAccountRoute = ApiPublicDeleteAccountRouteImport.update({
   id: '/api/public/delete-account',
   path: '/api/public/delete-account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicZapupiWebhookRoute = ApiPublicZapupiWebhookRouteImport.update({
+  id: '/api/public/zapupi-webhook',
+  path: '/api/public/zapupi-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -225,9 +237,11 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
   '/shared': typeof AuthenticatedSharedRoute
+  '/wallet': typeof AuthenticatedWalletRoute
   '/s/$slug': typeof SSlugRoute
   '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
+  '/api/public/zapupi-webhook': typeof ApiPublicZapupiWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -257,9 +271,11 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/referrals': typeof AuthenticatedReferralsRoute
   '/shared': typeof AuthenticatedSharedRoute
+  '/wallet': typeof AuthenticatedWalletRoute
   '/s/$slug': typeof SSlugRoute
   '/content/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
+  '/api/public/zapupi-webhook': typeof ApiPublicZapupiWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -291,9 +307,11 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/referrals': typeof AuthenticatedReferralsRoute
   '/_authenticated/shared': typeof AuthenticatedSharedRoute
+  '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/s/$slug': typeof SSlugRoute
   '/_authenticated/content_/convert': typeof AuthenticatedContentConvertRoute
   '/api/public/delete-account': typeof ApiPublicDeleteAccountRoute
+  '/api/public/zapupi-webhook': typeof ApiPublicZapupiWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -325,9 +343,11 @@ export interface FileRouteTypes {
     | '/profile'
     | '/referrals'
     | '/shared'
+    | '/wallet'
     | '/s/$slug'
     | '/content/convert'
     | '/api/public/delete-account'
+    | '/api/public/zapupi-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -357,9 +377,11 @@ export interface FileRouteTypes {
     | '/profile'
     | '/referrals'
     | '/shared'
+    | '/wallet'
     | '/s/$slug'
     | '/content/convert'
     | '/api/public/delete-account'
+    | '/api/public/zapupi-webhook'
   id:
     | '__root__'
     | '/'
@@ -390,9 +412,11 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/referrals'
     | '/_authenticated/shared'
+    | '/_authenticated/wallet'
     | '/s/$slug'
     | '/_authenticated/content_/convert'
     | '/api/public/delete-account'
+    | '/api/public/zapupi-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -417,6 +441,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   SSlugRoute: typeof SSlugRoute
   ApiPublicDeleteAccountRoute: typeof ApiPublicDeleteAccountRoute
+  ApiPublicZapupiWebhookRoute: typeof ApiPublicZapupiWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -617,6 +642,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSharedRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/wallet': {
+      id: '/_authenticated/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof AuthenticatedWalletRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/s/$slug': {
       id: '/s/$slug'
       path: '/s/$slug'
@@ -638,6 +670,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDeleteAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/zapupi-webhook': {
+      id: '/api/public/zapupi-webhook'
+      path: '/api/public/zapupi-webhook'
+      fullPath: '/api/public/zapupi-webhook'
+      preLoaderRoute: typeof ApiPublicZapupiWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -651,6 +690,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedReferralsRoute: typeof AuthenticatedReferralsRoute
   AuthenticatedSharedRoute: typeof AuthenticatedSharedRoute
+  AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
   AuthenticatedContentConvertRoute: typeof AuthenticatedContentConvertRoute
 }
 
@@ -664,6 +704,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedReferralsRoute: AuthenticatedReferralsRoute,
   AuthenticatedSharedRoute: AuthenticatedSharedRoute,
+  AuthenticatedWalletRoute: AuthenticatedWalletRoute,
   AuthenticatedContentConvertRoute: AuthenticatedContentConvertRoute,
 }
 
@@ -692,6 +733,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   SSlugRoute: SSlugRoute,
   ApiPublicDeleteAccountRoute: ApiPublicDeleteAccountRoute,
+  ApiPublicZapupiWebhookRoute: ApiPublicZapupiWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

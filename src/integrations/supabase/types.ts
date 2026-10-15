@@ -323,6 +323,69 @@ export type Database = {
         }
         Relationships: []
       }
+      zapupi_deposits: {
+        Row: {
+          amount_inr: number
+          created_at: string
+          gateway_response: Json | null
+          id: string
+          order_id: string
+          payment_url: string | null
+          status: string
+          txn_id: string | null
+          updated_at: string
+          user_id: string
+          utr: string | null
+        }
+        Insert: {
+          amount_inr: number
+          created_at?: string
+          gateway_response?: Json | null
+          id?: string
+          order_id: string
+          payment_url?: string | null
+          status?: string
+          txn_id?: string | null
+          updated_at?: string
+          user_id: string
+          utr?: string | null
+        }
+        Update: {
+          amount_inr?: number
+          created_at?: string
+          gateway_response?: Json | null
+          id?: string
+          order_id?: string
+          payment_url?: string | null
+          status?: string
+          txn_id?: string | null
+          updated_at?: string
+          user_id?: string
+          utr?: string | null
+        }
+        Relationships: []
+      }
+      zapupi_webhook_events: {
+        Row: {
+          created_at: string
+          event_key: string
+          id: string
+          payload: Json | null
+        }
+        Insert: {
+          created_at?: string
+          event_key: string
+          id?: string
+          payload?: Json | null
+        }
+        Update: {
+          created_at?: string
+          event_key?: string
+          id?: string
+          payload?: Json | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -336,6 +399,16 @@ export type Database = {
       admin_update_user: {
         Args: { _balance_delta: number; _blocked: boolean; _id: string }
         Returns: undefined
+      }
+      credit_zapupi_deposit: {
+        Args: {
+          _order_id: string
+          _paid_amount: number
+          _response: Json
+          _txn_id: string
+          _utr: string
+        }
+        Returns: string
       }
       has_role: {
         Args: {

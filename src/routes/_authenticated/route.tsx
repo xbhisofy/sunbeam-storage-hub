@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useInstalledApp, WEB_ONLY_PATHS } from "@/lib/app-mode";
 import { currentUserId } from "@/lib/session";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Upload, Crown, Video, Music, FileText, Image as ImageIcon, Share2, Gift } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Upload, Crown, Video, Music, FileText, Image as ImageIcon, Share2, Gift, IndianRupee } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import logo from "@/assets/tanyora-logo.jpg";
@@ -20,6 +20,7 @@ const nav = [
   { to: "/dashboard", label: "Home", icon: Home },
   { to: "/content", label: "My Content", icon: FolderOpen },
   { to: "/earnings", label: "Earnings", icon: Wallet },
+  { to: "/wallet", label: "Wallet", icon: IndianRupee },
   { to: "/oc-bonus", label: "OC Bonus", icon: Gift },
   { to: "/referrals", label: "Referrals", icon: Users },
   { to: "/profile", label: "Profile", icon: User },
@@ -90,7 +91,7 @@ function Shell() {
       <header className="app-topbar relative sticky top-0 z-30 flex h-16 items-center border-b bg-card px-4 lg:hidden"><Button size="icon" variant="ghost" className="h-12 w-12" aria-label="Open menu" onClick={() => setDrawer(true)}><Menu className="h-6 w-6" /></Button><span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center text-lg font-bold">{pathname === "/dashboard" ? "Tanyora" : title}</span></header>
       <main className="app-main mx-auto max-w-6xl px-5 pb-32 pt-3 md:px-8 lg:px-10 lg:py-10"><Outlet /></main>
       <nav aria-label="Bottom navigation" className="app-bottom fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-center border-t bg-card px-3 pt-2 lg:hidden">
-        {items.filter(n => n.to !== "/referrals" && n.to !== "/oc-bonus" && n.to !== "/plans").map((n, i) => <Link key={n.to} to={n.to} style={{ gridColumnStart: i < 2 ? i + 1 : i + 2, gridRowStart: 1 }} className="flex h-14 w-full select-none flex-col items-center justify-center gap-1 rounded-xl text-muted-foreground transition-colors duration-150 [-webkit-tap-highlight-color:transparent] data-[status=active]:text-primary"><n.icon className="h-6 w-6 shrink-0" strokeWidth={2} aria-hidden="true" /><span className="text-[11px] font-medium leading-none">{n.label}</span></Link>)}
+        {items.filter(n => n.to !== "/referrals" && n.to !== "/oc-bonus" && n.to !== "/plans" && n.to !== "/wallet").map((n, i) => <Link key={n.to} to={n.to} style={{ gridColumnStart: i < 2 ? i + 1 : i + 2, gridRowStart: 1 }} className="flex h-14 w-full select-none flex-col items-center justify-center gap-1 rounded-xl text-muted-foreground transition-colors duration-150 [-webkit-tap-highlight-color:transparent] data-[status=active]:text-primary"><n.icon className="h-6 w-6 shrink-0" strokeWidth={2} aria-hidden="true" /><span className="text-[11px] font-medium leading-none">{n.label}</span></Link>)}
         <Button type="button" size="icon" aria-label="Add files" onClick={() => setUpload(true)} className="absolute -top-2 left-1/2 h-14 w-14 -translate-x-1/2 rounded-full shadow-none active:bg-primary/90 [&_svg]:size-7"><Plus strokeWidth={2} aria-hidden="true" /></Button>
       </nav>
     </div>
