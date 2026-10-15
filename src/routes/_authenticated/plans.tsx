@@ -13,7 +13,7 @@ import { createZapupiOrder, syncZapupiDeposit } from "@/lib/zapupi.functions";
 
 export const Route = createFileRoute("/_authenticated/plans")({
   head: () => pageHead("Premium plans", "Upgrade your Tanyora storage and features.", undefined, true),
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { status?: string; order_id?: string } => ({
     status: typeof s["status"] === "string" ? (s["status"] as string) : undefined,
     order_id: typeof s["order_id"] === "string" ? (s["order_id"] as string) : undefined,
   }),
