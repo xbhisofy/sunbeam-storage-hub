@@ -2,7 +2,7 @@
   "expo": {
     "name": "Tanyora",
     "slug": "tanyora",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "tanyora",
@@ -15,7 +15,7 @@
     },
     "android": {
       "package": "com.tanyora.twa",
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000A2E"
@@ -53,6 +53,17 @@
         "react-native-google-mobile-ads",
         {
           "androidAppId": "ca-app-pub-2600116803972478~1259306342"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#2563EB",
+          "sounds": [
+            "./assets/sounds/tanyora_notify.wav"
+          ],
+          "defaultChannel": "tanyora-alerts"
         }
       ]
     ],

@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Screen, Card, Button } from "../components/ui";
 import { useSession } from "./_layout";
 import { formatSize, uploadFile } from "../lib/files";
+import { notify } from "../lib/notifications";
 import { theme } from "../lib/theme";
 
 export default function Uploader() {
