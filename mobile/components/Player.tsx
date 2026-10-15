@@ -12,6 +12,9 @@ import { supabase } from "../lib/supabase";
 import { ADS } from "../lib/config";
 import { theme } from "../lib/theme";
 import { useSession } from "../app/_layout";
+import { router } from "expo-router";
+import { Motion } from "./Motion";
+import { useProfile } from "../lib/useProfile";
 
 type Shared = { name: string; file_type: string; mime: string | null; source: string; url: string };
 type State = { kind: "loading" } | { kind: "missing" } | { kind: "expired" } | { kind: "own"; name: string } | ({ kind: "ok" } & Shared);
@@ -20,6 +23,7 @@ const REASONS = ["Copyright infringement", "Sexual or adult content", "Child saf
 
 export function PlayerScreen({ slug }: { slug: string }) {
   const session = useSession();
+  const { profile } = useProfile();
   const [st, setSt] = useState<State>({ kind: "loading" });
   const [open, setOpen] = useState(false);
   const [adBusy, setAdBusy] = useState(false);
@@ -39,7 +43,7 @@ export function PlayerScreen({ slug }: { slug: string }) {
       if (f.storage_path) url = (await supabase.storage.from("files").createSignedUrl(f.storage_path, 3 * 3600)).data?.signedUrl ?? "";
       setSt({ kind: "ok", name: f.name, file_type: f.file_type, mime: f.mime, source: f.source, url });
     })();
-  }, [slug, session?.user.id]);
+  }, [slug, session?.user.id, profile?.premium_tier, profile?.premium_until]);
 
   // A view counts only when the content actually plays or is shown.
   const countView = () => { if (!counted.current) { counted.current = true; supabase.rpc("record_view", { _slug: slug }); } };
@@ -71,13 +75,14 @@ export function PlayerScreen({ slug }: { slug: string }) {
         {st.kind === "loading" && <ActivityIndicator color={theme.primary} style={{ marginTop: 60 }} />}
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
-        {st.kind === "own" && <Notice icon="lock-closed-outline" title="This is your file" text="Viewing your own shared files requires a Premium plan. Plans are available on app.tanyora.com." />}
+        {st.kind === "own" && <><Notice icon="lock-closed-outline" title="This is your file" text="A Premium plan lets you view your own shared files." /><Button label="View plans" icon="sparkles-outline" onPress={() => router.push("/plans")} /></>}
         {st.kind === "ok" && !open && (
-          <Card style={{ alignItems: "center", gap: 12, paddingVertical: 32 }}>
+          <Motion><View style={{ alignItems: "center", gap: 18, paddingVertical: 48 }}>
             <FileIcon type={st.file_type} size={64} />
             <Text style={{ fontSize: 17, fontWeight: "700", color: theme.text, textAlign: "center" }} numberOfLines={2}>{st.name}</Text>
-            <Button label="Open file" icon="play" busy={adBusy} onPress={() => (st.source === "converted" && st.url ? (countView(), showAdThenOpen()) : showAdThenOpen())} style={{ alignSelf: "stretch" }} />
-          </Card>
+            <Text style={{ color: theme.muted, fontSize: 13 }}>Shared with you</Text>
+            <Button label="Open file" icon="play" busy={adBusy} onPress={showAdThenOpen} style={{ alignSelf: "stretch" }} />
+          </View></Motion>
         )}
         {st.kind === "ok" && open && <Viewer file={st} onShown={countView} />}
         {st.kind === "ok" && (

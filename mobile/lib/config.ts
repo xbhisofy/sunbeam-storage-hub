@@ -5,6 +5,8 @@ export const SUPABASE_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_SUPABASE_PUBLISH
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzkxOTIzODk1LCJleHAiOjE5NDk2MDM4OTV9.IqEOYBgtsoTGPBmAAjlc2ajhNoHLwnrhXHY7H1sT_6s";
 export const WEB_URL = process.env.EXPO_PUBLIC_WEB_URL ?? "https://app.tanyora.com";
 export const SHARE_URL = process.env.EXPO_PUBLIC_SHARE_URL ?? "https://tanyora.com";
+// Only directly distributed APKs may link to external digital purchases by default.
+export const EXTERNAL_UPGRADES = process.env.EXPO_PUBLIC_DISTRIBUTION === "direct";
 
 export const BRAND = { name: "Tanyora", supportEmail: "tanyora@support.com" };
 

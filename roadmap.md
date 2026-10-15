@@ -1,4 +1,9 @@
 # Roadmap
+- [x] Polish native Home/Profile, accessible motion, profile editing and discoverable file rename; native typecheck and account-rule tests pass.
+- [x] Refresh website-purchased plan on app resume and provide a policy-safe upgrade entry (external website link only in direct APK).
+- [x] Preserve shared-file destination through sign-in; corrected APK signing fingerprint served live without stale proxy cache.
+- [ ] Verify shared-link app/store handoff on owner's phone; Play App Signing certificate required once app is published.
+- [x] Build updated APK version 1.0.2; Expo build finished, archive integrity and signing certificate verified, saved to Files. Native phone flows remain unverified without owner's device.
 - [x] Deploy latest splash artwork to VPS; live installed-app-mode splash, loaded artwork, dismissal and same-session suppression verified without changing launch timers.
 - [x] Restore light app background, deepen only four Home category tiles, allow subscription plans in the app; tests passed and VPS updated.
 - [ ] Signed-in Go Ad Free tap verification (blocked: preview has no requesting-user account/session; owner must check in installed app).
@@ -21,6 +26,6 @@
 - [x] USDT (TRC-20) payout method: withdrawal form, landing payout cards, both backends; verified live on tanyora.com
 - [x] Native React Native app screens (login, home, files, upload, shared, profile, contact, player with ad + report)
 - [x] Shared links in Android browsers open the app or Play Store
-- [ ] APK/AAB build (blocked: Expo access token)
+- [x] Previous APK/AAB versions built and delivered; Expo access available.
 - [ ] Private GitHub repo push (blocked: GitHub connection/token)
-- [ ] Real AdMob IDs + package name/signing key confirmation (blocked: user)
+- [x] Owner-supplied AdMob IDs configured; package and Expo signing key established.

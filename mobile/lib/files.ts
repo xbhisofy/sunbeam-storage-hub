@@ -52,8 +52,11 @@ export async function uploadFile(uid: string, f: { uri: string; name: string; mi
 }
 
 export async function renameFile(id: string, name: string) {
-  const { error } = await supabase.from("files").update({ name }).eq("id", id);
+  const clean = name.trim();
+  if (!clean || clean.length > 255) throw new Error("Enter a file name between 1 and 255 characters.");
+  const { data, error } = await supabase.from("files").update({ name: clean }).eq("id", id).select("id").single();
   if (error) throw error;
+  if (!data) throw new Error("This file could not be renamed. Please refresh and try again.");
 }
 export async function deleteFile(f: FileRow) {
   if (f.storage_path) await supabase.storage.from("files").remove([f.storage_path]);

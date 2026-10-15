@@ -5,11 +5,13 @@
   "build": {
     "preview": {
       "distribution": "internal",
+      "env": { "EXPO_PUBLIC_DISTRIBUTION": "direct" },
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
+      "env": { "EXPO_PUBLIC_DISTRIBUTION": "play" },
       "android": {
         "buildType": "app-bundle"
       }

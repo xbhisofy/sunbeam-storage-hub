@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../../lib/theme";
 
 const icon = (name: keyof typeof Ionicons.glyphMap) => ({ color, focused }: { color: string; focused: boolean }) => (
-  <Ionicons name={(focused ? name : `${name}-outline`) as keyof typeof Ionicons.glyphMap} size={22} color={color} />
+  <Ionicons name={`${name}-outline` as keyof typeof Ionicons.glyphMap} size={22} color={color} />
 );
 
 export default function TabsLayout() {
