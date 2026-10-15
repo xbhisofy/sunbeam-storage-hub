@@ -19,3 +19,8 @@
 - [ ] Compliance step 4: security audit (scan, RLS, signed URLs) and final report
 - [ ] Real support email on own domain (blocked: user must create e.g. support@tanyora.com)
 - [x] USDT (TRC-20) payout method: withdrawal form, landing payout cards, both backends; verified live on tanyora.com
+- [x] Native React Native app screens (login, home, files, upload, shared, profile, contact, player with ad + report)
+- [x] Shared links in Android browsers open the app or Play Store
+- [ ] APK/AAB build (blocked: Expo access token)
+- [ ] Private GitHub repo push (blocked: GitHub connection/token)
+- [ ] Real AdMob IDs + package name/signing key confirmation (blocked: user)

@@ -18,12 +18,12 @@
 - Public landing visuals are scoped to .landing; use StoreBadges for centralized store destinations and WebsiteAppPreview for explicitly illustrative previews without affecting installed-app screens.
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
 - Fetch shared-file details and start countdowns only inside the native app because browser share links only offer installation.
-- The Android app is a separate Expo (React Native) codebase in `mobile/` sharing the same Lovable Cloud backend; keep mobile code out of `src/` and never import it into the website.
+- The Android app is a separate native Expo (React Native) codebase in `mobile/` talking directly to the same backend as app.tanyora.com (config in mobile/lib/config.ts); keep mobile code out of `src/`, and keep earnings/payments website-only.
 - Public API routes under `src/routes/api/public/*` must verify callers with `requireBearerUserId`; account-deletion logic lives only in `src/lib/delete-account.ts` so the web server function and the mobile-app route stay identical.
 - Signed-in UI reads the local session via `currentUserId()` in src/lib/session.ts instead of `auth.getUser()`; a network auth check on every click made navigation slow, and the backend still verifies each request.
 
 - PWABuilder uses the web screens with a responsive app shell; preserve the Expo code separately and never hide external identity-provider browser controls.
-- Native Android Google login uses the platform Google Sign-In SDK and exchanges its ID token with the existing auth backend; require owner-configured OAuth clients and signing certificates rather than falling back to a browser redirect.
+- App login is email/password only (same accounts as the website); ads use AdMob with Google test IDs until owner IDs are supplied.
 - Preserve the existing distributed Android application ID when replacing the PWABuilder shell; an upgrade also requires compatible signing and a higher versionCode.
 
 - Share links use `site.shareUrl` (main domain, opens the app) and the dashboard uses `site.webUrl` (web subdomain); installed-app detection lives in src/lib/app-mode.ts so browsers get the Play Store page while the TWA plays files.
