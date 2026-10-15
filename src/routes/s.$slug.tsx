@@ -1,3 +1,4 @@
+import { activePremium } from "@/lib/premium";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
