@@ -22,11 +22,7 @@ export default function Files() {
   const chips = [{ kind: "all", label: "All" }, ...CATEGORIES];
 
   return (
-    <Screen title="My Content" right={<Button label="Menu" icon="grid-outline" variant="outline" onPress={() => router.push("/menu")} style={{ height: 40 }} />}>
-      <View style={{ flexDirection: "row", gap: 8, paddingHorizontal: 16, paddingBottom: 12 }}>
-        <Button label="All Content" onPress={() => {}} style={{ flex: 1 }} />
-        <Button label="Convert Link" variant="outline" icon="link-outline" onPress={() => router.push("/convert")} style={{ flex: 1 }} />
-      </View>
+    <Screen title="My Files">
       <View style={s.search}>
         <Ionicons name="search" size={18} color={theme.muted} />
         <TextInput value={q} onChangeText={setQ} placeholder="Search files" placeholderTextColor="#94A3B8" style={{ flex: 1, fontSize: 15, color: theme.text }} />

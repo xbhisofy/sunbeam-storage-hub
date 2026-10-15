@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Tabs, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../../lib/theme";
@@ -34,7 +34,7 @@ export default function TabsLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="shared" options={{ title: "Menu", tabBarIcon: icon("grid"), tabBarButton: () => <Pressable accessibilityRole="button" accessibilityLabel="Open menu" onPress={() => router.push("/menu")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 4 }}><Ionicons name="grid-outline" size={22} color={theme.muted} /><Text style={{ fontSize: 11, fontWeight: "600", color: theme.muted }}>Menu</Text></Pressable> }} />
+      <Tabs.Screen name="shared" options={{ title: "Shared", tabBarIcon: icon("share-social") }} />
       <Tabs.Screen name="profile" options={{ title: "Profile", tabBarIcon: icon("person") }} />
     </Tabs>
   );

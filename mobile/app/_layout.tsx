@@ -7,6 +7,7 @@ import mobileAds from "react-native-google-mobile-ads";
 import { supabase } from "../lib/supabase";
 import { theme } from "../lib/theme";
 import { sharedDestination } from "../lib/account-rules";
+import { setupNotifications } from "../lib/notifications";
 
 const SessionContext = createContext<Session | null>(null);
 // eslint-disable-next-line react-refresh/only-export-components
@@ -25,6 +26,9 @@ export default function RootLayout() {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  // Ask for notification permission once the user is signed in.
+  useEffect(() => { if (session) void setupNotifications().catch(() => {}); }, [session?.user.id]);
 
   // Signed-out users start at login; shared links (/s/...) stay reachable after login.
   useEffect(() => {

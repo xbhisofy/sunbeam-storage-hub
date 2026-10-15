@@ -12,7 +12,6 @@ import { supabase } from "../lib/supabase";
 import { ADS } from "../lib/config";
 import { theme } from "../lib/theme";
 import { useSession } from "../app/_layout";
-import { router } from "expo-router";
 import { Motion } from "./Motion";
 import { useProfile } from "../lib/useProfile";
 
@@ -75,7 +74,7 @@ export function PlayerScreen({ slug }: { slug: string }) {
         {st.kind === "loading" && <ActivityIndicator color={theme.primary} style={{ marginTop: 60 }} />}
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
-        {st.kind === "own" && <><Notice icon="lock-closed-outline" title="This is your file" text="A Premium plan lets you view your own shared files." /><Button label="View plans" icon="sparkles-outline" onPress={() => router.push("/plans")} /></>}
+        {st.kind === "own" && <Notice icon="lock-closed-outline" title="This is your file" text="Your share link is ready for others. Find this file in My Files." />}
         {st.kind === "ok" && !open && (
           <Motion><View style={{ alignItems: "center", gap: 18, paddingVertical: 48 }}>
             <FileIcon type={st.file_type} size={64} />
