@@ -1,4 +1,4 @@
-import badge from '@/assets/google-play.png.asset.json';
+import badge from '@/assets/google-play.png';
 import { site } from '@/lib/site';
 
 export function StoreBadges() {
