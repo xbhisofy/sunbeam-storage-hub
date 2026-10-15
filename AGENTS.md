@@ -18,7 +18,9 @@
 - Public landing visuals are scoped to .landing; use StoreBadges for centralized store destinations and WebsiteAppPreview for explicitly illustrative previews without affecting installed-app screens.
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
 - Fetch shared-file details and start countdowns only inside the native app because browser share links only offer installation.
-- The Android app is a separate native Expo (React Native) codebase in `mobile/` talking directly to the same backend as app.tanyora.com (config in mobile/lib/config.ts); keep mobile code out of `src/`, and keep earnings/payments website-only.
+- The Android app is a separate native Expo (React Native) codebase in `mobile/` talking directly to the same backend as app.tanyora.com; keep mobile code out of `src/` and provide native account/content/earnings screens, with checkout and payouts on the external website to avoid duplicating payment logic.
+- Native account sections share focus/resume-aware loaders in `mobile/lib/account-data.ts` and the destination registry in `mobile/lib/feature-rules.ts` so website parity stays discoverable and balances refresh after browser actions.
+- Native conversion preserves the parent file reference and never deletes shared storage when removing a converted row, so conversions retain original ownership and bonus attribution.
 - Native account screens share `useProfile` with focus/resume refresh so externally changed subscriptions are not stale; central account rules validate profile inputs and derive plan display.
 - Native entrance motion uses the system Reduce Motion preference and the native animation driver to keep interactions accessible and smooth.
 - Native external upgrade links are gated by build distribution: direct APKs may open the website; Play builds must not steer to external purchases without an eligible enrolled billing program.

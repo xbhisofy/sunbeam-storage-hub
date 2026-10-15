@@ -10,6 +10,8 @@ import { theme } from "../../lib/theme";
 import { Motion } from "../../components/Motion";
 import { useProfile } from "../../lib/useProfile";
 import { currentPlan } from "../../lib/account-rules";
+import { ACCOUNT_MENU } from "../../lib/feature-rules";
+import type { Href } from "expo-router";
 
 
 export default function ProfileScreen() {
@@ -67,6 +69,11 @@ export default function ProfileScreen() {
           <Row icon="sparkles-outline" label="Upgrade plan" on={() => router.push("/plans")} />
           {plan.tier !== "free" && p?.premium_until && <Text style={{ color: theme.muted, paddingHorizontal: 12, paddingBottom: 12 }}>Active until {new Date(p.premium_until).toLocaleDateString("en-GB")}</Text>}
         </Card></Motion>
+
+        <Card style={{ padding: 4 }}>
+          {ACCOUNT_MENU.filter(item => ["/earnings", "/wallet", "/oc-bonus", "/referrals"].includes(item.path)).map(item => <Row key={item.path} icon={item.icon} label={item.title} on={() => router.push(item.path as Href)} />)}
+          <Row icon="grid-outline" label="All features" on={() => router.push("/menu")} />
+        </Card>
 
         <Card style={{ padding: 4 }}>
           <Row icon="chatbubbles-outline" label="Contact support" on={() => router.push("/contact")} />

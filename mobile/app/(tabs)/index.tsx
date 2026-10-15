@@ -12,11 +12,16 @@ import { useFiles } from "../../lib/useFiles";
 import { CATEGORIES, formatSize } from "../../lib/files";
 import { ADS } from "../../lib/config";
 import { theme } from "../../lib/theme";
+import { ACCOUNT_MENU, pendingTotal, usd } from "../../lib/feature-rules";
+import { loadEarnings, useAccountData } from "../../lib/account-data";
+import { Metric } from "../../components/AccountUI";
+import type { Href } from "expo-router";
 
 export default function Home() {
   const session = useSession();
   const { files, loading, reload } = useFiles();
   const { profile } = useProfile();
+  const earnings = useAccountData(loadEarnings);
   const plan = currentPlan(profile);
   const name = (profile?.display_name || (session?.user.user_metadata?.display_name as string | undefined))?.split(" ")[0] ?? "there";
   const used = files.reduce((n, f) => n + (f.size || 0), 0);
@@ -28,14 +33,23 @@ export default function Home() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, gap: 24, paddingBottom: 32 }}>
         <Motion><View style={s.brandRow}>
           <View style={s.brandRow}><Image source={require("../../assets/icon.png")} style={s.logo} /><Text style={s.brand}>Tanyora</Text></View>
-          <Pressable accessibilityRole="button" accessibilityLabel="Open profile" onPress={() => router.push("/profile")} style={s.avatar}><Text style={s.initial}>{name[0]?.toUpperCase()}</Text></Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel="Open menu" onPress={() => router.push("/menu")} style={s.avatar}><Ionicons name="menu-outline" size={24} color={theme.primary} /></Pressable>
         </View></Motion>
-        <Motion delay={40}><Text style={s.muted}>{greet}, {name}</Text><Text style={s.h1}>Your cloud.\nAlways with you.</Text></Motion>
+        <Motion delay={40}><Text style={s.muted}>{greet}, {name}</Text><Text style={s.h1}>Your overview</Text></Motion>
+        <Motion delay={60}>{earnings.error ? <Button label="Retry account summary" variant="outline" onPress={earnings.reload} /> : <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
+          <Metric label="Available balance" value={earnings.loading ? "—" : usd(earnings.data?.profile?.balance ?? 0)} icon="wallet-outline" accent />
+          <Metric label="On hold" value={earnings.loading ? "—" : usd(pendingTotal(earnings.data?.withdrawals ?? []))} icon="time-outline" />
+          <Metric label="Referral earnings" value={earnings.loading ? "—" : usd(earnings.data?.profile?.referral_earnings ?? 0)} icon="people-outline" />
+          <Metric label="Views · Last 14 days" value={earnings.loading ? "—" : (earnings.data?.views.reduce((sum, row) => sum + Number(row.views), 0) ?? 0).toLocaleString()} icon="eye-outline" />
+        </View>}</Motion>
         <Motion delay={80}><View style={s.storage}>
           <View style={s.rowHead}><View style={s.brandRow}><Ionicons name="cloud-outline" size={20} color={theme.primary} /><Text style={s.h2}>Storage</Text></View><Text style={s.badge}>{plan.name}</Text></View>
           <Text style={s.used}>{formatSize(used)} <Text style={s.muted}>of {formatSize(plan.storage)} used</Text></Text>
           <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: Math.min(100, Math.round(used / plan.storage * 100)) }} style={s.bar}><View style={[s.fill, { width: `${Math.min(100, (used / plan.storage) * 100)}%` }]} /></View>
           <View style={[s.rowHead, { marginTop: 14 }]}><Text style={s.muted}>{files.length} files</Text><Pressable accessibilityRole="button" onPress={() => router.push("/plans")} style={s.upgrade}><Text style={s.upgradeText}>Upgrade plan</Text><Ionicons name="arrow-up-right-box" size={16} color={theme.primary} /></Pressable></View>
+        </View></Motion>
+        <Motion delay={100}><Text style={s.h2}>Your workspace</Text><View style={s.shortcuts}>
+          {ACCOUNT_MENU.filter(item => !["/", "/profile"].includes(item.path) && item.title !== "My Content").map(item => <Pressable key={item.title} accessibilityRole="button" onPress={() => router.push(item.path as Href)} style={({ pressed }) => [s.shortcut, pressed && { backgroundColor: theme.primarySoft }]}><Ionicons name={item.icon} size={23} color={theme.primary} /><Text style={s.shortcutText}>{item.title}</Text></Pressable>)}
         </View></Motion>
         <Motion delay={120}><View style={s.cats}>
           {CATEGORIES.map((c) => {
@@ -83,4 +97,7 @@ const s = StyleSheet.create({
   catText: { fontSize: 12, fontWeight: "600", color: theme.text },
   rowHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   files: { backgroundColor: theme.card, borderRadius: 8, borderWidth: 1, borderColor: theme.border, overflow: "hidden", marginTop: 12, marginBottom: 12 },
+  shortcuts: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 14 },
+  shortcut: { width: "30%", flexGrow: 1, minHeight: 92, gap: 10, alignItems: "center", justifyContent: "center", backgroundColor: theme.card, borderWidth: 1, borderColor: theme.border, borderRadius: 8, padding: 8 },
+  shortcutText: { fontSize: 12, fontWeight: "600", color: theme.text, textAlign: "center" },
 });

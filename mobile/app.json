@@ -2,7 +2,7 @@
   "expo": {
     "name": "Tanyora",
     "slug": "tanyora",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "tanyora",
@@ -15,7 +15,7 @@
     },
     "android": {
       "package": "com.tanyora.twa",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000A2E"

@@ -59,7 +59,10 @@ export async function renameFile(id: string, name: string) {
   if (!data) throw new Error("This file could not be renamed. Please refresh and try again.");
 }
 export async function deleteFile(f: FileRow) {
-  if (f.storage_path) await supabase.storage.from("files").remove([f.storage_path]);
+  if (f.storage_path && f.source !== "converted") {
+    const { error } = await supabase.storage.from("files").remove([f.storage_path]);
+    if (error) throw error;
+  }
   const { error } = await supabase.from("files").delete().eq("id", f.id);
   if (error) throw error;
 }
