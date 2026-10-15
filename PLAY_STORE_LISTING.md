@@ -20,8 +20,8 @@ Your files are protected with encrypted connections. You can delete your account
 Please upload only content you own or have permission to share.
 
 **Category:** Tools (or Video Players & Editors)
-**Privacy policy URL:** https://tanyora.lovable.app/privacy
-**Account deletion URL:** https://tanyora.lovable.app/delete-account
+**Privacy policy URL:** https://tanyora.com/privacy
+**Account deletion URL:** https://tanyora.com/delete-account
 **Data safety:** Collects email, name, user files, app activity; data encrypted in transit; users can request deletion; ads use device ID (if AdMob added).
 **Content rating:** Fill the questionnaire honestly (user-generated content: Yes). In-app report/block controls and an operational moderation process are release blockers..
 **Ads:** Select based on the actual shipped SDKs. Current screen is a placeholder, not an active ad network.

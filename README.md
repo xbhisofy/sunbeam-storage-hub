@@ -4,7 +4,7 @@ sun terabox ek bare me tumko pta hai ?
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://tanyora.lovable.app
+**Live app**: https://app.tanyora.com
 
 ## Build with Lovable
 

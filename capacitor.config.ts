@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   appName: "Tanyora",
   webDir: "dist/client",
   server: {
-    url: "https://tanyora.lovable.app",
+    url: "https://app.tanyora.com",
     cleartext: false,
   },
 };
