@@ -17,8 +17,8 @@
       "package": "app.lovable.tanyora.twa",
       "versionCode": 2,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/splash-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#000A2E"
       },
       "intentFilters": [
         {
