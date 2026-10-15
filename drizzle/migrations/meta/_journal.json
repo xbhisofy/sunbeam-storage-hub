@@ -99,6 +99,13 @@
       "when": 1792054642445,
       "tag": "0013_zapupi_deposits",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792057277920,
+      "tag": "0014_premium_plans_upi",
+      "breakpoints": true
     }
   ]
 }

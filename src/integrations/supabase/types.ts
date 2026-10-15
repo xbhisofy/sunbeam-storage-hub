@@ -136,6 +136,8 @@ export type Database = {
           paid_total: number
           plan: string
           plan_switches: number
+          premium_tier: string | null
+          premium_until: string | null
           referral_code: string
           referral_earnings: number
           referred_by: string | null
@@ -150,6 +152,8 @@ export type Database = {
           paid_total?: number
           plan?: string
           plan_switches?: number
+          premium_tier?: string | null
+          premium_until?: string | null
           referral_code?: string
           referral_earnings?: number
           referred_by?: string | null
@@ -164,6 +168,8 @@ export type Database = {
           paid_total?: number
           plan?: string
           plan_switches?: number
+          premium_tier?: string | null
+          premium_until?: string | null
           referral_code?: string
           referral_earnings?: number
           referred_by?: string | null
@@ -331,6 +337,7 @@ export type Database = {
           id: string
           order_id: string
           payment_url: string | null
+          purpose: string
           status: string
           txn_id: string | null
           updated_at: string
@@ -344,6 +351,7 @@ export type Database = {
           id?: string
           order_id: string
           payment_url?: string | null
+          purpose?: string
           status?: string
           txn_id?: string | null
           updated_at?: string
@@ -357,6 +365,7 @@ export type Database = {
           id?: string
           order_id?: string
           payment_url?: string | null
+          purpose?: string
           status?: string
           txn_id?: string | null
           updated_at?: string
