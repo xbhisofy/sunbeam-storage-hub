@@ -8,9 +8,9 @@ export const SHARE_URL = process.env.EXPO_PUBLIC_SHARE_URL ?? "https://tanyora.c
 
 export const BRAND = { name: "Tanyora", supportEmail: "tanyora@support.com" };
 
-// Google's official test ad units are used until real IDs are supplied for release builds.
+// Owner's real AdMob ad units (app ID lives in app.json).
 export const ADS = {
-  interstitial: process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL ?? "ca-app-pub-3940256099942544/1033173712",
+  interstitial: process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL ?? "ca-app-pub-2600116803972478/4484980349",
   banner: process.env.EXPO_PUBLIC_ADMOB_BANNER ?? "ca-app-pub-2600116803972478/3271136873",
 };
 
