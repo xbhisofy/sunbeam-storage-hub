@@ -14,7 +14,7 @@
       "backgroundColor": "#FFFFFF"
     },
     "android": {
-      "package": "app.lovable.tanyora.twa",
+      "package": "com.tanyora.twa",
       "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -52,7 +52,7 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713"
+          "androidAppId": "ca-app-pub-2600116803972478~1259306342"
         }
       ]
     ],
