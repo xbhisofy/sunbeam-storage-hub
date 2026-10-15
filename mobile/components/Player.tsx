@@ -12,7 +12,6 @@ import { supabase } from "../lib/supabase";
 import { ADS } from "../lib/config";
 import { theme } from "../lib/theme";
 import { useSession } from "../app/_layout";
-import { router } from "expo-router";
 import { Motion } from "./Motion";
 import { useProfile } from "../lib/useProfile";
 
