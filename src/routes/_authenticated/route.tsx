@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useInstalledApp, WEB_ONLY_PATHS } from "@/lib/app-mode";
 import { currentUserId } from "@/lib/session";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Upload, Crown, Video, Music, FileText, Image as ImageIcon, Share2, Gift } from "lucide-react";
+import { Home, FolderOpen, Wallet, Users, User, LogOut, Shield, Loader2, Menu, Plus, Upload, Crown, Video, Music, FileText, Image as ImageIcon, Share2, Gift, IndianRupee } from "lucide-react";
 import { useIsAdmin } from "./admin";
 import { Brand } from "@/components/Brand";
 import logo from "@/assets/tanyora-logo.jpg";
@@ -20,6 +20,7 @@ const nav = [
   { to: "/dashboard", label: "Home", icon: Home },
   { to: "/content", label: "My Content", icon: FolderOpen },
   { to: "/earnings", label: "Earnings", icon: Wallet },
+  { to: "/wallet", label: "Wallet", icon: IndianRupee },
   { to: "/oc-bonus", label: "OC Bonus", icon: Gift },
   { to: "/referrals", label: "Referrals", icon: Users },
   { to: "/profile", label: "Profile", icon: User },
