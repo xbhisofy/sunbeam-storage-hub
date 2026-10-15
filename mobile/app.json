@@ -2,7 +2,7 @@
   "expo": {
     "name": "Tanyora",
     "slug": "tanyora",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "tanyora",
@@ -15,7 +15,7 @@
     },
     "android": {
       "package": "com.tanyora.twa",
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000A2E"
@@ -82,6 +82,13 @@
           "photosPermission": false,
           "cameraPermission": false,
           "microphonePermission": false
+        }
+      ],
+      "@react-native-google-signin/google-signin",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.238026155309-i0g1vi92j56k9qnbbd3ca2c0c3o4n9d2"
         }
       ]
     ],
