@@ -1,127 +1,78 @@
-import { useCallback, useEffect, useState } from "react";
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { Screen, Card, Empty } from "../../components/ui";
+import { FileCard } from "../../components/FileCard";
 import { useSession } from "../_layout";
-import { supabase } from "../../lib/supabase";
-import { RATES } from "../../lib/config";
+import { useFiles } from "../../lib/useFiles";
+import { CATEGORIES, formatSize } from "../../lib/files";
+import { ADS } from "../../lib/config";
 import { theme } from "../../lib/theme";
 
-type Profile = { display_name: string | null; balance: number; plan: string; referral_earnings: number };
+const LIMIT = 1024 ** 3; // 1 GB shown as the free storage reference
 
 export default function Home() {
   const session = useSession();
-  const uid = session?.user.id;
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [stats, setStats] = useState({ files: 0, views: 0 });
-  const [refreshing, setRefreshing] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!uid) return;
-    const { data: p } = await supabase
-      .from("profiles")
-      .select("display_name, balance, plan, referral_earnings")
-      .eq("id", uid)
-      .single();
-    setProfile(p ?? null);
-    const { data: files } = await supabase.from("files").select("views").eq("owner_id", uid);
-    setStats({
-      files: files?.length ?? 0,
-      views: (files ?? []).reduce((sum, f) => sum + (f.views ?? 0), 0),
-    });
-  }, [uid]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await load();
-    setRefreshing(false);
-  }, [load]);
+  const { files, loading, refreshing, reload } = useFiles();
+  const name = (session?.user.user_metadata?.display_name as string | undefined)?.split(" ")[0] ?? "there";
+  const used = files.reduce((n, f) => n + (f.size || 0), 0);
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.primary} />}
-    >
-      <Text style={styles.hello}>
-        Namaste, {profile?.display_name ?? session?.user.email ?? "dost"} 👋
-      </Text>
-
-      <View style={styles.balanceCard}>
-        <Text style={styles.balanceLabel}>Total Balance</Text>
-        <Text style={styles.balance}>${(profile?.balance ?? 0).toFixed(2)}</Text>
-        <Text style={styles.plan}>Plan: {profile?.plan === "referral" ? "Referral ($0.10/signup)" : "View-Based ($3/1000 views)"}</Text>
-      </View>
-
-      <View style={styles.row}>
-        <View style={styles.card}>
-          <Text style={styles.cardValue}>{stats.files}</Text>
-          <Text style={styles.cardLabel}>Files</Text>
+    <Screen>
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 32 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={reload} colors={[theme.primary]} />}>
+        <View>
+          <Text style={s.muted}>{greet},</Text>
+          <Text style={s.h1}>{name}</Text>
         </View>
-        <View style={styles.card}>
-          <Text style={styles.cardValue}>{stats.views}</Text>
-          <Text style={styles.cardLabel}>Total Views</Text>
-        </View>
-      </View>
 
-      <View style={styles.row}>
-        <View style={styles.card}>
-          <Text style={styles.cardValue}>${(profile?.referral_earnings ?? 0).toFixed(2)}</Text>
-          <Text style={styles.cardLabel}>Referral Earnings</Text>
-        </View>
-        <View style={styles.card}>
-          <Text style={styles.cardValue}>${RATES.minWithdrawal}</Text>
-          <Text style={styles.cardLabel}>Min. Withdrawal</Text>
-        </View>
-      </View>
+        <Card style={{ backgroundColor: theme.primary, borderColor: theme.primary }}>
+          <Text style={{ color: "#DBEAFE", fontSize: 13 }}>Storage used</Text>
+          <Text style={{ color: "#FFFFFF", fontSize: 24, fontWeight: "700", marginTop: 4 }}>
+            {formatSize(used)} <Text style={{ fontSize: 14, color: "#DBEAFE" }}>/ 1 GB</Text>
+          </Text>
+          <View style={s.bar}><View style={[s.fill, { width: `${Math.min(100, (used / LIMIT) * 100)}%` }]} /></View>
+          <Text style={{ color: "#DBEAFE", fontSize: 13, marginTop: 8 }}>{files.length} files</Text>
+        </Card>
 
-      <Pressable style={styles.action} onPress={() => router.push("/(tabs)/content")}>
-        <Text style={styles.actionText}>＋ Upload ya Convert Link</Text>
-      </Pressable>
-      <Pressable style={[styles.action, styles.secondary]} onPress={() => router.push("/(tabs)/earnings")}>
-        <Text style={[styles.actionText, { color: theme.primary }]}>View earnings</Text>
-      </Pressable>
+        <View style={s.cats}>
+          {CATEGORIES.map((c) => {
+            const col = theme.cat[c.kind];
+            return (
+              <Pressable key={c.kind} onPress={() => router.push({ pathname: "/content", params: { kind: c.kind } })} style={s.cat}>
+                <View style={[s.catIcon, { backgroundColor: col.bg }]}><Ionicons name={c.icon} size={22} color={col.fg} /></View>
+                <Text style={s.catText}>{c.label}</Text>
+                <Text style={s.muted}>{files.filter((f) => f.file_type === c.kind).length}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
 
-      <Text style={styles.note}>
-        Earn from every view on your share links. Your account works on both the website and the app.
-      </Text>
-    </ScrollView>
+        <View style={s.rowHead}>
+          <Text style={s.h2}>Recent files</Text>
+          <Pressable onPress={() => router.push("/content")}><Text style={{ color: theme.primary, fontWeight: "600" }}>View all</Text></Pressable>
+        </View>
+        <Card style={{ padding: 0, overflow: "hidden" }}>
+          {files.length ? files.slice(0, 5).map((f) => <FileCard key={f.id} file={f} onChange={reload} />)
+            : <Empty icon="cloud-upload-outline" title={loading ? "Loading your files…" : "No files yet"} text={loading ? undefined : "Tap + to upload your first file."} />}
+        </Card>
+        <View style={{ alignItems: "center" }}><BannerAd unitId={ADS.banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} /></View>
+      </ScrollView>
+    </Screen>
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: theme.bg },
-  content: { padding: 20, paddingTop: 60, gap: 14 },
-  hello: { color: theme.text, fontSize: 22, fontWeight: "800" },
-  balanceCard: {
-    backgroundColor: theme.primaryDark,
-    borderRadius: 16,
-    padding: 20,
-  },
-  balanceLabel: { color: "#DBEAFE", fontSize: 13 },
-  balance: { color: "#fff", fontSize: 34, fontWeight: "800", marginVertical: 4 },
-  plan: { color: "#DBEAFE", fontSize: 12 },
-  row: { flexDirection: "row", gap: 14 },
-  card: {
-    flex: 1,
-    backgroundColor: theme.card,
-    borderColor: theme.border,
-    borderWidth: 1,
-    borderRadius: 14,
-    padding: 16,
-  },
-  cardValue: { color: theme.text, fontSize: 20, fontWeight: "800" },
-  cardLabel: { color: theme.muted, fontSize: 12, marginTop: 4 },
-  action: {
-    backgroundColor: theme.primary,
-    borderRadius: 12,
-    padding: 15,
-    alignItems: "center",
-  },
-  secondary: { backgroundColor: theme.card, borderWidth: 1, borderColor: theme.primary },
-  actionText: { color: "#fff", fontWeight: "700", fontSize: 15 },
-  note: { color: theme.muted, fontSize: 12, textAlign: "center", marginTop: 8 },
+const s = StyleSheet.create({
+  h1: { fontSize: 26, fontWeight: "800", color: theme.text },
+  h2: { fontSize: 18, fontWeight: "700", color: theme.text },
+  muted: { color: theme.muted, fontSize: 14 },
+  bar: { height: 8, borderRadius: 4, backgroundColor: "rgba(255,255,255,0.25)", marginTop: 12, overflow: "hidden" },
+  fill: { height: 8, borderRadius: 4, backgroundColor: "#FFFFFF" },
+  cats: { flexDirection: "row", gap: 10 },
+  cat: { flex: 1, backgroundColor: theme.card, borderRadius: 16, borderWidth: 1, borderColor: theme.border, padding: 12, alignItems: "center", gap: 6 },
+  catIcon: { width: 44, height: 44, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  catText: { fontSize: 12, fontWeight: "600", color: theme.text },
+  rowHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
 });
