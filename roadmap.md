@@ -2,7 +2,7 @@
 - [x] Add native account sections: complete menu, Home account summary, All Content/Convert Link, Earnings, Wallet, OC Bonus, Referrals, Profile and Premium; payments stay external and distribution-gated.
 - [x] Verify native menu, conversion ownership/expiry and external-payment restrictions with automated tests.
 - [ ] Verify signed-in native navigation, conversion and browser-return balances end-to-end (blocked: Android device/emulator unavailable).
-- [ ] Build and deliver APK 1.0.3 with the new account sections.
+- [x] Build and deliver APK 1.0.3 (versionCode 4) with new account sections; Expo finished, archive integrity and matching signing certificate verified, saved to Files.
 - [x] Polish native Home/Profile, accessible motion, profile editing and discoverable file rename; native typecheck and account-rule tests pass.
 - [x] Refresh website-purchased plan on app resume and provide a policy-safe upgrade entry (external website link only in direct APK).
 - [x] Preserve shared-file destination through sign-in; corrected APK signing fingerprint served live without stale proxy cache.
