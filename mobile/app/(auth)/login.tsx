@@ -3,6 +3,10 @@ import { Alert, Animated, Image, KeyboardAvoidingView, Platform, Pressable, Scro
 import { supabase } from "../../lib/supabase";
 import { theme } from "../../lib/theme";
 import { Button, Field } from "../../components/ui";
+import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
+
+// Public Web OAuth client ID; the login server verifies Google tokens against it.
+const GOOGLE_WEB_CLIENT_ID = "238026155309-h539fp6pepb3q9n5g0jiq4mc4f8kagip.apps.googleusercontent.com";
 
 export default function Login() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -39,6 +43,25 @@ export default function Login() {
     }
   }
 
+  async function google() {
+    setBusy(true);
+    try {
+      GoogleSignin.configure({ webClientId: GOOGLE_WEB_CLIENT_ID });
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const res = await GoogleSignin.signIn();
+      if (res.type !== "success") return;
+      const token = res.data.idToken;
+      if (!token) throw new Error("Google did not return a sign-in token.");
+      const { error } = await supabase.auth.signInWithIdToken({ provider: "google", token });
+      if (error) throw error;
+    } catch (err: any) {
+      if (err?.code === statusCodes.SIGN_IN_CANCELLED || err?.code === statusCodes.IN_PROGRESS) return;
+      Alert.alert("Google sign-in failed", err instanceof Error ? err.message : "Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: theme.card }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView contentContainerStyle={styles.wrap} keyboardShouldPersistTaps="handled">
@@ -53,6 +76,11 @@ export default function Login() {
           <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
           <Field label="Password" value={password} onChangeText={setPassword} placeholder="At least 8 characters" secureTextEntry autoComplete="password" />
           <Button label={mode === "signin" ? "Sign in" : "Create account"} onPress={submit} busy={busy} style={{ marginTop: 6 }} />
+          <Text style={{ textAlign: "center", color: theme.muted, marginVertical: 2 }}>or</Text>
+          <Pressable onPress={google} disabled={busy} style={styles.google}>
+            <Text style={styles.gMark}>G</Text>
+            <Text style={{ color: theme.text, fontWeight: "700", fontSize: 16 }}>Continue with Google</Text>
+          </Pressable>
         </View>
 
         <Pressable onPress={() => setMode(mode === "signin" ? "signup" : "signin")} style={{ marginTop: 22, alignSelf: "center", padding: 8 }}>
