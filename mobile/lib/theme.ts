@@ -8,7 +8,12 @@ export const theme = {
   primarySoft: "#E8F0FE",
   danger: "#DC2626",
   success: "#16A34A",
-  radius: 16,
+  onPrimary: "#FFFFFF",
+  subtle: "#F0F4FA",
+  placeholder: "#94A3B8",
+  overlay: "rgba(15,23,42,0.4)",
+  primaryTrack: "#D7E5FF",
+  radius: 8,
   cat: {
     pdf: { fg: "#DC2626", bg: "#FEE9E9" },
     image: { fg: "#0891B2", bg: "#E0F7FB" },

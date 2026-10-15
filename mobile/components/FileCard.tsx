@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Modal, Pressable, Share, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, Share, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
@@ -69,24 +69,28 @@ export function FileCard({ file, onChange, showExpiry }: { file: FileRow; onChan
 
   return (
     <>
-      <Pressable onPress={() => router.push(`/s/${file.slug}`)} style={({ pressed }) => [s.row, pressed && { backgroundColor: "#F8FAFD" }]}>
+      <View style={s.row}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Open ${file.name}`} onPress={() => router.push({ pathname: "/s/[slug]", params: { slug: file.slug } })} style={({ pressed }) => [s.openFile, pressed && { opacity: 0.7 }]}>
         <FileIcon type={file.file_type} />
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={s.name} numberOfLines={1}>{file.name}</Text>
           <Text style={s.meta} numberOfLines={1}>{showExpiry ? expiryText(file) : meta}</Text>
         </View>
+        </Pressable>
         <Pressable accessibilityLabel={`Actions for ${file.name}`} hitSlop={10} onPress={() => setSheet("menu")} style={s.more}>
           <Ionicons name="ellipsis-vertical" size={18} color={theme.muted} />
         </Pressable>
-      </Pressable>
+      </View>
 
-      <Modal visible={sheet !== null} transparent animationType="slide" onRequestClose={() => setSheet(null)}>
+      <Modal visible={sheet !== null} transparent animationType="slide" onRequestClose={() => { if (!busy) setSheet(null); }}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <Pressable style={s.backdrop} onPress={() => setSheet(null)} />
         <View style={s.sheet}>
           <View style={s.grab} />
           <View style={s.sheetHead}>
             <FileIcon type={file.file_type} size={40} />
             <Text style={[s.name, { flex: 1 }]} numberOfLines={1}>{file.name}</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel="Close file actions" disabled={busy} onPress={() => setSheet(null)} style={s.more}><Ionicons name="close-outline" size={24} color={theme.muted} /></Pressable>
           </View>
           {sheet === "menu" && items.map((i) => (
             <Pressable key={i.label} onPress={i.on} style={({ pressed }) => [s.item, pressed && { backgroundColor: theme.bg }]}>
@@ -96,7 +100,8 @@ export function FileCard({ file, onChange, showExpiry }: { file: FileRow; onChan
           ))}
           {sheet === "rename" && (
             <View style={{ gap: 12 }}>
-              <TextInput value={name} onChangeText={setName} autoFocus selectTextOnFocus onSubmitEditing={saveName} style={s.input} />
+              <Text style={s.itemText}>Rename file</Text>
+              <TextInput accessibilityLabel="File name" value={name} onChangeText={setName} autoFocus selectTextOnFocus maxLength={255} editable={!busy} returnKeyType="done" onSubmitEditing={saveName} style={s.input} />
               <Button label="Save" onPress={saveName} busy={busy} />
             </View>
           )}
@@ -121,9 +126,11 @@ export function FileCard({ file, onChange, showExpiry }: { file: FileRow; onChan
               ].map(([k, v]) => (
                 <View key={k} style={s.detail}><Text style={s.meta}>{k}</Text><Text style={[s.itemText, { textTransform: "capitalize" }]}>{v}</Text></View>
               ))}
+              <Button label="Rename file" icon="create-outline" variant="outline" onPress={() => { setName(file.name); setSheet("rename"); }} />
             </View>
           )}
         </View>
+        </KeyboardAvoidingView>
       </Modal>
     </>
   );
@@ -131,6 +138,7 @@ export function FileCard({ file, onChange, showExpiry }: { file: FileRow; onChan
 
 const s = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, paddingHorizontal: 16 },
+  openFile: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12, minWidth: 0 },
   name: { fontSize: 15, fontWeight: "600", color: theme.text },
   meta: { fontSize: 13, color: theme.muted, marginTop: 2 },
   more: { width: 36, height: 36, alignItems: "center", justifyContent: "center", borderRadius: 18 },

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Alert, Animated, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { router } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { theme } from "../../lib/theme";
 import { Button, Field } from "../../components/ui";
@@ -32,7 +31,7 @@ export default function Login() {
         if (error) throw error;
         if (!data.session) { Alert.alert("Account created", "You can now sign in."); setMode("signin"); return; }
       }
-      router.replace("/(tabs)");
+      // The root session gate restores a shared-file destination after sign-in.
     } catch (err) {
       Alert.alert("Unable to continue", err instanceof Error ? err.message : "Please try again.");
     } finally {
