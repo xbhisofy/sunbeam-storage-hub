@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useEvent } from "expo";
@@ -105,7 +105,7 @@ function Notice({ icon, title, text }: { icon: keyof typeof Ionicons.glyphMap; t
 function Viewer({ file, onShown }: { file: Shared; onShown: () => void }) {
   if (file.file_type === "image") return <Image source={{ uri: file.url }} onLoad={onShown} resizeMode="contain" style={{ width: "100%", aspectRatio: 1, borderRadius: 16, backgroundColor: "#000" }} />;
   if (file.file_type === "video" || file.file_type === "audio") return <MediaPlayer url={file.url} audio={file.file_type === "audio"} onPlaying={onShown} />;
-  if (file.source === "converted") return <Notice icon="open-outline" title="External link" text="This shared link points to another site." />;
+  if (file.source === "converted") return <Button label="Open link" icon="open-outline" onPress={() => Linking.openURL(file.url)} />;
   return <View style={{ height: 520, borderRadius: 16, overflow: "hidden" }}><WebView source={{ uri: `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(file.url)}` }} onLoadEnd={onShown} /></View>;
 }
 
