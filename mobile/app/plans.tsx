@@ -6,11 +6,12 @@ import { useProfile } from "../lib/useProfile";
 import { currentPlan } from "../lib/account-rules";
 import { EXTERNAL_UPGRADES, WEB_URL } from "../lib/config";
 import { theme } from "../lib/theme";
+import { PaymentAction } from "../components/AccountUI";
 
 export default function Plans() {
   const { profile } = useProfile();
   const active = currentPlan(profile);
-  return <Screen title="Your plan" back><ScrollView contentContainerStyle={s.wrap}>
+  return <Screen title="Premium" back><ScrollView contentContainerStyle={s.wrap}>
     <Motion><Text style={s.title}>Room for more.</Text><Text style={s.sub}>Your files, all in one place.</Text></Motion>
     {[
       { name: "Free", storage: "1 GB storage", icon: "cloud-outline" as const },
@@ -21,8 +22,9 @@ export default function Plans() {
       <View style={{ flex: 1 }}><Text style={s.name}>{plan.name}</Text><Text style={s.sub}>{plan.storage}</Text></View>
       {plan.name === active.name && <Text style={s.current}>Current</Text>}
     </View></Motion>)}
-    {EXTERNAL_UPGRADES ? <><Button label="Upgrade plan" icon="open-outline" onPress={() => { void Linking.openURL(`${WEB_URL}/plans`); }} /><Text style={s.note}>Continue securely in your browser. Sign in with the same account. Your plan updates when you return.</Text></>
-      : <Text style={s.note}>In-app upgrades are not available yet. Existing plans sync automatically.</Text>}
+    {active.tier !== "free" && profile?.premium_until && <Text style={s.note}>Active until {new Date(profile.premium_until).toLocaleDateString("en-GB")}</Text>}
+    <PaymentAction target="plans" label="Upgrade plan on website" />
+    {!EXTERNAL_UPGRADES && <Text style={s.note}>Existing plans sync automatically.</Text>}
   </ScrollView></Screen>;
 }
 const s = StyleSheet.create({

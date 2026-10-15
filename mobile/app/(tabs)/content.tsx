@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
-import { Screen, Empty } from "../../components/ui";
+import { router, useLocalSearchParams } from "expo-router";
+import { Screen, Empty, Button } from "../../components/ui";
 import { FileCard } from "../../components/FileCard";
 import { useFiles } from "../../lib/useFiles";
 import { CATEGORIES } from "../../lib/files";
@@ -12,7 +12,7 @@ export default function Files() {
   const params = useLocalSearchParams<{ kind?: string }>();
   const [kind, setKind] = useState<string>("all");
   const [q, setQ] = useState("");
-  const { files, loading, refreshing, reload } = useFiles();
+  const { files, loading, refreshing, error, reload } = useFiles();
   useEffect(() => { if (params.kind) setKind(params.kind); }, [params.kind]);
 
   const list = useMemo(
@@ -22,7 +22,11 @@ export default function Files() {
   const chips = [{ kind: "all", label: "All" }, ...CATEGORIES];
 
   return (
-    <Screen title="My Files">
+    <Screen title="My Content" right={<Button label="Menu" icon="grid-outline" variant="outline" onPress={() => router.push("/menu")} style={{ height: 40 }} />}>
+      <View style={{ flexDirection: "row", gap: 8, paddingHorizontal: 16, paddingBottom: 12 }}>
+        <Button label="All Content" onPress={() => {}} style={{ flex: 1 }} />
+        <Button label="Convert Link" variant="outline" icon="link-outline" onPress={() => router.push("/convert")} style={{ flex: 1 }} />
+      </View>
       <View style={s.search}>
         <Ionicons name="search" size={18} color={theme.muted} />
         <TextInput value={q} onChangeText={setQ} placeholder="Search files" placeholderTextColor="#94A3B8" style={{ flex: 1, fontSize: 15, color: theme.text }} />
@@ -37,6 +41,7 @@ export default function Files() {
         </ScrollView>
       </View>
       <FlatList
+        ListHeaderComponent={error ? <View style={{ padding: 16, gap: 8 }}><Text style={{ color: theme.danger }}>{error}</Text><Button label="Try again" onPress={reload} variant="outline" /></View> : null}
         data={list}
         keyExtractor={(f) => f.id}
         renderItem={({ item }) => <FileCard file={item} onChange={reload} />}
