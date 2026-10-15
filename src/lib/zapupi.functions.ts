@@ -8,19 +8,28 @@ const MAX_INR = 100000;
 
 export const createZapupiOrder = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => z.object({ amount: z.number().min(MIN_INR).max(MAX_INR) }).parse(data))
+  .inputValidator((data) =>
+    z.object({ amount: z.number().min(MIN_INR).max(MAX_INR).optional(), plan: z.enum(["plus", "pro"]).optional() }).parse(data))
   .handler(async ({ data, context }) => {
     const { zapKey, zapupiPost } = await import("./zapupi.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { PREMIUM_PLANS } = await import("./premium");
+
+    // Plan prices are fixed on the server; never trust a client amount for plans.
+    const amountInr = data.plan ? PREMIUM_PLANS[data.plan].priceInr : data.amount;
+    if (!amountInr) throw new Error("Enter a valid amount");
+    const purpose = data.plan ?? "wallet";
+    const back = data.plan ? "/plans" : "/wallet";
 
     const orderId = `ZAP_${crypto.randomUUID().replace(/-/g, "")}`;
-    const amount = data.amount.toFixed(2);
+    const amount = amountInr.toFixed(2);
 
     const { error: insertError } = await supabaseAdmin.from("zapupi_deposits").insert({
       user_id: context.userId,
       order_id: orderId,
-      amount_inr: data.amount,
+      amount_inr: amountInr,
       status: "pending",
+      purpose,
     });
     if (insertError) throw new Error("Could not create the order. Please try again.");
 
@@ -30,10 +39,10 @@ export const createZapupiOrder = createServerFn({ method: "POST" })
       order_id: orderId,
       amount,
       webhook_url: `${base}/api/public/zapupi-webhook`,
-      success_url: `${base}/wallet?status=success&order_id=${orderId}`,
-      failed_url: `${base}/wallet?status=failed&order_id=${orderId}`,
-      timeout_url: `${base}/wallet?status=timeout&order_id=${orderId}`,
-      remark: "Wallet top-up",
+      success_url: `${base}${back}?status=success&order_id=${orderId}`,
+      failed_url: `${base}${back}?status=failed&order_id=${orderId}`,
+      timeout_url: `${base}${back}?status=timeout&order_id=${orderId}`,
+      remark: data.plan ? `Tanyora ${PREMIUM_PLANS[data.plan].name} plan` : "Wallet top-up",
     });
 
     const paymentUrl = res?.payment_url ?? res?.data?.payment_url ?? res?.url;
