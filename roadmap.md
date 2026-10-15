@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Add native feature parity: complete menu, Home account summary, All Content/Convert Link, Earnings, Wallet, OC Bonus, Referrals, Profile and Premium; payments stay external and distribution-gated.
+- [ ] Verify new native data rules and navigation; phone end-to-end testing requires an Android device.
 - [x] Polish native Home/Profile, accessible motion, profile editing and discoverable file rename; native typecheck and account-rule tests pass.
 - [x] Refresh website-purchased plan on app resume and provide a policy-safe upgrade entry (external website link only in direct APK).
 - [x] Preserve shared-file destination through sign-in; corrected APK signing fingerprint served live without stale proxy cache.
