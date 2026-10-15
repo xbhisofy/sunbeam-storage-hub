@@ -26,7 +26,7 @@ export default function TabsLayout() {
         options={{
           title: "",
           tabBarButton: () => (
-            <Pressable accessibilityLabel="Upload a file" onPress={() => router.push("/upload")} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Pressable accessibilityLabel="Upload a file" onPress={() => router.push("/uploader")} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
               <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: theme.primary, alignItems: "center", justifyContent: "center" }}>
                 <Ionicons name="add" size={28} color="#FFFFFF" />
               </View>
