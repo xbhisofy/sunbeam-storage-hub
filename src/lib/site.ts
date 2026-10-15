@@ -5,7 +5,7 @@ export const site = {
   supportEmail: "tanyora@support.com", updated: "October 14, 2026",
   appId: "com.tanyora.app", appScheme: "tanyora",
   // Installed Android package (PWABuilder TWA); Play Store links must use this.
-  androidPackage: "app.lovable.tanyora.twa",
+  androidPackage: "com.tanyora.twa",
   // Share links live on the main domain (opens app); the dashboard lives on the web subdomain.
   shareUrl: "https://tanyora.com",
   webUrl: "https://app.tanyora.com",
