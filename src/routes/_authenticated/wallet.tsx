@@ -16,8 +16,8 @@ import { useServerFn } from "@tanstack/react-start";
 export const Route = createFileRoute("/_authenticated/wallet")({
   head: () => pageHead("Wallet", "Add money to your wallet instantly with UPI.", undefined, true),
   validateSearch: (s: Record<string, unknown>) => ({
-    status: typeof s.status === "string" ? s.status : undefined,
-    order_id: typeof s.order_id === "string" ? s.order_id : undefined,
+    status: typeof s["status"] === "string" ? (s["status"] as string) : undefined,
+    order_id: typeof s["order_id"] === "string" ? (s["order_id"] as string) : undefined,
   }),
   component: WalletPage,
 });
@@ -62,7 +62,7 @@ function WalletPage() {
       }
       qc.invalidateQueries({ queryKey: ["profile"] });
       qc.invalidateQueries({ queryKey: ["my-deposits"] });
-      navigate({ to: "/wallet", search: {}, replace: true });
+      navigate({ to: "/wallet", search: { status: undefined, order_id: undefined }, replace: true });
     })();
   }, [order_id, status, syncDeposit, qc, navigate]);
 
