@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import { Stack, router, usePathname, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import * as Linking from "expo-linking";
 import type { Session } from "@supabase/supabase-js";
 import mobileAds from "react-native-google-mobile-ads";
 import { supabase } from "../lib/supabase";
@@ -19,6 +20,8 @@ export default function RootLayout() {
   const segments = useSegments();
   const pathname = usePathname();
   const [pendingFile, setPendingFile] = useState<`/s/${string}` | null>(null);
+  const sessionRef = useRef<Session | null>(null);
+  useEffect(() => { sessionRef.current = session; }, [session]);
 
   useEffect(() => {
     mobileAds().initialize().catch(() => {});
@@ -29,6 +32,24 @@ export default function RootLayout() {
 
   // Ask for notification permission once the user is signed in.
   useEffect(() => { if (session) void setupNotifications().catch(() => {}); }, [session?.user.id]);
+
+  // Shared links (https://tanyora.com/s/<slug> or tanyora://s/<slug>) must open
+  // the shared file itself — never just the app home. Handles both a cold start
+  // from a link and a link tapped while the app is already open.
+  useEffect(() => {
+    const openShared = (url: string | null) => {
+      if (!url) return;
+      const m = url.match(/\/s\/([A-Za-z0-9_-]+)/);
+      if (!m) return;
+      const slug = m[1];
+      if (sessionRef.current) router.push({ pathname: "/s/[slug]", params: { slug } });
+      else setPendingFile(`/s/${slug}`);
+    };
+    Linking.getInitialURL().then(openShared).catch(() => {});
+    const sub = Linking.addEventListener("url", ({ url }) => openShared(url));
+    return () => sub.remove();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Signed-out users start at login; shared links (/s/...) stay reachable after login.
   useEffect(() => {

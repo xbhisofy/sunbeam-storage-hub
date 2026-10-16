@@ -120,28 +120,28 @@ function MediaPlayer({ url, audio, onPlaying }: { url: string; audio: boolean; o
   const { currentTime } = useEvent(player, "timeUpdate", { currentTime: 0, currentLiveTimestamp: null, currentOffsetFromLive: null, bufferedPosition: 0 });
   const [speed, setSpeed] = useState(1);
   const [land, setLand] = useState(false);
-  const view = useRef<VideoView>(null);
 
   useEffect(() => { if (isPlaying) onPlaying(); }, [isPlaying, onPlaying]);
   useEffect(() => () => { ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {}); }, []);
 
   const seek = (d: number) => { player.currentTime = Math.max(0, player.currentTime + d); };
   const fmt = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
-  async function rotate() {
-    await ScreenOrientation.lockAsync(land ? ScreenOrientation.OrientationLock.PORTRAIT_UP : ScreenOrientation.OrientationLock.LANDSCAPE);
-    setLand(!land);
+  // Landscape plays in a full-screen overlay so controls never get squashed by rotation.
+  async function enterLand() {
+    setLand(true);
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).catch(() => {});
+  }
+  async function exitLand() {
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
+    setLand(false);
   }
   const nextSpeed = () => { const s = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]; player.playbackRate = s; setSpeed(s); };
   const dur = player.duration || 0;
+  const progress = dur ? Math.min(100, (currentTime / dur) * 100) : 0;
 
-  return (
-    <View style={{ gap: 12 }}>
-      {audio ? (
-        <Card style={{ alignItems: "center", paddingVertical: 28 }}><Ionicons name="musical-notes" size={56} color={theme.primary} /></Card>
-      ) : (
-        <VideoView ref={view} player={player} nativeControls={false} contentFit="contain" allowsFullscreen style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: 16, backgroundColor: "#000" }} />
-      )}
-      <View style={ps.track}><View style={[ps.fill, { width: `${dur ? Math.min(100, (currentTime / dur) * 100) : 0}%` }]} /></View>
+  const controls = (
+    <>
+      <View style={ps.track}><View style={[ps.fill, { width: `${progress}%` }]} /></View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={ps.time}>{fmt(currentTime)}</Text><Text style={ps.time}>{fmt(dur)}</Text>
       </View>
@@ -154,12 +154,59 @@ function MediaPlayer({ url, audio, onPlaying }: { url: string; audio: boolean; o
       </View>
       <View style={ps.controls}>
         <Pressable onPress={nextSpeed} style={ps.pill}><Text style={ps.pillText}>{speed}×</Text></Pressable>
-        {!audio && <Pressable onPress={rotate} style={ps.pill}><Ionicons name="phone-landscape-outline" size={18} color={theme.primary} /><Text style={ps.pillText}>Rotate</Text></Pressable>}
-        {!audio && <Pressable onPress={() => view.current?.enterFullscreen()} style={ps.pill}><Ionicons name="expand" size={18} color={theme.primary} /><Text style={ps.pillText}>Fullscreen</Text></Pressable>}
+        {!audio && (
+          <Pressable onPress={land ? exitLand : enterLand} style={ps.pill}>
+            <Ionicons name={land ? "phone-portrait-outline" : "phone-landscape-outline"} size={18} color={theme.primary} />
+            <Text style={ps.pillText}>{land ? "Portrait" : "Rotate"}</Text>
+          </Pressable>
+        )}
       </View>
+    </>
+  );
+
+  return (
+    <View style={{ gap: 12 }}>
+      {audio ? (
+        <Card style={{ alignItems: "center", paddingVertical: 28 }}><Ionicons name="musical-notes" size={56} color={theme.primary} /></Card>
+      ) : (
+        <VideoView player={player} nativeControls={false} contentFit="contain" style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: 16, backgroundColor: "#000" }} />
+      )}
+      {controls}
+      {!audio && (
+        <Modal visible={land} animationType="fade" supportedOrientations={["landscape"]} onRequestClose={() => void exitLand()}>
+          <View style={ls.root}>
+            <VideoView player={player} nativeControls={false} contentFit="contain" style={ls.video} />
+            <View style={ls.bar}>
+              <Text style={ls.time}>{fmt(currentTime)}</Text>
+              <View style={ls.track}><View style={[ps.fill, { width: `${progress}%` }]} /></View>
+              <Text style={ls.time}>{fmt(dur)}</Text>
+            </View>
+            <View style={ls.controls}>
+              <Pressable accessibilityLabel="Back 10 seconds" onPress={() => seek(-10)} style={ls.btn}><Ionicons name="play-back" size={24} color="#FFFFFF" /></Pressable>
+              <Pressable accessibilityLabel={isPlaying ? "Pause" : "Play"} onPress={() => (isPlaying ? player.pause() : player.play())} style={ls.play}>
+                <Ionicons name={isPlaying ? "pause" : "play"} size={30} color="#FFFFFF" />
+              </Pressable>
+              <Pressable accessibilityLabel="Forward 10 seconds" onPress={() => seek(10)} style={ls.btn}><Ionicons name="play-forward" size={24} color="#FFFFFF" /></Pressable>
+              <Pressable onPress={nextSpeed} style={ls.btn}><Text style={{ color: "#FFFFFF", fontWeight: "700" }}>{speed}×</Text></Pressable>
+              <Pressable accessibilityLabel="Back to portrait" onPress={() => void exitLand()} style={ls.btn}><Ionicons name="phone-portrait-outline" size={22} color="#FFFFFF" /></Pressable>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
+
+const ls = StyleSheet.create({
+  root: { flex: 1, backgroundColor: "#000", justifyContent: "center" },
+  video: { flex: 1 },
+  bar: { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingBottom: 4 },
+  track: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.25)", overflow: "hidden" },
+  time: { color: "#FFFFFF", fontSize: 12, minWidth: 36, textAlign: "center" },
+  controls: { flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 14, paddingBottom: 14, paddingHorizontal: 8 },
+  play: { width: 56, height: 56, borderRadius: 28, backgroundColor: theme.primary, alignItems: "center", justifyContent: "center" },
+  btn: { minWidth: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.12)" },
+});
 
 function Ctrl({ icon, label, on }: { icon: keyof typeof Ionicons.glyphMap; label: string; on: () => void }) {
   return (
