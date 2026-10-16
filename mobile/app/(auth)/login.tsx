@@ -99,4 +99,6 @@ const styles = StyleSheet.create({
   logo: { width: 80, height: 80, borderRadius: 22 },
   brand: { marginTop: 16, fontSize: 28, fontWeight: "800", letterSpacing: 6, color: theme.text },
   sub: { marginTop: 8, color: theme.muted, fontSize: 15, textAlign: "center" },
+  google: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10, height: 52, borderRadius: 14, borderWidth: 1, borderColor: theme.border, backgroundColor: theme.card },
+  gMark: { fontSize: 20, fontWeight: "800", color: "#4285F4" },
 });
