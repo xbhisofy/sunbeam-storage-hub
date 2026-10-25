@@ -10,7 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Application rules
-- Self-hosted upload safety is enforced by deploy/safety SQL, a VPS-only antivirus service and an Nginx delivery guard; new and legacy bytes require clean scanning plus admin review, because client checks cannot protect older APKs or existing signed URLs.
+- Self-hosted upload safety uses deploy/safety SQL, a VPS-only antivirus service and an Nginx delivery guard; clean supported scans enable sharing automatically, but report holds and blocks persist because client checks cannot protect older APKs or existing signed URLs.
 - Content-safety schema extensions use a narrowly typed client in src/lib/content-safety.ts; never edit generated backend client/types to add moderation fields.
 - Keep splash artwork and typography scoped to SplashScreen and `.splash` styles; its installed-app detection and session timers remain unchanged so visual updates do not alter launch behavior.
 - Shared videos use the reusable VideoPlayer with browser media controls disabled; fullscreen targets its wrapper to preserve custom controls.
