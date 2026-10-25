@@ -10,7 +10,7 @@ from urllib.parse import unquote, urlsplit
 
 import psycopg2
 import requests
-from policy import MAX_SCAN_BYTES, dangerous_signature, restriction, scan_result
+from policy import MAX_SCAN_BYTES, dangerous_signature, restriction, scan_result, automatic_sharing_status
 
 
 def db():
@@ -19,7 +19,11 @@ def db():
 
 def decide(path, status, note):
     with db() as conn, conn.cursor() as cur:
-        cur.execute("UPDATE public.files SET scan_status=%s, scanned_at=now(), moderation_status=CASE WHEN %s='clean' THEN moderation_status ELSE 'blocked' END, moderation_note=%s WHERE storage_path=%s", (status, status, note, path))
+        cur.execute("SELECT id,moderation_status,moderation_note FROM public.files WHERE storage_path=%s FOR UPDATE", (path,))
+        for fid, old_status, old_note in cur.fetchall():
+            next_status = automatic_sharing_status(status, old_status, old_note)
+            held = old_status == 'blocked' or old_note == 'Safety report: review required'
+            cur.execute("UPDATE public.files SET scan_status=%s, scanned_at=now(), moderation_status=%s, moderation_note=%s WHERE id=%s", (status, next_status, old_note if held else note, fid))
         cur.execute("INSERT INTO public.content_safety_events(file_id,action,note) SELECT id,%s,%s FROM public.files WHERE storage_path=%s AND source='original'", ('scan_' + status, note, path))
 
 
@@ -61,7 +65,7 @@ def scan_one():
             # Stream bytes across the daemon socket; services use isolated /tmp namespaces.
             result = subprocess.run(['clamdscan', '--stream', '--no-summary', temporary.name], capture_output=True, text=True, timeout=180)
             status = scan_result(result.returncode, result.stdout)
-            decide(path, status, 'Malware scan complete; content review required' if status == 'clean' else 'Malware detected' if status == 'infected' else 'Antivirus check unavailable; sharing blocked')
+            decide(path, status, 'Malware scan passed; sharing enabled automatically' if status == 'clean' else 'Malware detected' if status == 'infected' else 'Antivirus check unavailable; sharing blocked')
         except Exception:
             decide(path, 'error', 'Safety checking failed; sharing blocked')
     return True

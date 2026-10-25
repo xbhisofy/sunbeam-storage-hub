@@ -17,8 +17,8 @@ export function sharingAllowed(file: { moderation_status?: string; scan_status?:
 }
 export function safetyLabel(file: { moderation_status?: string; scan_status?: string }) {
   if (file.moderation_status === 'blocked') return 'Sharing blocked';
-  if (sharingAllowed(file)) return 'Approved for sharing';
-  if (file.scan_status === 'clean') return 'Awaiting content review';
+  if (sharingAllowed(file)) return 'Ready to share';
+  if (file.scan_status === 'clean') return 'Sharing on hold';
   return 'Safety check pending';
 }
 export const UNSUPPORTED_UPLOAD = /\.(exe|dll|com|bat|cmd|ps1|sh|js|mjs|vbs|scr|msi|apk|aab|jar|html|htm|svg|zip|rar|7z|tar|gz|iso)$/i;

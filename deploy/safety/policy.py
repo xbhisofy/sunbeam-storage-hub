@@ -1,4 +1,4 @@
-"""Conservative upload policy; no file is automatically content-approved."""
+"""Malware scanning policy; clean scans enable sharing, not content certification."""
 from pathlib import PurePosixPath
 
 MAX_SCAN_BYTES = 100 * 1024 * 1024
@@ -25,3 +25,10 @@ def scan_result(code, output):
     if code != 0 or 'OK' not in output:
         return 'error'
     return 'clean'
+
+def automatic_sharing_status(scan_status, moderation_status, moderation_note):
+    if scan_status != 'clean':
+        return 'blocked'
+    if moderation_status == 'blocked' or moderation_note == 'Safety report: review required':
+        return moderation_status
+    return 'approved'

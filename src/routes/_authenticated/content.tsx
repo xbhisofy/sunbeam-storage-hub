@@ -93,7 +93,7 @@ function Content() {
         owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
       if (e2) toast.error("Upload failed", { description: e2.message });
-      else toast.success(`${f.name} uploaded`, { description: "Sharing is unavailable until safety checking and content review are complete." });
+      else toast.success(`${f.name} uploaded`, { description: "Sharing will start automatically after the malware check passes." });
     }
     setUploading(null);
     if (input.current) input.current.value = "";

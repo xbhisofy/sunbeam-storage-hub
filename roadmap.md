@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Remove mandatory admin approval; automatically enable malware-clean uploads while preserving blocks and safety-report holds, and verify live.
 - [x] Enforce quarantine and safe sharing on the owner VPS; ClamAV, admin Safety review, immutable file identity, report holds and old signed-link revocation verified with a real harmless upload.
 - [ ] Connect specialist media/child-safety detection (blocked: suitable provider credentials and eligibility approval).
 - [x] Add native account sections: complete menu, Home account summary, All Content/Convert Link, Earnings, Wallet, OC Bonus, Referrals, Profile and Premium; payments stay external and distribution-gated.

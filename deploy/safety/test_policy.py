@@ -1,5 +1,5 @@
 import unittest
-from policy import MAX_SCAN_BYTES, dangerous_signature, restriction, scan_result
+from policy import MAX_SCAN_BYTES, dangerous_signature, restriction, scan_result, automatic_sharing_status
 
 class SafetyRules(unittest.TestCase):
     def test_executables_blocked(self):
@@ -16,6 +16,14 @@ class SafetyRules(unittest.TestCase):
         self.assertEqual(scan_result(1, 'Eicar FOUND'), 'infected')
     def test_clean_scan_still_only_scan_result(self):
         self.assertEqual(scan_result(0, 'file: OK'), 'clean')
+    def test_clean_scan_automatically_enables_sharing(self):
+        self.assertEqual(automatic_sharing_status('clean', 'pending', None), 'approved')
+    def test_scan_failure_never_enables_sharing(self):
+        self.assertEqual(automatic_sharing_status('error', 'pending', None), 'blocked')
+    def test_existing_block_is_not_overridden(self):
+        self.assertEqual(automatic_sharing_status('clean', 'blocked', 'Blocked by admin'), 'blocked')
+    def test_safety_report_hold_is_not_overridden(self):
+        self.assertEqual(automatic_sharing_status('clean', 'pending', 'Safety report: review required'), 'pending')
 
 if __name__ == '__main__':
     unittest.main()
