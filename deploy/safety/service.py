@@ -14,7 +14,7 @@ from policy import MAX_SCAN_BYTES, dangerous_signature, restriction, scan_result
 
 
 def db():
-    return psycopg2.connect(host='127.0.0.1', port=5432, dbname='postgres', user='postgres', password=os.environ['POSTGRES_PASSWORD'], connect_timeout=5)
+    return psycopg2.connect(host=os.environ['SAFETY_DB_HOST'], port=5432, dbname='postgres', user='postgres', password=os.environ['POSTGRES_PASSWORD'], connect_timeout=5)
 
 
 def decide(path, status, note):

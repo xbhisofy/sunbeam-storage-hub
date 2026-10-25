@@ -20,6 +20,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { money, formatSize } from "@/lib/format";
 import { ReportsTab, useOpenReports } from "@/components/AdminReports";
 import { MessagesTab, useNewMessages } from "@/components/AdminMessages";
+import { AdminSafety } from "@/components/AdminSafety";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => pageHead("Admin", "Tanyora admin panel.", undefined, true),
@@ -39,7 +40,7 @@ export function useIsAdmin() {
   });
 }
 
-type Tab = "overview" | "withdrawals" | "users" | "files" | "reports" | "messages";
+type Tab = "overview" | "withdrawals" | "users" | "files" | "reports" | "messages" | "safety";
 type Stats = { users: number; users_today: number; files: number; files_today: number; views: number; balance_total: number; paid_total: number; pending_count: number; pending_amount: number };
 
 const PAGE = 25;
@@ -88,6 +89,7 @@ function Admin() {
     { id: "withdrawals", label: "Payouts", icon: CreditCard, badge: s?.pending_count },
     { id: "users", label: "Users", icon: Users },
     { id: "files", label: "Content", icon: FolderOpen },
+    { id: "safety", label: "Safety", icon: ShieldAlert },
     { id: "reports", label: "Reports", icon: Flag, badge: openReports },
     { id: "messages", label: "Messages", icon: Inbox, badge: newMessages },
   ];
@@ -121,6 +123,7 @@ function Admin() {
         {tab === "withdrawals" && <Withdrawals />}
         {tab === "users" && <UsersTab />}
         {tab === "files" && <FilesTab />}
+        {tab === "safety" && <AdminSafety />}
         {tab === "reports" && <ReportsTab />}
         {tab === "messages" && <MessagesTab />}
       </div>
