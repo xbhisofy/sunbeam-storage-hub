@@ -16,5 +16,6 @@ Only selected images, video, audio, PDF and text formats up to 100 MiB are scann
 
 ## Verification
 Run `python3 -m unittest discover -s deploy/safety -p 'test_*.py'` and the content-safety Vitest suite. Live API verification used a harmless temporary text upload: pending denied signing; self-approval denied; clean scan still pending; authorised review enabled delivery; a serious report revoked that same signed URL with 403. The standard harmless EICAR test signature was detected. Test content was removed.
+After removing the initial review requirement, the live harmless upload reached clean/approved automatically without calling the admin-review operation, signed delivery returned 200, and a serious report revoked that same URL with 403. Eleven Python policy tests passed; test content was removed. Twenty-four initial clean legacy approval waits were released; unsupported/blocked files were retained.
 
 Backups of database/storage metadata, Nginx and antivirus config live in `/opt/tanyora-safety/backups` on the owner server. Do not commit credentials, signed URLs, or copied user files.
