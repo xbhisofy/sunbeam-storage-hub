@@ -1,4 +1,6 @@
 # Roadmap
+- [ ] Enforce quarantine and safe sharing for uploaded files, add malware scanning where available, and verify server-side bypass protection.
+- [ ] Connect specialist media/child-safety detection (blocked: suitable provider credentials and eligibility approval).
 - [x] Add native account sections: complete menu, Home account summary, All Content/Convert Link, Earnings, Wallet, OC Bonus, Referrals, Profile and Premium; payments stay external and distribution-gated.
 - [x] Verify native menu, conversion ownership/expiry and external-payment restrictions with automated tests.
 - [ ] Verify signed-in native navigation, conversion and browser-return balances end-to-end (blocked: Android device/emulator unavailable).
