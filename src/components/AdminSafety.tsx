@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ export function AdminSafety() {
   const [selected, setSelected] = useState<SafetyFile | null>(null);
   const [note, setNote] = useState('');
   const [url, setUrl] = useState('');
+  useEffect(() => () => { if (url) URL.revokeObjectURL(url); }, [url]);
   const [busy, setBusy] = useState(false);
   const { data: files = [], error } = useQuery({ queryKey: ['admin-safety'], refetchInterval: 10000,
     queryFn: async () => {
@@ -23,9 +24,10 @@ export function AdminSafety() {
   async function review(file: SafetyFile) {
     setSelected(file); setNote(''); setUrl('');
     if (file.scan_status === 'clean' && file.moderation_status !== 'blocked' && file.storage_path) {
-      const result = await supabase.storage.from('files').createSignedUrl(file.storage_path, 300);
+      // Review uses verified admin bearer access, not a shareable signed URL.
+      const result = await supabase.storage.from('files').download(file.storage_path);
       if (result.error) toast.error('Review preview unavailable');
-      else setUrl(result.data.signedUrl);
+      else setUrl(URL.createObjectURL(result.data));
     }
   }
   async function decide(decision: 'approved' | 'blocked') {
