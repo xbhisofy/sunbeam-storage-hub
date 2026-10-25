@@ -58,7 +58,8 @@ def scan_one():
                     decide(path, 'unsupported', 'Executable or archive disguised as another file type')
                     return True
             temporary.flush()
-            result = subprocess.run(['clamdscan', '--fdpass', '--no-summary', temporary.name], capture_output=True, text=True, timeout=180)
+            # Stream bytes across the daemon socket; services use isolated /tmp namespaces.
+            result = subprocess.run(['clamdscan', '--stream', '--no-summary', temporary.name], capture_output=True, text=True, timeout=180)
             status = scan_result(result.returncode, result.stdout)
             decide(path, status, 'Malware scan complete; content review required' if status == 'clean' else 'Malware detected' if status == 'infected' else 'Antivirus check unavailable; sharing blocked')
         except Exception:
