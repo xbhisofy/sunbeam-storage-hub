@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { fileKind, formatSize, formatFileDate } from "@/lib/format";
 import { useInstalledApp } from "@/lib/app-mode";
+import { sharingAllowed, safetyLabel, UNSUPPORTED_UPLOAD } from "@/lib/content-safety";
 
 export const Route = createFileRoute("/_authenticated/content")({
   validateSearch: z.object({ kind: z.enum(["pdf", "video", "audio", "image", "link"]).optional(), upload: z.enum(["video", "audio", "image", "document"]).optional() }),
@@ -40,6 +41,8 @@ type FileRow = {
   storage_path: string | null;
   slug: string;
   source: string;
+  moderation_status?: string;
+  scan_status?: string;
 };
 
 function Content() {
@@ -77,6 +80,7 @@ function Content() {
     for (let i = 0; i < arr.length; i++) {
       const f = arr[i];
       if (!f) continue;
+      if (UNSUPPORTED_UPLOAD.test(f.name)) { toast.error("This file type is blocked for safety"); continue; }
       if (f.size > 1024 ** 4) { toast.error("File too large", { description: `${f.name} is over the 1 TB limit` }); continue; }
       setUploading({ name: f.name, size: f.size, step: arr.length > 1 ? `${i + 1} of ${arr.length}` : "", pct: 5 });
       const tick = setInterval(() => setUploading((u) => (u ? { ...u, pct: Math.min(92, u.pct + (95 - u.pct) * 0.08) } : u)), 300);
@@ -89,7 +93,7 @@ function Content() {
         owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
       if (e2) toast.error("Upload failed", { description: e2.message });
-      else toast.success(`${f.name} uploaded`);
+      else toast.success(`${f.name} uploaded`, { description: "Sharing is unavailable until safety checking and content review are complete." });
     }
     setUploading(null);
     if (input.current) input.current.value = "";
@@ -119,6 +123,7 @@ function Content() {
   }
 
   function copyLink(f: FileRow) {
+    if (!sharingAllowed(f)) { toast.error(safetyLabel(f)); return; }
     setActive(null);
     navigator.clipboard.writeText(`${site.shareUrl}/s/${f.slug}`);
     toast.success("Link copied");
@@ -133,6 +138,7 @@ function Content() {
   ];
 
   async function generateLink(f: FileRow, hours: number | null, label: string) {
+    if (!sharingAllowed(f)) { toast.error(safetyLabel(f)); return; }
     setMakingLink(true);
     const expires_at = hours === null ? null : new Date(Date.now() + hours * 3600_000).toISOString();
     const { error } = await supabase.from("files").update({ expires_at }).eq("id", f.id);
@@ -246,6 +252,7 @@ function Content() {
                   <span className="block truncate text-sm font-semibold">{f.name}</span>
                   <span className="mt-0.5 block text-xs text-muted-foreground">
                     {f.storage_path ? `${formatSize(f.size)} · ` : ""}{formatFileDate(f.created_at)}
+                    {` · ${safetyLabel(f)}`}
                   </span>
                 </span>
                 {!app && <span className="hidden shrink-0 items-center gap-1.5 text-xs text-muted-foreground sm:flex"><Eye className="h-3.5 w-3.5" />{f.views ?? 0}</span>}
