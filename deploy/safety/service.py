@@ -90,6 +90,11 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(b'ok')
             return
         path = urlsplit(self.headers.get('X-Original-URI', '')).path
+        if self.headers.get('X-Original-Method', 'GET') not in ('GET', 'HEAD'):
+            # Upload/signing requests remain protected by storage RLS; never override it.
+            self.send_response(204)
+            self.end_headers()
+            return
         status = 403
         try:
             # Guard every object/render delivery path including issued-before-rollout URLs.

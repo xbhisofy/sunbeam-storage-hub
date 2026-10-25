@@ -92,7 +92,7 @@ DROP POLICY IF EXISTS "files read all" ON storage.objects;
 CREATE POLICY "files approved read" ON storage.objects FOR SELECT TO anon,authenticated USING (bucket_id='files' AND EXISTS (SELECT 1 FROM public.files f WHERE f.storage_path=storage.objects.name AND public.file_is_shareable(f.id)));
 CREATE POLICY "admin clean review read" ON storage.objects FOR SELECT TO authenticated USING (bucket_id='files' AND public.has_role(auth.uid(),'admin') AND EXISTS (SELECT 1 FROM public.files f WHERE f.storage_path=storage.objects.name AND f.scan_status='clean' AND f.moderation_status<>'blocked'));
 DROP POLICY IF EXISTS "files upload own" ON storage.objects;
-CREATE POLICY "files upload own" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id='files' AND (storage.foldername(name))[1]=auth.uid()::text AND EXISTS (SELECT 1 FROM public.profiles WHERE id=auth.uid() AND NOT blocked) AND lower(name) !~ '\.(exe|dll|com|bat|cmd|ps1|sh|js|mjs|vbs|scr|msi|apk|aab|jar|html|htm|svg|zip|rar|7z|tar|gz|iso)$');
+CREATE POLICY "files upload own" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id='files' AND (storage.foldername(name))[1]=auth.uid()::text AND EXISTS (SELECT 1 FROM public.profiles WHERE id=auth.uid() AND NOT blocked) AND NOT EXISTS (SELECT 1 FROM public.files f WHERE f.storage_path=storage.objects.name) AND lower(name) !~ '\.(exe|dll|com|bat|cmd|ps1|sh|js|mjs|vbs|scr|msi|apk|aab|jar|html|htm|svg|zip|rar|7z|tar|gz|iso)$');
 DO $$ DECLARE p record; BEGIN
  FOR p IN SELECT policyname FROM pg_policies WHERE schemaname='storage' AND tablename='objects' AND cmd='UPDATE' LOOP EXECUTE format('DROP POLICY %I ON storage.objects',p.policyname); END LOOP;
 END $$;
