@@ -38,6 +38,7 @@
 .intro p { position: relative; z-index: 1; margin-top: 3px; color: var(--review-muted); font-size: 11px; max-width: 215px; }
 .storage { background: linear-gradient(135deg, var(--review-start), var(--review-end)); padding: 10px; border: 1px solid var(--review-surface); border-radius: 18px; box-shadow: var(--review-shadow); }
 .storageHeader { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 6px; align-items: center; }
+.storageHeader svg { width: 16px; height: 16px; }
 .storageHeader h2 { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
 .review .plan { padding: 3px 8px; min-height: 30px; height: auto; border-radius: 20px; background: var(--review-start); color: var(--review-primary); font-size: 11px; box-shadow: none; }
 .plan svg { width: 14px; }
