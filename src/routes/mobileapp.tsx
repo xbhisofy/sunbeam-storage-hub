@@ -37,7 +37,7 @@ function MobileAppReview() {
   const item = (entry: typeof nav[number]) => <Button key={entry.screen} asChild variant="ghost" className={`${s.navItem} ${screen === entry.screen ? s.active : ''}`}><Link to="/mobileapp" search={{ screen: entry.screen }} aria-current={screen === entry.screen ? 'page' : undefined}><entry.icon aria-hidden="true" /><span>{entry.label}</span></Link></Button>;
   return <div className={s.review}>
     <main className={s.phone}>
-      {sample && <div className={s.sampleLabel}><span>Sample account</span><Button asChild variant="ghost" className={s.textLink}><Link to="/auth">Sign in</Link></Button></div>}
+      {sample && <span className="sr-only">Sample account</span>}
       {screen === 'home' ? <HomePreview account={displayAccount} signedIn={!!displayAccount || !!uid} loading={!sample && account.isFetching} error={!sample && account.isError} refresh={() => { if (uid) void account.refetch(); }} /> : <ScreensPreview key={screen} screen={screen} account={displayAccount} signedIn={!!displayAccount || !!uid} loading={!sample && account.isFetching} error={!sample && account.isError} refresh={() => { if (uid) void account.refetch(); }} />}
     </main>
     <div className={s.navWrap}><nav className={s.nav} aria-label="App navigation">{nav.slice(0, 2).map(item)}<Button asChild variant="ghost" className={s.uploadNav}><Link to="/mobileapp" search={{ screen: 'upload' }} aria-label="Upload a file" aria-current={screen === 'upload' ? 'page' : undefined}><span className={s.halo}><span className={s.diamond}><Plus aria-hidden="true" /></span></span></Link></Button>{nav.slice(2).map(item)}</nav></div>
