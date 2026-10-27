@@ -8,6 +8,7 @@ import cloudArt from './assets/home-cloud.png';
 import logo from './assets/icon.png';
 import { type ReviewScreen } from './data';
 import s from './mobileapp-review.module.css';
+import { ReviewNotice } from './ReviewNotice';
 import { ReviewFileRow } from './ReviewFileRow';
 
 // Props remain read-only; no native picker, file sharing or account mutations enter this route.
@@ -34,7 +35,7 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
       <div className={s.brand}><img src={logo} alt="" /><div><strong>Tanyora</strong><small>Cloud for Everyone</small></div></div>
       <div className={s.headerActions}>
         {destination('files', 'Search files', s.iconButton, <Search aria-hidden="true" />)}
-        <Button disabled title="Notifications unavailable in browser review" aria-label="Notifications unavailable" variant="ghost" className={s.iconButton}><Bell aria-hidden="true" /></Button>
+        <ReviewNotice title="Notifications" description="Push notifications are available in the Android app, not in this browser preview."><Button aria-label="Notifications" variant="ghost" className={s.iconButton}><Bell aria-hidden="true" /></Button></ReviewNotice>
         {destination('profile', 'Open profile', `${s.iconButton} ${s.avatar}`, known ? name.charAt(0).toUpperCase() : <span>–</span>)}
       </div>
     </header>
@@ -45,9 +46,9 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
       <div className={s.progressRow}><progress aria-label="Cloud storage used" max={100} value={known ? percent : 0} /><span>{known ? `${Math.round(percent)}%` : '—'}</span></div>
       <div className={s.actions}>{destination('upload', 'Upload & Share', s.upload, <><CloudUpload aria-hidden="true" />Upload &amp; Share<ChevronRight aria-hidden="true" /></>)}<Button disabled title="New Folder unavailable" variant="ghost" className={s.utility}><Folder aria-hidden="true" />New Folder</Button><Button disabled title="Scan unavailable" variant="ghost" className={s.utility}><ScanLine aria-hidden="true" />Scan</Button></div>
     </section>
-    <section className={s.categories} aria-label="File categories">{categories.map(({ kind, label, icon: Icon }) => <Button asChild variant="ghost" className={s.category} key={kind}><Link to="/mobileapp" search={{ screen: 'files' }} aria-label={`${label}, ${known ? files.filter(f => f.file_type === kind).length : 'unavailable'} files`}><span className={`${s.categoryIcon} ${s[kind as 'pdf' | 'image' | 'video' | 'audio']}`}><Icon aria-hidden="true" /></span><strong>{label}</strong><span className={s.categoryBottom}>{known ? `${files.filter(f => f.file_type === kind).length} files` : '—'}<ChevronRight aria-hidden="true" /></span></Link></Button>)}</section>
+    <section className={s.categories} aria-label="File categories">{categories.map(({ kind, label, icon: Icon }) => <Button asChild variant="ghost" className={s.category} key={kind}><Link to="/mobileapp" search={{ screen: 'files', kind: kind as 'pdf' | 'image' | 'video' | 'audio' }} aria-label={`${label}, ${known ? files.filter(f => f.file_type === kind).length : 'unavailable'} files`}><span className={`${s.categoryIcon} ${s[kind as 'pdf' | 'image' | 'video' | 'audio']}`}><Icon aria-hidden="true" /></span><strong>{label}</strong><span className={s.categoryBottom}>{known ? `${files.filter(f => f.file_type === kind).length} files` : '—'}<ChevronRight aria-hidden="true" /></span></Link></Button>)}</section>
     <section className={s.recent}><div className={s.recentHeader}><h2>Recent Files</h2>{destination('files', 'View all files', s.textLink, <>View all<ChevronRight aria-hidden="true" /></>)}</div>
-      {!signedIn ? <div className={s.message}><Cloud aria-hidden="true" /><h2>Sign in to view your files</h2><p>Reopen this page after signing in.</p><Button asChild className={s.secondary} variant="outline"><Link to="/auth">Sign in</Link></Button></div> : loading ? <div className={s.message} role="status">Loading your files…</div> : error ? <div className={s.message} role="alert"><p>Could not load your account and files.</p><Button onClick={refresh} variant="outline" className={s.secondary}>Try again</Button></div> : files.length ? <div className={s.fileList}>{files.slice(0, 3).map(file => <ReviewFileRow key={file.id} file={file} compact />)}</div> : <div className={s.message}><CloudUpload aria-hidden="true" /><h2>No files yet</h2>{destination('upload', 'Upload a file', s.secondary, <>Upload a file</>)}</div>}
+      {!signedIn && !known ? <div className={s.message}><Cloud aria-hidden="true" /><h2>Sign in to view your files</h2><p>Reopen this page after signing in.</p><Button asChild className={s.secondary} variant="outline"><Link to="/auth">Sign in</Link></Button></div> : loading ? <div className={s.message} role="status">Loading your files…</div> : error ? <div className={s.message} role="alert"><p>Could not load your account and files.</p><Button onClick={refresh} variant="outline" className={s.secondary}>Try again</Button></div> : files.length ? <div className={s.fileList}>{files.slice(0, 3).map(file => <ReviewFileRow key={file.id} file={file} compact />)}</div> : <div className={s.message}><CloudUpload aria-hidden="true" /><h2>No files yet</h2>{destination('upload', 'Upload a file', s.secondary, <>Upload a file</>)}</div>}
       {signedIn && known && <Button onClick={refresh} disabled={loading} variant="ghost" className={s.textLink}>Refresh</Button>}
     </section>
   </>;

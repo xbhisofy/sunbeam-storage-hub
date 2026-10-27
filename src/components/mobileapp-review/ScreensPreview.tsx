@@ -10,9 +10,9 @@ import { ReviewFileRow, fileKinds } from './ReviewFileRow';
 import art from './assets/shared-folders.png';
 import s from './ReferenceScreens.module.css';
 
-export function ScreensPreview({ screen, account, loading, error, signedIn, refresh }: { screen: Exclude<ReviewScreen, 'home'>; account: ReviewAccount | null | undefined; loading: boolean; error: boolean; signedIn: boolean; refresh: () => void }) {
+export function ScreensPreview({ screen, account, loading, error, signedIn, refresh, initialKind }: { screen: Exclude<ReviewScreen, 'home'>; account: ReviewAccount | null | undefined; loading: boolean; error: boolean; signedIn: boolean; refresh: () => void; initialKind?: string }) {
   const [search, setSearch] = useState('');
-  const [kind, setKind] = useState('all');
+  const [kind, setKind] = useState(initialKind ?? 'all');
   const [sort, setSort] = useState('recent');
   const [showSort, setShowSort] = useState(false);
   const input = useRef<HTMLInputElement>(null);
@@ -21,7 +21,7 @@ export function ScreensPreview({ screen, account, loading, error, signedIn, refr
   const shared = screen === 'shared';
   const files = account?.files ?? [];
   const base = shared ? files.filter(f => !!f.slug) : files;
-  const shown = base.filter(f => (kind === 'all' || f.file_type === kind) && f.name.toLowerCase().includes(search.toLowerCase())).sort((a,b) => sort === 'name' ? a.name.localeCompare(b.name) : sort === 'size' ? b.size-a.size : Date.parse(b.created_at)-Date.parse(a.created_at));
+  const shown = base.filter(f => (kind === 'all' || f.file_type === kind) && f.name.toLowerCase().includes(search.trim().toLowerCase())).sort((a,b) => sort === 'name' ? a.name.localeCompare(b.name) : sort === 'size' ? b.size-a.size : sort === 'date' ? Date.parse(a.created_at)-Date.parse(b.created_at) : Date.parse(b.created_at)-Date.parse(a.created_at));
   const categories = [{ kind: 'all', label: 'All', icon: Folder }, ...(shared ? [fileKinds[1],fileKinds[2],fileKinds[0],fileKinds[3]] : fileKinds)];
   return <div className={shared ? s.shared : ''}>
     <header className={s.heading}><small>{shared ? 'TANYORA' : 'MY LIBRARY'}</small><h1>{shared ? 'Shared' : 'My'} <span>{shared ? 'Links' : 'Files'}</span></h1><p>{shared ? "Manage all the files you've shared with others." : 'Manage and access all your files in one place.'}</p>{shared ? <img src={art} alt="" width="104" height="92" /> : <Button variant="ghost" className={s.searchAction} aria-label="Focus file search" onClick={() => input.current?.focus()}><Search aria-hidden="true" /></Button>}</header>
