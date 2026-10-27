@@ -127,10 +127,8 @@
 .active::after { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--review-primary); }
 .review .uploadNav { align-self: center; height: 62px; padding: 0; background: transparent; border-radius: 24px; }
 .halo { display: grid; place-items: center; width: 62px; height: 62px; margin-top: -16px; border-radius: 24px; background: var(--review-start); }
-.diamond { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 13px; transform: rotate(45deg); border: 1px solid var(--review-light); background: linear-gradient(135deg, var(--review-light), var(--review-primary), var(--review-deep)); color: var(--review-on-primary); }
-.diamond svg { transform: rotate(-45deg); width: 32px; height: 32px; }
-.square .diamond { transform: none; border-radius: 13px; box-shadow: var(--review-shadow); }
-.square .diamond svg { transform: none; }
+.diamond { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 13px; border: 1px solid var(--review-light); background: linear-gradient(135deg, var(--review-light), var(--review-primary), var(--review-deep)); color: var(--review-on-primary); box-shadow: var(--review-shadow); }
+.diamond svg { width: 32px; height: 32px; }
 .review .active svg { fill: none; stroke-width: 2.1; }
 .review a:active, .review button:active { opacity: .7; transition: opacity 120ms; }
 @media (max-width: 369px) { .phone { padding-inline: 16px; } .navWrap { padding-inline: 16px; } .brand strong { font-size: 16px; } .brand img { width: 30px; height: 30px; } .category { font-size: 10px; } }
