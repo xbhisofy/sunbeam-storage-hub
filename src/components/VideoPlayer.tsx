@@ -18,6 +18,7 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
   const started = useRef(false);
   const video = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
+  const rotationFallback = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [waiting, setWaiting] = useState(true);
   const [error, setError] = useState(false);
@@ -41,7 +42,7 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
     const changed = () => {
       const full = document.fullscreenElement === frame.current;
       setFullscreen(full);
-      if (!full) { screen.orientation?.unlock?.(); setRotated(false); }
+      if (!full && !rotationFallback.current) { screen.orientation?.unlock?.(); setRotated(false); }
     };
     document.addEventListener("fullscreenchange", changed);
     return () => document.removeEventListener("fullscreenchange", changed);
@@ -82,7 +83,7 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
     const container = frame.current;
     if (!container) return;
     setVisible(true);
-    if (expanded) { setExpanded(false); setRotated(false); return; }
+    if (expanded) { rotationFallback.current = false; setExpanded(false); setRotated(false); return; }
     try {
       if (document.fullscreenElement === container) await document.exitFullscreen();
       else if (container.requestFullscreen) await container.requestFullscreen();
@@ -95,7 +96,7 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
     if (!container) return;
     setVisible(true);
     const orientation = screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> };
-    const landscape = rotated || (orientation?.type ?? "").startsWith("landscape");
+    const landscape = rotated;
     try {
       if (!landscape) {
         if (document.fullscreenElement !== container && container.requestFullscreen) await container.requestFullscreen();
@@ -103,12 +104,14 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
         await orientation.lock("landscape");
         setRotated(true);
       } else {
+        rotationFallback.current = false;
         orientation.unlock?.();
         setRotated(false);
         setExpanded(false);
         if (document.fullscreenElement === container) await document.exitFullscreen();
       }
     } catch {
+      rotationFallback.current = !landscape;
       if (document.fullscreenElement === container) await document.exitFullscreen().catch(() => {});
       setRotated(!landscape);
       setExpanded(!landscape);
