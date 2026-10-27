@@ -1,0 +1,2 @@
+declare const styles: Record<'heading'|'searchAction'|'search'|'filter'|'chips'|'chip'|'selected'|'shared'|'chipIcon'|'pdf'|'image'|'video'|'audio'|'sort'|'sortButton'|'selectedSort'|'list'|'row'|'thumbnail'|'name'|'tag'|'expiry'|'menu'|'compact'|'empty'|'cta'|'uploadHeader'|'back'|'uploadHero'|'reassurance'|'uploadCards'|'uploadCard'|'uploadIcon'|'formats'|'divider'|'sources'|'source'|'privacy', string>;
+export default styles;
