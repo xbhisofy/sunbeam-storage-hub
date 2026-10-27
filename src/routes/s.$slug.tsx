@@ -1,8 +1,8 @@
-import { activePremium } from "@/lib/premium";
+import { loadSharedFile } from "@/lib/shared-file";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Lock, Smartphone } from "lucide-react";
+import { Smartphone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Brand } from "@/components/Brand";
@@ -10,7 +10,6 @@ import { LegalFooter } from "@/components/LegalFooter";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ReportFile } from "@/components/ReportFile";
 import { pageHead, site } from "@/lib/site";
-import { currentUserId } from "@/lib/session";
 
 const AD_SECONDS = 5;
 const APP_ID = site.androidPackage;
@@ -39,20 +38,7 @@ function SharePage() {
     queryKey: ["share", slug],
     enabled: isApp,
     staleTime: 60_000,
-    queryFn: async () => {
-      const { data: f } = await supabase.from("files").select("owner_id,name,file_type,mime,size,storage_path,views,source,external_url,header_text,footer_text,expires_at").eq("slug", slug).maybeSingle();
-      if (!f) return null;
-      // Owners cannot preview their own uploads without an active premium plan.
-      const uid = await currentUserId();
-      if (f.owner_id && f.owner_id === uid) {
-        const { data: me } = await supabase.from("profiles").select("premium_tier,premium_until").eq("id", uid).maybeSingle();
-        if (!activePremium(me)) return { ownFile: true as const, name: f.name };
-      }
-      if (f.expires_at && new Date(f.expires_at).getTime() < Date.now()) return { expired: true as const };
-      if (!f.storage_path) return { ...f, url: f.external_url ?? "" };
-      const { data: s } = await supabase.storage.from("files").createSignedUrl(f.storage_path, 60 * 60 * 3);
-      return { ...f, url: s?.signedUrl ?? "" };
-    },
+    queryFn: () => loadSharedFile(slug),
   });
 
   useEffect(() => {
@@ -70,7 +56,7 @@ function SharePage() {
   }
 
   function play() {
-    if (data && !("expired" in data) && !("ownFile" in data) && data.source === "converted" && data.url) { countView(); window.location.href = data.url; return; }
+    if (data && !("expired" in data) && data.source === "converted" && data.url) { countView(); window.location.href = data.url; return; }
     setOpen(true);
   }
 
@@ -95,13 +81,6 @@ function SharePage() {
           </div>
         ) : isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
           <p className="text-center text-muted-foreground">This file doesn't exist or was deleted.</p>
-        ) : "ownFile" in data ? (
-          <div className="rounded-2xl border bg-card p-8 text-center">
-            <Lock className="mx-auto h-10 w-10 text-primary" />
-            <h1 className="mt-4 truncate text-xl font-semibold">{data.name}</h1>
-            <p className="mt-2 text-sm text-muted-foreground">This is your own upload. Viewing your own files requires a subscription.</p>
-            <Button className="mt-5" asChild><Link to="/plans">View plans</Link></Button>
-          </div>
         ) : "expired" in data ? (
           <div className="rounded-2xl border bg-card p-8 text-center">
             <h1 className="text-xl font-semibold">This link has expired</h1>
