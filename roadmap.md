@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Redesign only native Android Home from the supplied reference, preserve real file actions and data, and validate mobile layout without website/backend changes.
 - [x] Remove mandatory admin approval; live harmless upload scanned clean and shared automatically (200), safety report revoked its existing link (403); initial clean legacy files released, malware restrictions retained.
 - [x] Enforce quarantine and safe sharing on the owner VPS; ClamAV, admin Safety review, immutable file identity, report holds and old signed-link revocation verified with a real harmless upload.
 - [ ] Connect specialist media/child-safety detection (blocked: suitable provider credentials and eligibility approval).
