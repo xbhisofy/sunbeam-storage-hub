@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Master security audit: architecture, shared-content flow, Android links, ads/revenue, backend anti-abuse, tests and staged-change report; no production changes.
+- [x] Master security audit: architecture/share/ads/backend findings and staged report delivered; 36 Vitest + 11 safety tests passed, three public assetlinks responses checked, managed-preview ACLs read. No app/security/production changes; VPS and actual Android behavior unverified.
 - [ ] Implement security hardening in small stages (blocked: approval after audit; production/domain/ad changes require explicit approval).
 - [x] Reference-style web/native player: overlay title/controls, 10-second skips, seek, speed, lock, repeat, mute and fullscreen/rotation. 25 tests pass; web real sample playback and desktop/phone/rotated layouts verified. Ads/access unchanged; unsupported cast/subtitle/PiP controls omitted.
 - [ ] Verify redesigned native player and rotation on Android, then release updated APK (blocked: Android device/emulator unavailable; APK/VPS release not requested).
