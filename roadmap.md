@@ -1,5 +1,7 @@
 # Roadmap
-- [ ] Temporary /mobileapp review: inspect isolation and propose plan; implement Home first after approval, then review My Files, Upload, Shared Links and Profile separately (blocked: approval of plan/screens).
+- [x] Temporary /mobileapp Home review implemented in isolated route/components/styles; five-destination navigation, artwork, sign-in link, original homepage, phone/landscape/desktop layouts and 7 tests pass; no console errors, latest build OK.
+- [ ] Review My Files, Upload, Shared Links and Profile on /mobileapp one at a time (blocked: user's Home approval before My Files).
+- [ ] Verify /mobileapp real account data (blocked: no matching requesting-user account/session; user must sign in and reopen /mobileapp). Browser layout checks do not verify native Android functionality.
 - [ ] Remove temporary /mobileapp code only after explicit cleanup approval; preserve website/native/shared code and verify original routes (blocked: user's cleanup approval).
 - [x] Redesign Android Profile: real account summary/settings, no membership/billing, approved navigation geometry preserved; 8 tests and isolated layout/navigation/account-confirmation checks pass; website/backend unchanged.
 - [ ] Verify Profile editing, legal links, logout/deletion and safe areas with real account on Android (blocked: Android device/emulator unavailable). Photo editing remains unsupported; avatar edit opens existing name/email editor.

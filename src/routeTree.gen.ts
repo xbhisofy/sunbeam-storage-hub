@@ -24,6 +24,7 @@ import { Route as DeleteAccountRouteImport } from './routes/delete-account'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as GrievanceRouteImport } from './routes/grievance'
 import { Route as LawEnforcementRouteImport } from './routes/law-enforcement'
+import { Route as MobileappRouteImport } from './routes/mobileapp'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as SecurityRouteImport } from './routes/security'
@@ -115,6 +116,11 @@ const GrievanceRoute = GrievanceRouteImport.update({
 const LawEnforcementRoute = LawEnforcementRouteImport.update({
   id: '/law-enforcement',
   path: '/law-enforcement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MobileappRoute = MobileappRouteImport.update({
+  id: '/mobileapp',
+  path: '/mobileapp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -224,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/grievance': typeof GrievanceRoute
   '/law-enforcement': typeof LawEnforcementRoute
+  '/mobileapp': typeof MobileappRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/security': typeof SecurityRoute
@@ -258,6 +265,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/grievance': typeof GrievanceRoute
   '/law-enforcement': typeof LawEnforcementRoute
+  '/mobileapp': typeof MobileappRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/security': typeof SecurityRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/grievance': typeof GrievanceRoute
   '/law-enforcement': typeof LawEnforcementRoute
+  '/mobileapp': typeof MobileappRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/security': typeof SecurityRoute
@@ -330,6 +339,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/grievance'
     | '/law-enforcement'
+    | '/mobileapp'
     | '/privacy'
     | '/refunds'
     | '/security'
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/grievance'
     | '/law-enforcement'
+    | '/mobileapp'
     | '/privacy'
     | '/refunds'
     | '/security'
@@ -399,6 +410,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/grievance'
     | '/law-enforcement'
+    | '/mobileapp'
     | '/privacy'
     | '/refunds'
     | '/security'
@@ -435,6 +447,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GrievanceRoute: typeof GrievanceRoute
   LawEnforcementRoute: typeof LawEnforcementRoute
+  MobileappRoute: typeof MobileappRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
   SecurityRoute: typeof SecurityRoute
@@ -549,6 +562,13 @@ declare module '@tanstack/react-router' {
       path: '/law-enforcement'
       fullPath: '/law-enforcement'
       preLoaderRoute: typeof LawEnforcementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mobileapp': {
+      id: '/mobileapp'
+      path: '/mobileapp'
+      fullPath: '/mobileapp'
+      preLoaderRoute: typeof MobileappRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -727,6 +747,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GrievanceRoute: GrievanceRoute,
   LawEnforcementRoute: LawEnforcementRoute,
+  MobileappRoute: MobileappRoute,
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,
   SecurityRoute: SecurityRoute,
