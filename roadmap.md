@@ -1,7 +1,7 @@
 # Roadmap
 - [x] Fix /mobileapp build boundary: removed Expo-tree imports, isolated unchanged artwork and web-safe plan display; 10 tests, live Home/navigation and original website checks pass, build OK; native configuration unchanged.
 - [x] Temporary /mobileapp Home review implemented in isolated route/components/styles; five-destination navigation, artwork, sign-in link, original homepage, phone/landscape/desktop layouts and 7 tests pass; no console errors, latest build OK.
-- [ ] Remove /mobileapp approval-waiting screens; show existing-design Files, Upload, Shared and Profile equivalents without approval gates, preserving read-only isolation.
+- [x] Removed /mobileapp approval-waiting screens; all five tabs render, Files/Shared have search/filter/sort, Profile has real-data summary/settings, Upload offers existing website destinations; browser navigation/layout/safeguards pass, 6 tests pass and build OK. Real account/native checks remain unverified.
 - [ ] Verify /mobileapp real account data (blocked: no matching requesting-user account/session; user must sign in and reopen /mobileapp). Browser layout checks do not verify native Android functionality.
 - [ ] Remove temporary /mobileapp code only after explicit cleanup approval; preserve website/native/shared code and verify original routes (blocked: user's cleanup approval).
 - [x] Redesign Android Profile: real account summary/settings, no membership/billing, approved navigation geometry preserved; 8 tests and isolated layout/navigation/account-confirmation checks pass; website/backend unchanged.
