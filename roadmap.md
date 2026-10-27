@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Fix /mobileapp build boundary: remove all imports from Expo source tree while preserving Home appearance and native configuration.
 - [x] Temporary /mobileapp Home review implemented in isolated route/components/styles; five-destination navigation, artwork, sign-in link, original homepage, phone/landscape/desktop layouts and 7 tests pass; no console errors, latest build OK.
 - [ ] Review My Files, Upload, Shared Links and Profile on /mobileapp one at a time (blocked: user's Home approval before My Files).
 - [ ] Verify /mobileapp real account data (blocked: no matching requesting-user account/session; user must sign in and reopen /mobileapp). Browser layout checks do not verify native Android functionality.
