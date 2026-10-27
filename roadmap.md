@@ -1,5 +1,6 @@
 # Roadmap
-- [ ] Make all five /mobileapp screens adaptive with one scroll area and wire available actions safely; verify phone/tablet/desktop and interaction flows without production changes.
+- [x] Adapt all five /mobileapp screens with one scroll area and non-overlay bottom navigation; category deep links, search/sort, file-details menus, authenticated upload handoff and account-action explanations wired. 30 viewport/screen combinations, 9 tests pass, no runtime errors and build OK. No production/native changes.
+- [ ] Verify real upload and account management from /mobileapp (blocked: no requesting-user account/session). New Folder, Scan, Camera and Drive remain unsupported; real Android checks need device/emulator.
 - [x] Refine all five /mobileapp reference layouts: Home artwork/rows, Files category strip/sort/thumbnails, Upload cloud/cards, Shared expiry and Profile/square nav; 8 tests and five screens across four viewports pass, no runtime errors, build OK. Sample-only verification; native/auth/production unchanged, unsupported Camera/Drive remain disabled.
 - [x] Match /mobileapp Profile account card, four colored summary tiles, seven grouped settings and outlined account actions to reference; phone/desktop and Files navigation verified, 6 tests pass, build OK. Preview remains demo/read-only; production unchanged.
 - [x] Show labeled local sample account/files in signed-out /mobileapp only; 8 tests and phone Profile, Files search, Shared/Home navigation pass, build OK; no real login or production changes.
