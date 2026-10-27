@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Match /mobileapp Profile to supplied dashboard reference with four summary tiles and grouped settings; preserve other screens and verify phone layout.
 - [x] Show labeled local sample account/files in signed-out /mobileapp only; 8 tests and phone Profile, Files search, Shared/Home navigation pass, build OK; no real login or production changes.
 - [x] Fix /mobileapp build boundary: removed Expo-tree imports, isolated unchanged artwork and web-safe plan display; 10 tests, live Home/navigation and original website checks pass, build OK; native configuration unchanged.
 - [x] Temporary /mobileapp Home review implemented in isolated route/components/styles; five-destination navigation, artwork, sign-in link, original homepage, phone/landscape/desktop layouts and 7 tests pass; no console errors, latest build OK.
