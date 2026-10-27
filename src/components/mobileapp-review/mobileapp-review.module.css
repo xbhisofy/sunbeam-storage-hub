@@ -131,7 +131,7 @@
 .diamond svg { transform: rotate(-45deg); width: 32px; height: 32px; }
 .square .diamond { transform: none; border-radius: 13px; box-shadow: var(--review-shadow); }
 .square .diamond svg { transform: none; }
-.review .active svg { fill: currentColor; stroke-width: 1.5; }
+.review .active svg { fill: none; stroke-width: 2.1; }
 .review a:active, .review button:active { opacity: .7; transition: opacity 120ms; }
 @media (max-width: 369px) { .phone { padding-inline: 16px; } .navWrap { padding-inline: 16px; } .brand strong { font-size: 16px; } .brand img { width: 30px; height: 30px; } .category { font-size: 10px; } }
 @media (min-width: 700px) { .phone, .navWrap { max-width: 720px; width: 100%; } .phone { padding-inline: 32px; } .categories { gap: 16px; } .review .category { padding: 16px; font-size: 14px; } .categoryBottom { font-size: 12px; } .intro { min-height: 140px; } .intro img { width: 140px; height: 140px; right: 16px; } .intro h1 { max-width: 430px; font-size: 30px; } .intro p { max-width: 360px; font-size: 14px; } .storage { padding: 20px; } .storageHeader h2 { font-size: 20px; } .review .utility { font-size: 10px; } .actions { grid-template-columns: minmax(0,1fr) 70px 70px; } }
