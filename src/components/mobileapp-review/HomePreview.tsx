@@ -5,10 +5,9 @@ import { formatFileDate, formatSize } from '@/lib/format';
 import { currentPlan } from '../../../mobile/lib/account-rules';
 import cloudArt from '../../../mobile/assets/home-cloud.png';
 import logo from '../../../mobile/assets/icon.png';
-import { type ReviewScreen, accountOptions } from './data';
+import { type ReviewScreen } from './data';
 import s from './mobileapp-review.module.css';
 
-type Account = Awaited<ReturnType<ReturnType<typeof accountOptions>['queryFn'] & ((...args: never[]) => unknown)>>;
 // Props remain read-only; no native picker, file sharing or account mutations enter this route.
 export function HomePreview({ account, signedIn, loading, error, refresh }: {
   account: { profile: { display_name: string | null; email: string | null; premium_tier: string | null; premium_until: string | null }; files: import('./data').ReviewFile[] } | null | undefined;
