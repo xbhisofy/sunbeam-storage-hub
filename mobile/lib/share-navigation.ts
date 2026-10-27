@@ -1,6 +1,6 @@
 // Only Tanyora-generated share destinations may enter the native file route.
 export function shareDestinationFromUrl(value: string): `/s/${string}` | null {
-  if (/[\\\u0000-\u0020]/.test(value) || /%(?:2f|5c|2e)/i.test(value)) return null;
+  if (/[\\\u0000-\u0020]/.test(value) || /%(?:2f|5c|2e)/i.test(value) || /\/(?:\.|\.\.)(?:\/|$)/.test(value)) return null;
   if (value.startsWith("/")) {
     const match = value.match(/^\/s\/([A-Za-z0-9_-]+)\/?$/);
     return match ? `/s/${match[1]}` : null;
