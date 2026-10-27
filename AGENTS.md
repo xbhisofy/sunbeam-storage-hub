@@ -27,6 +27,7 @@
 - Native account screens share `useProfile` with focus/resume refresh so externally changed subscriptions are not stale; central account rules validate profile inputs and derive plan display.
 - Native Home and My Files use opt-in FileCard presentations and the reference HomeTabBar with explicit active destination; guarded thumbnails and screen-scoped themes keep other screens and the website unchanged. Library search/sort/selection logic stays in a pure native helper for behavioral testing.
 - Native entrance motion uses the system Reduce Motion preference and the native animation driver to keep interactions accessible and smooth.
+- Native Upload keeps its screen-specific theme/artwork isolated and retains existing consent and picker functions; unsupported sources stay disabled rather than introducing new permissions or integrations.
 - The native root session gate owns post-login navigation and restores only validated `/s/<slug>` destinations so sign-in never loses shared files or accepts external redirects.
 - Android assetlinks must match the shipped APK signing certificate; add the Play App Signing certificate when available because mismatches prevent verified share links from opening the installed app.
 - Public API routes under `src/routes/api/public/*` must verify callers with `requireBearerUserId`; account-deletion logic lives only in `src/lib/delete-account.ts` so the web server function and the mobile-app route stay identical.

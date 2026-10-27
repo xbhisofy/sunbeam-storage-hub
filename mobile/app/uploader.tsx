@@ -1,22 +1,25 @@
 import { useState } from "react";
-import { Alert, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Screen, Card, Button } from "../components/ui";
+import { Button } from "../components/ui";
 import { Motion } from "../components/Motion";
 import { useSession } from "./_layout";
 import { formatSize, uploadFile } from "../lib/files";
 import { notify } from "../lib/notifications";
 import { acceptNotice, needsNotice, readNotice } from "../lib/consent";
 import { WEB_URL } from "../lib/config";
-import { theme } from "../lib/theme";
+import { uploadTheme as theme } from "../lib/upload-theme";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import uploadCloud from "../assets/upload-cloud.png";
 
 type Pick = { uri: string; name: string; mimeType?: string | null; size?: number | null };
 
 export default function Uploader() {
   const session = useSession();
+  const insets = useSafeAreaInsets();
   const [current, setCurrent] = useState<{ name: string; size: number; step: string } | null>(null);
   const [done, setDone] = useState(0);
   const [notice, setNotice] = useState(false);
@@ -55,34 +58,27 @@ export default function Uploader() {
     if (!res.canceled) await upload(res.assets);
   }
 
-  const Option = ({ icon, title, text, on }: { icon: keyof typeof Ionicons.glyphMap; title: string; text: string; on: () => void }) => (
-    <Pressable accessibilityRole="button" disabled={!!current} onPress={on} style={({ pressed }) => [s.option, pressed && { transform: [{ scale: 0.98 }], backgroundColor: theme.primarySoft }, current && { opacity: 0.5 }]}>
-      <View style={s.optIcon}><Ionicons name={icon} size={24} color={theme.primary} /></View>
-      <View style={{ flex: 1 }}><Text style={s.optTitle}>{title}</Text><Text style={s.muted}>{text}</Text></View>
-      <Ionicons name="chevron-forward" size={18} color={theme.muted} />
+  const Option = ({ icon, title, text, types, on }: { icon: keyof typeof Ionicons.glyphMap; title: string; text: string; types: string[]; on: () => void }) => (
+    <Pressable accessibilityRole="button" accessibilityLabel={title} accessibilityState={{ disabled: !!current }} disabled={!!current} onPress={on} style={({ pressed }) => [s.option, pressed && s.pressed, current && s.disabled]}>
+      <View style={s.optionTop}><View style={s.optIcon}><Ionicons name={icon} size={32} color={theme.primary} /></View><View style={s.optionCopy}><Text style={s.optTitle}>{title}</Text><Text style={s.muted}>{text}</Text></View><View style={s.arrow}><Ionicons name="chevron-forward" size={22} color={theme.text} /></View></View>
+      <View style={s.types}>{types.map((type, index) => <View key={type} style={s.type}><Ionicons name={icon === "images" ? index < 2 ? "image" : "play-circle" : "document-text"} size={13} color={theme.primary} /><Text style={s.typeText}>{type}</Text></View>)}</View>
     </Pressable>
   );
+  const Source = ({ icon, title, description, on }: { icon: keyof typeof Ionicons.glyphMap; title: string; description: string; on?: () => void }) => <Pressable accessibilityRole="button" accessibilityLabel={`${title}${on ? "" : ", unavailable"}`} accessibilityState={{ disabled: !on || !!current }} disabled={!on || !!current} onPress={on} style={({ pressed }) => [s.source, !on && s.disabled, pressed && s.pressed]}><View style={s.sourceIcon}><Ionicons name={icon} size={30} color={theme.primary} /></View><Text style={s.sourceTitle}>{title}</Text><Text style={s.sourceText}>{description}</Text></Pressable>;
 
   return (
-    <Screen title="Upload" back>
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }}>
-        <Motion><View style={s.hero}><Ionicons name="cloud-upload-outline" size={30} color={theme.onPrimary} /><Text style={s.heroTitle}>Add to your cloud</Text><Text style={s.heroText}>Only the files you choose are uploaded. They appear on the website too.</Text></View></Motion>
-        <Motion delay={60}><Option icon="images-outline" title="Photos & videos" text="Choose from your gallery" on={startMedia} /></Motion>
-        <Motion delay={100}><Option icon="document-text-outline" title="Documents & files" text="PDF, music and other files" on={pickDocuments} /></Motion>
-        {current && (
-          <Card style={{ gap: 6 }}>
-            <Text style={{ fontWeight: "600", color: theme.text }} numberOfLines={1}>Uploading {current.name}</Text>
-            <Text style={{ color: theme.muted }}>{formatSize(current.size)} {current.step && `· ${current.step}`}</Text>
-            <View style={s.bar}><View style={s.fill} /></View>
-          </Card>
-        )}
-        {done > 0 && !current && (
-          <Card style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-            <Ionicons name="checkmark-circle" size={26} color={theme.success} />
-            <Text style={{ flex: 1, color: theme.text, fontWeight: "600" }}>{done} file{done > 1 ? "s" : ""} uploaded</Text>
-            <Text onPress={() => router.replace("/content")} style={{ color: theme.primary, fontWeight: "700" }}>View</Text>
-          </Card>
-        )}
+    <SafeAreaView edges={["top", "left", "right"]} style={s.screen}>
+      <View style={s.header}><Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={() => router.back()} style={s.back}><Ionicons name="chevron-back" size={26} color={theme.text} /></Pressable><View style={{ flex: 1 }}><Text style={s.headerTitle}>Upload</Text><Text style={s.headerSubtitle}>Choose what you want to upload</Text></View></View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.content, { paddingBottom: Math.max(insets.bottom, 16) + 16 }]}>
+        <Motion><View style={s.hero}><View style={s.heroCopy}><Text style={s.eyebrow}>UPLOAD TO TANYORA</Text><Text style={s.heroTitle}>Add to your<Text style={s.blue}> cloud storage</Text></Text><Text style={s.heroText}>Your files are accessible everywhere and also available on the website.</Text></View><Image source={uploadCloud} resizeMode="contain" accessible={false} style={s.art} /></View></Motion>
+        <View style={s.benefits}>{["Secure Upload", "Access Anywhere", "Sync to Website"].map(label => <View key={label} style={s.benefit}><Ionicons name="checkmark-circle" size={16} color={theme.primary} /><Text style={s.benefitText}>{label}</Text></View>)}</View>
+        <Motion delay={60}><Option icon="images" title="Photos & Videos" text="Choose from your gallery" types={["JPG", "PNG", "MP4", "MOV", "HEIC"]} on={startMedia} /></Motion>
+        <Motion delay={100}><Option icon="document-text" title="Documents & Files" text="PDF, music and other files" types={["PDF", "DOC", "XLS", "MP3", "ZIP"]} on={pickDocuments} /></Motion>
+        <View style={s.divider}><View style={s.line} /><Text style={s.or}>OR UPLOAD FROM</Text><View style={s.line} /></View>
+        <View style={s.sources}><Source icon="camera" title="Camera" description="Not available" /><Source icon="folder" title="Browse Files" description="Choose from your device" on={pickDocuments} /><Source icon="cloud-outline" title="Drive" description="Not connected" /></View>
+        <View style={s.info}><View style={s.infoIcon}><Ionicons name="shield-checkmark" size={25} color={theme.primary} /></View><Text style={s.infoText}>Only the files you choose are uploaded. They appear on the website too.</Text><Ionicons name="cloud" size={42} color={theme.track} /></View>
+        {current && <View style={s.status} accessibilityLiveRegion="polite"><ActivityIndicator color={theme.primary} /><View style={{ flex: 1 }}><Text style={s.statusTitle} numberOfLines={1}>Uploading {current.name}</Text><Text style={s.muted}>{formatSize(current.size)} {current.step && `· ${current.step}`}</Text></View></View>}
+        {done > 0 && !current && <View style={s.status} accessibilityLiveRegion="polite"><Ionicons name="checkmark-circle" size={26} color={theme.success} /><Text style={[s.statusTitle, { flex: 1 }]}>{done} file{done > 1 ? "s" : ""} uploaded</Text><Pressable accessibilityRole="button" accessibilityLabel="View uploaded files" onPress={() => router.replace("/content")} style={s.back}><Text style={s.blue}>View</Text></Pressable></View>}
       </ScrollView>
 
       <Modal visible={notice} transparent animationType="slide" onRequestClose={() => setNotice(false)}>
@@ -97,21 +93,26 @@ export default function Uploader() {
           <Button label="Not now" variant="outline" onPress={() => setNotice(false)} />
         </View></View>
       </Modal>
-    </Screen>
+    </SafeAreaView>
   );
 }
 
 const s = StyleSheet.create({
-  hero: { backgroundColor: theme.primary, borderRadius: 22, padding: 22, gap: 8 },
-  heroTitle: { color: theme.onPrimary, fontSize: 22, fontWeight: "800", marginTop: 6 },
-  heroText: { color: "rgba(255,255,255,0.85)", fontSize: 14, lineHeight: 20 },
-  option: { flexDirection: "row", alignItems: "center", gap: 14, backgroundColor: theme.card, borderWidth: 1, borderColor: theme.border, borderRadius: 18, padding: 16 },
-  optIcon: { width: 48, height: 48, borderRadius: 14, backgroundColor: theme.primarySoft, alignItems: "center", justifyContent: "center" },
-  optTitle: { fontSize: 16, fontWeight: "700", color: theme.text }, muted: { color: theme.muted, fontSize: 13, marginTop: 2 },
-  bar: { height: 6, borderRadius: 3, backgroundColor: theme.primarySoft, marginTop: 6, overflow: "hidden" },
-  fill: { width: "60%", height: 6, backgroundColor: theme.primary, borderRadius: 3 },
-  overlay: { flex: 1, backgroundColor: theme.overlay, justifyContent: "flex-end" },
-  sheet: { backgroundColor: theme.card, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, gap: 12 },
-  sheetTitle: { fontSize: 20, fontWeight: "800", color: theme.text },
-  body: { color: theme.text, fontSize: 14, lineHeight: 21 },
+  screen: { flex: 1, backgroundColor: theme.background },
+  header: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 18, paddingTop: 6, paddingBottom: 12 },
+  back: { minWidth: 48, minHeight: 48, alignItems: "center", justifyContent: "center" }, headerTitle: { fontSize: 22, fontWeight: "800", color: theme.text }, headerSubtitle: { fontSize: 12, lineHeight: 18, color: theme.muted, marginTop: 2 },
+  content: { paddingHorizontal: 24, paddingTop: 12, gap: 14, maxWidth: 760, width: "100%", alignSelf: "center" },
+  hero: { justifyContent: "center", minHeight: 190 }, heroCopy: { width: "58%", minWidth: 0 }, art: { position: "absolute", right: -8, top: 16, width: "43%", height: 164 },
+  eyebrow: { color: theme.muted, fontSize: 10, fontWeight: "600", marginBottom: 8 }, heroTitle: { color: theme.text, fontSize: 25, lineHeight: 30, fontWeight: "800" }, blue: { color: theme.primary }, heroText: { color: theme.muted, fontSize: 12, lineHeight: 18, marginTop: 8 },
+  benefits: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 4, paddingHorizontal: 8, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: theme.surface, backgroundColor: theme.storageStart }, benefit: { flexDirection: "row", alignItems: "center", gap: 3, flex: 1 }, benefitText: { color: theme.muted, fontSize: 9, fontWeight: "600", flexShrink: 1 },
+  option: { backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border, borderRadius: 22, padding: 12, gap: 12, shadowColor: theme.shadow, shadowOpacity: 0.12, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },
+  optionTop: { flexDirection: "row", alignItems: "center", gap: 12 }, optionCopy: { flex: 1, minWidth: 0 }, optIcon: { width: 54, height: 54, borderRadius: 17, backgroundColor: theme.storage, alignItems: "center", justifyContent: "center" }, optTitle: { fontSize: 17, fontWeight: "700", color: theme.text }, muted: { color: theme.muted, fontSize: 12, lineHeight: 18, marginTop: 3 },
+  arrow: { width: 32, height: 32, borderRadius: 16, backgroundColor: theme.background, alignItems: "center", justifyContent: "center" },
+  types: { flexDirection: "row", flexWrap: "wrap", gap: 5, paddingLeft: 66 }, type: { flexDirection: "row", alignItems: "center", gap: 3, paddingHorizontal: 5, paddingVertical: 5, borderRadius: 12, backgroundColor: theme.background }, typeText: { fontSize: 9, color: theme.muted },
+  divider: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 2 }, line: { flex: 1, height: 1, backgroundColor: theme.track }, or: { fontSize: 10, fontWeight: "600", color: theme.muted },
+  sources: { flexDirection: "row", gap: 8 }, source: { flex: 1, minWidth: 0, alignItems: "center", paddingHorizontal: 6, paddingVertical: 12, borderRadius: 18, backgroundColor: theme.surface, gap: 6 }, sourceIcon: { width: 48, height: 48, borderRadius: 17, backgroundColor: theme.background, alignItems: "center", justifyContent: "center" }, sourceTitle: { color: theme.text, fontSize: 12, fontWeight: "700", textAlign: "center" }, sourceText: { color: theme.muted, fontSize: 11, lineHeight: 16, textAlign: "center" },
+  info: { flexDirection: "row", alignItems: "center", gap: 10, padding: 12, borderRadius: 16, backgroundColor: theme.storage, borderWidth: 1, borderColor: theme.surface }, infoIcon: { width: 36, height: 40, alignItems: "center", justifyContent: "center" }, infoText: { color: theme.muted, fontSize: 12, lineHeight: 18, flex: 1 },
+  status: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: 16, backgroundColor: theme.surface }, statusTitle: { color: theme.text, fontSize: 14, fontWeight: "600" },
+  pressed: { opacity: 0.7 }, disabled: { opacity: 0.55 }, overlay: { flex: 1, backgroundColor: theme.overlay, justifyContent: "flex-end" },
+  sheet: { backgroundColor: theme.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, gap: 12 }, sheetTitle: { fontSize: 20, fontWeight: "800", color: theme.text }, body: { color: theme.text, fontSize: 14, lineHeight: 21 },
 });
