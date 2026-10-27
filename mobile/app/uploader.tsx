@@ -102,7 +102,7 @@ const s = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 18, paddingTop: 6, paddingBottom: 12 },
   back: { minWidth: 48, minHeight: 48, alignItems: "center", justifyContent: "center" }, headerTitle: { fontSize: 22, fontWeight: "800", color: theme.text }, headerSubtitle: { fontSize: 12, lineHeight: 18, color: theme.muted, marginTop: 2 },
   content: { paddingHorizontal: 24, paddingTop: 12, gap: 14, maxWidth: 760, width: "100%", alignSelf: "center" },
-  hero: { flexDirection: "row", alignItems: "center", minHeight: 170, gap: 2 }, heroCopy: { flex: 1.15, minWidth: 0 }, art: { flex: 1, width: "44%", height: 164 },
+  hero: { justifyContent: "center", minHeight: 190 }, heroCopy: { width: "58%", minWidth: 0 }, art: { position: "absolute", right: -8, top: 16, width: "43%", height: 164 },
   eyebrow: { color: theme.muted, fontSize: 10, fontWeight: "600", marginBottom: 8 }, heroTitle: { color: theme.text, fontSize: 25, lineHeight: 30, fontWeight: "800" }, blue: { color: theme.primary }, heroText: { color: theme.muted, fontSize: 12, lineHeight: 18, marginTop: 8 },
   benefits: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 4, paddingHorizontal: 8, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: theme.surface, backgroundColor: theme.storageStart }, benefit: { flexDirection: "row", alignItems: "center", gap: 3, flex: 1 }, benefitText: { color: theme.muted, fontSize: 9, fontWeight: "600", flexShrink: 1 },
   option: { backgroundColor: theme.surface, borderWidth: 1, borderColor: theme.border, borderRadius: 22, padding: 12, gap: 12, shadowColor: theme.shadow, shadowOpacity: 0.12, shadowRadius: 12, shadowOffset: { width: 0, height: 4 } },

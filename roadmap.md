@@ -1,5 +1,6 @@
 # Roadmap
-- [ ] Redesign Android Upload only from reference; preserve real picker/consent/upload flow and mark unsupported Camera/Drive unavailable.
+- [x] Redesign Android Upload only from reference; consent and gallery/documents/browse handlers preserved, Camera/Drive unavailable; 8 tests and isolated screen/picker-to-success checks pass.
+- [ ] Verify redesigned Upload with real account/storage on Android, system pickers, safe areas and large text (blocked: Android device/emulator unavailable).
 - [x] Redesign Android My Files only: real categories/search/sorting, guarded thumbnails, long-press selection and Files-active navigation; 13 tests and isolated actual-screen interaction/layout checks pass; website/backend unchanged.
 - [ ] Verify My Files with a real signed-in account on Android, including guarded thumbnails, file actions, system safe areas and large text (blocked: Android device/emulator unavailable).
 - [x] Match native Home more closely: soft gradients, compact proportions, guarded image thumbnails and raised Home upload bar; 8 tests and isolated phone-size layout/callback checks pass. Unsupported reference controls visibly disabled; real Android verification remains blocked below.
