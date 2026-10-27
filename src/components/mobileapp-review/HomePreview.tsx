@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router';
+import type { ReactNode } from 'react';
 import { Bell, Search, Sun, Cloud, CloudUpload, Folder, ScanLine, ChevronRight, Award, FileText, Image as ImageIcon, Film, Music, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatFileDate, formatSize } from '@/lib/format';
-import { currentPlan } from '../../../mobile/lib/account-rules';
-import cloudArt from '../../../mobile/assets/home-cloud.png';
-import logo from '../../../mobile/assets/icon.png';
+import { reviewPlan } from './plan-display';
+import cloudArt from './assets/home-cloud.png';
+import logo from './assets/icon.png';
 import { type ReviewScreen } from './data';
 import s from './mobileapp-review.module.css';
 
@@ -13,7 +14,7 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
   account: { profile: { display_name: string | null; email: string | null; premium_tier: string | null; premium_until: string | null }; files: import('./data').ReviewFile[] } | null | undefined;
   signedIn: boolean; loading: boolean; error: boolean; refresh: () => void;
 }) {
-  const plan = currentPlan(account?.profile ?? null);
+  const plan = reviewPlan(account?.profile ?? null);
   const files = account?.files ?? [];
   const known = !!account;
   const name = account?.profile.display_name?.split(' ')[0] || 'there';
@@ -25,7 +26,7 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
     { kind: 'pdf', label: 'Documents', icon: FileText }, { kind: 'image', label: 'Images', icon: ImageIcon },
     { kind: 'video', label: 'Videos', icon: Film }, { kind: 'audio', label: 'Music', icon: Music },
   ];
-  const destination = (screen: ReviewScreen, label: string, className: string, children: React.ReactNode) =>
+  const destination = (screen: ReviewScreen, label: string, className: string, children: ReactNode) =>
     <Button asChild variant="ghost" className={className}><Link to="/mobileapp" search={{ screen }} aria-label={label}>{children}</Link></Button>;
   return <>
     <header className={s.header}>
