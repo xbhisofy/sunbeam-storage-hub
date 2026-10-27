@@ -14,7 +14,11 @@
 .player-side-left { left: 20px; }
 .player-side-right { right: 20px; }
 .player-side > svg { width: 20px; height: 20px; }
-.player-side [data-slot=slider] { height: 112px; }
+.player-side [data-orientation=vertical][role=group], .player-side > [data-orientation=vertical] { height: 112px; width: 20px; flex-direction: column; }
+.player-side [data-orientation=vertical] > span:first-child { width: 5px; height: 100%; }
+.player-side [data-orientation=vertical] > span:first-child > span { width: 100%; height: auto; bottom: 0; background: var(--player-accent); }
+.player-controls [data-orientation=horizontal] > span:first-child > span { background: var(--player-accent); }
+.player-side [role=slider] { background: var(--player-foreground); }
 .player-bottom-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
 .player-controls [data-slot=slider-track] { background: var(--player-control-border); }
 .player-controls [data-slot=slider-range], .player-side [data-slot=slider-range] { background: var(--player-accent); }
