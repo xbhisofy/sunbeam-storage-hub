@@ -1,4 +1,6 @@
 # Roadmap
+- [x] Redesign Android My Files only: real categories/search/sorting, guarded thumbnails, long-press selection and Files-active navigation; 13 tests and isolated actual-screen interaction/layout checks pass; website/backend unchanged.
+- [ ] Verify My Files with a real signed-in account on Android, including guarded thumbnails, file actions, system safe areas and large text (blocked: Android device/emulator unavailable).
 - [x] Match native Home more closely: soft gradients, compact proportions, guarded image thumbnails and raised Home upload bar; 8 tests and isolated phone-size layout/callback checks pass. Unsupported reference controls visibly disabled; real Android verification remains blocked below.
 - [x] Redesign native Android Home only from the supplied reference; isolated 375/390 portrait and 844 landscape layout/callback checks and 8 existing tests pass; website/backend unchanged.
 - [ ] Verify redesigned Home with real account, native safe areas and file actions on Android (blocked: Android device/emulator unavailable; isolated web render is layout-only).

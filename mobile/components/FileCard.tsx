@@ -9,6 +9,8 @@ import { EXPIRY, deleteFile, formatDate, formatSize, iconFor, renameFile, setExp
 import { Button } from "./ui";
 import { homeTheme } from "../lib/home-theme";
 import { HomeThumbnail } from "./HomeThumbnail";
+import { libraryTheme as lt } from "../lib/library-theme";
+import { fileExtension, libraryType } from "../lib/library";
 
 type Sheet = null | "menu" | "rename" | "expiry" | "details";
 
@@ -27,11 +29,13 @@ export function expiryText(f: FileRow) {
   return t < Date.now() ? "Link expired" : `Expires ${formatDate(f.expires_at)}`;
 }
 
-export function FileCard({ file, onChange, showExpiry, presentation = "default" }: { file: FileRow; onChange: () => void; showExpiry?: boolean; presentation?: "default" | "home" }) {
+export function FileCard({ file, onChange, showExpiry, presentation = "default", selectionMode = false, selected = false, onToggleSelection, onStartSelection }: { file: FileRow; onChange: () => void; showExpiry?: boolean; presentation?: "default" | "home" | "library"; selectionMode?: boolean; selected?: boolean; onToggleSelection?: () => void; onStartSelection?: () => void }) {
   const [sheet, setSheet] = useState<Sheet>(null);
   const [name, setName] = useState(file.name);
   const [busy, setBusy] = useState(false);
   const meta = `${file.storage_path ? `${formatSize(file.size)} · ` : ""}${formatDate(file.created_at)}`;
+  const library = presentation === "library";
+  const typeColor = lt.categories[file.file_type] ?? lt.categories.pdf;
 
   async function copy() {
     await Clipboard.setStringAsync(shareLink(file.slug));
@@ -71,15 +75,17 @@ export function FileCard({ file, onChange, showExpiry, presentation = "default" 
 
   return (
     <>
-      <View style={[s.row, presentation === "home" && s.homeRow]}>
-        <Pressable accessibilityRole="button" accessibilityLabel={`Open ${file.name}`} onPress={() => router.push({ pathname: "/s/[slug]", params: { slug: file.slug } })} style={({ pressed }) => [s.openFile, pressed && { opacity: 0.7 }]}>
-        {presentation === "home" ? <HomeThumbnail path={file.storage_path} type={file.file_type} /> : <FileIcon type={file.file_type} />}
+      <View style={[s.row, presentation === "home" && s.homeRow, library && s.libraryRow, library && selected && s.selectedRow]}>
+        <Pressable accessibilityRole={selectionMode ? "checkbox" : "button"} accessibilityState={selectionMode ? { checked: selected } : undefined} accessibilityLabel={`${selectionMode ? "Select" : "Open"} ${file.name}`} onLongPress={onStartSelection} delayLongPress={350} onPress={() => selectionMode ? onToggleSelection?.() : router.push({ pathname: "/s/[slug]", params: { slug: file.slug } })} style={({ pressed }) => [s.openFile, library && s.libraryOpen, pressed && { opacity: 0.7 }]}>
+        {selectionMode && <Ionicons name={selected ? "checkbox" : "square-outline"} size={24} color={lt.primary} />}
+        {presentation === "home" || library ? <HomeThumbnail path={file.storage_path} type={file.file_type} size={library ? 48 : 36} /> : <FileIcon type={file.file_type} />}
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={[s.name, presentation === "home" && s.homeName]} numberOfLines={1}>{file.name}</Text>
-          <Text style={[s.meta, presentation === "home" && s.homeMeta]} numberOfLines={1}>{showExpiry ? expiryText(file) : meta}</Text>
+          <Text style={[s.name, presentation === "home" && s.homeName, library && s.libraryName]} numberOfLines={1}>{file.name}</Text>
+          <Text style={[s.meta, presentation === "home" && s.homeMeta, library && s.libraryMeta]} numberOfLines={1}>{showExpiry ? expiryText(file) : library ? `${meta} · ${fileExtension(file.name)}` : meta}</Text>
+          {library && <View style={[s.typeBadge, { backgroundColor: typeColor.background }]}><Ionicons name={iconFor(file.file_type)} size={11} color={typeColor.foreground} /><Text style={[s.typeLabel, { color: typeColor.foreground }]}>{libraryType(file.file_type)}</Text></View>}
         </View>
         </Pressable>
-        <Pressable accessibilityRole="button" accessibilityLabel={`Actions for ${file.name}`} hitSlop={10} onPress={() => setSheet("menu")} style={[s.more, presentation === "home" && s.homeMore]}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Actions for ${file.name}`} hitSlop={10} onPress={() => setSheet("menu")} style={[s.more, (presentation === "home" || library) && s.homeMore]}>
           <Ionicons name="ellipsis-vertical" size={18} color={theme.muted} />
         </Pressable>
       </View>
@@ -139,6 +145,13 @@ export function FileCard({ file, onChange, showExpiry, presentation = "default" 
 }
 
 const s = StyleSheet.create({
+  libraryRow: { backgroundColor: lt.surface, borderRadius: 18, paddingHorizontal: 12, paddingVertical: 10, gap: 0, minHeight: 86, borderWidth: 1, borderColor: lt.surface },
+  selectedRow: { backgroundColor: lt.selected, borderColor: lt.selectedBorder },
+  libraryOpen: { gap: 12, minHeight: 64 },
+  libraryName: { color: lt.text, fontSize: 14, fontWeight: "600" },
+  libraryMeta: { color: lt.muted, fontSize: 11, marginTop: 4 },
+  typeBadge: { flexDirection: "row", gap: 4, alignItems: "center", alignSelf: "flex-start", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, marginTop: 4 },
+  typeLabel: { fontSize: 10, fontWeight: "500" },
   homeRow: { paddingHorizontal: 8, paddingVertical: 2, gap: 4, minHeight: 48, borderWidth: 1, borderColor: homeTheme.border, borderRadius: 14, backgroundColor: homeTheme.surface },
   homeName: { color: homeTheme.text, fontSize: 12 },
   homeMeta: { color: homeTheme.muted, fontSize: 10 },

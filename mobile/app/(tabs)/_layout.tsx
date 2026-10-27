@@ -13,10 +13,11 @@ const icon = (name: keyof typeof Ionicons.glyphMap) => ({ color, focused }: { co
 export default function TabsLayout() {
   const pathname = usePathname();
   const home = pathname === "/" || pathname === "/(tabs)";
+  const library = pathname === "/content" || pathname === "/(tabs)/content";
   const insets = useSafeAreaInsets();
   return (
     <Tabs
-      tabBar={home ? ({ state, navigation }) => <HomeTabBar onUpload={() => router.push("/uploader")} onNavigate={name => {
+      tabBar={home || library ? ({ state, navigation }) => <HomeTabBar active={library ? "content" : "index"} onUpload={() => router.push("/uploader")} onNavigate={name => {
         const route = state.routes.find(r => r.name === name);
         if (!route) return;
         const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
