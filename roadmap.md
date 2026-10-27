@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Match native Home more closely to latest screenshot: soft gradients, compact proportions, real image thumbnails and Home-only raised upload navigation.
 - [x] Redesign native Android Home only from the supplied reference; isolated 375/390 portrait and 844 landscape layout/callback checks and 8 existing tests pass; website/backend unchanged.
 - [ ] Verify redesigned Home with real account, native safe areas and file actions on Android (blocked: Android device/emulator unavailable; isolated web render is layout-only).
 - [x] Remove mandatory admin approval; live harmless upload scanned clean and shared automatically (200), safety report revoked its existing link (403); initial clean legacy files released, malware restrictions retained.

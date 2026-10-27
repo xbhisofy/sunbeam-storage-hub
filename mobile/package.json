@@ -21,6 +21,7 @@
     "expo-document-picker": "~14.0.0",
     "expo-file-system": "~19.0.0",
     "expo-image-picker": "~17.0.0",
+    "expo-linear-gradient": "~15.0.7",
     "expo-linking": "~8.0.0",
     "expo-notifications": "~0.32.0",
     "expo-router": "~6.0.0",
