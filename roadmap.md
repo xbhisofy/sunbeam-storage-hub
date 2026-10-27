@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Build and deliver updated native Expo APK with latest UI and share/player changes; preserve application ID and compatible signing, increase versionCode. Verify Expo build access and actual artifact before delivery.
 - [x] Native three-dot/share sheets: file summary, three action tiles, rename/trash rows, expiry chips with explicit creation, success/Copy/Share via/Change Expiry/Done. 54 isolated native/link/playback tests pass, build OK; website/review unchanged, no Download or invented folder actions.
 - [ ] Verify reference-style sharing sheets on Android and release compatible APK (blocked: actual Android/device layout and signing/version verification; no APK built or released this turn). Clipboard/expiry/share interactions verified with isolated mocked native controls, not real account/device.
 - [x] Sharing source fix: six Office formats, bounded container checks, verified configurable scan capacity, retryable private scan states, serialized/stale-safe scanner and audited recovery. 35 Python tests including isolated PostgreSQL recovery/ACL and 35 web tests pass; build OK. Live read-only VPS inspection confirms ClamAV 1.5.4 and 100M limits.
