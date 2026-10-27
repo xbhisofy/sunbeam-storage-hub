@@ -13,7 +13,7 @@ import s from '@/components/mobileapp-review/mobileapp-review.module.css';
 export const Route = createFileRoute('/mobileapp')({
   ssr: false,
   validateSearch: reviewSearch,
-  head: () => pageHead('Android Home UI Review', 'Temporary Tanyora Android interface review with existing account data.', undefined, true),
+  head: () => pageHead('Tanyora Mobile Preview', 'Tanyora cloud storage interface preview: Home, My Files, Upload, Shared Links and Profile.', undefined, true),
   loader: async ({ context }) => {
     const uid = await context.queryClient.ensureQueryData(sessionOptions);
     if (uid) await context.queryClient.prefetchQuery(accountOptions(uid));
@@ -40,6 +40,6 @@ function MobileAppReview() {
       {sample && <span className="sr-only">Sample account</span>}
       {screen === 'home' ? <HomePreview account={displayAccount} signedIn={!!displayAccount || !!uid} loading={!sample && account.isFetching} error={!sample && account.isError} refresh={() => { if (uid) void account.refetch(); }} /> : <ScreensPreview key={screen} screen={screen} account={displayAccount} signedIn={!!displayAccount || !!uid} loading={!sample && account.isFetching} error={!sample && account.isError} refresh={() => { if (uid) void account.refetch(); }} />}
     </main>
-    <div className={s.navWrap}><nav className={s.nav} aria-label="App navigation">{nav.slice(0, 2).map(item)}<Button asChild variant="ghost" className={s.uploadNav}><Link to="/mobileapp" search={{ screen: 'upload' }} aria-label="Upload a file" aria-current={screen === 'upload' ? 'page' : undefined}><span className={s.halo}><span className={s.diamond}><Plus aria-hidden="true" /></span></span></Link></Button>{nav.slice(2).map(item)}</nav></div>
+    <div className={`${s.navWrap} ${screen === 'shared' || screen === 'profile' ? s.square : ''}`}><nav className={s.nav} aria-label="App navigation">{nav.slice(0, 2).map(item)}<Button asChild variant="ghost" className={s.uploadNav}><Link to="/mobileapp" search={{ screen: 'upload' }} aria-label="Upload a file" aria-current={screen === 'upload' ? 'page' : undefined}><span className={s.halo}><span className={s.diamond}><Plus aria-hidden="true" /></span></span></Link></Button>{nav.slice(2).map(item)}</nav></div>
   </div>;
 }

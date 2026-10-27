@@ -11,6 +11,6 @@ declare const styles: {
   stats: string; settings: string; setting: string; accountActions: string; danger: string;
   uploadIntro: string; uploadChoices: string; uploadChoice: string; sources: string;
   searchBox: string; filters: string; chip: string; selectedChip: string; sortBar: string; expiry: string;
-  navItem: string; active: string; uploadNav: string; halo: string; diamond: string;
+  navItem: string; active: string; uploadNav: string; halo: string; diamond: string; square: string;
 };
 export default styles;
