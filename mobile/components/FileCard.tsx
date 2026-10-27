@@ -7,6 +7,7 @@ import { theme } from "../lib/theme";
 import { shareLink } from "../lib/config";
 import { EXPIRY, deleteFile, formatDate, formatSize, iconFor, renameFile, setExpiry, type FileRow } from "../lib/files";
 import { Button } from "./ui";
+import { homeTheme } from "../lib/home-theme";
 
 type Sheet = null | "menu" | "rename" | "expiry" | "details";
 
@@ -25,7 +26,7 @@ export function expiryText(f: FileRow) {
   return t < Date.now() ? "Link expired" : `Expires ${formatDate(f.expires_at)}`;
 }
 
-export function FileCard({ file, onChange, showExpiry }: { file: FileRow; onChange: () => void; showExpiry?: boolean }) {
+export function FileCard({ file, onChange, showExpiry, presentation = "default" }: { file: FileRow; onChange: () => void; showExpiry?: boolean; presentation?: "default" | "home" }) {
   const [sheet, setSheet] = useState<Sheet>(null);
   const [name, setName] = useState(file.name);
   const [busy, setBusy] = useState(false);
@@ -69,15 +70,15 @@ export function FileCard({ file, onChange, showExpiry }: { file: FileRow; onChan
 
   return (
     <>
-      <View style={s.row}>
+      <View style={[s.row, presentation === "home" && s.homeRow]}>
         <Pressable accessibilityRole="button" accessibilityLabel={`Open ${file.name}`} onPress={() => router.push({ pathname: "/s/[slug]", params: { slug: file.slug } })} style={({ pressed }) => [s.openFile, pressed && { opacity: 0.7 }]}>
         <FileIcon type={file.file_type} />
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={s.name} numberOfLines={1}>{file.name}</Text>
-          <Text style={s.meta} numberOfLines={1}>{showExpiry ? expiryText(file) : meta}</Text>
+          <Text style={[s.name, presentation === "home" && s.homeName]} numberOfLines={1}>{file.name}</Text>
+          <Text style={[s.meta, presentation === "home" && s.homeMeta]} numberOfLines={1}>{showExpiry ? expiryText(file) : meta}</Text>
         </View>
         </Pressable>
-        <Pressable accessibilityLabel={`Actions for ${file.name}`} hitSlop={10} onPress={() => setSheet("menu")} style={s.more}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Actions for ${file.name}`} hitSlop={10} onPress={() => setSheet("menu")} style={[s.more, presentation === "home" && s.homeMore]}>
           <Ionicons name="ellipsis-vertical" size={18} color={theme.muted} />
         </Pressable>
       </View>
@@ -137,6 +138,10 @@ export function FileCard({ file, onChange, showExpiry }: { file: FileRow; onChan
 }
 
 const s = StyleSheet.create({
+  homeRow: { paddingHorizontal: 8, paddingVertical: 10, gap: 4, minHeight: 68, borderWidth: 1, borderColor: homeTheme.border, borderRadius: 14, backgroundColor: homeTheme.surface },
+  homeName: { color: homeTheme.text, fontSize: 14 },
+  homeMeta: { color: homeTheme.muted, fontSize: 12 },
+  homeMore: { width: 48, height: 48 },
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, paddingHorizontal: 16 },
   openFile: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12, minWidth: 0 },
   name: { fontSize: 15, fontWeight: "600", color: theme.text },
