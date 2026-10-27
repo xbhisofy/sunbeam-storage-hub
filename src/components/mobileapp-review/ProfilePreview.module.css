@@ -1,7 +1,4 @@
 .profile { padding-top: 8px; }
-.heading { margin-bottom: 16px; }
-.heading h1 { font-size: 25px; line-height: 1.2; font-weight: 800; }
-.heading p { color: var(--review-muted); font-size: 13px; margin-top: 3px; }
 .account { display: grid; grid-template-columns: 80px minmax(0,1fr); align-items: center; gap: 16px; background: var(--review-surface); border-radius: 20px; padding: 16px 14px; min-height: 116px; }
 .avatar { position: relative; display: grid; place-items: center; flex-shrink: 0; width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(150deg, var(--review-start), var(--review-end)); box-shadow: inset 0 0 0 1px var(--review-border); color: var(--review-primary); font-size: 32px; font-weight: 700; }
 .avatar .edit { position: absolute; bottom: -2px; right: -2px; width: 30px; height: 30px; min-height: 30px; padding: 0; display: grid; place-items: center; border-radius: 50%; background: var(--review-primary); color: var(--review-on-primary); box-shadow: 0 0 0 3px var(--review-surface), 0 4px 10px #0862ff40; }
