@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, RotateCwSquare, Volume2, VolumeX } from "lucide-react";
+import { Loader2, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, RotateCwSquare, Volume2, VolumeX, LockKeyhole, UnlockKeyhole, Repeat2, Sun } from "lucide-react";
+import "./video-player.css";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -17,6 +18,7 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
   const started = useRef(false);
   const video = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
+  const rotationFallback = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [waiting, setWaiting] = useState(true);
   const [error, setError] = useState(false);
@@ -31,9 +33,17 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
   const [expanded, setExpanded] = useState(false);
   const [active, setActive] = useState(false);
   const [rotated, setRotated] = useState(false);
+  const [locked, setLocked] = useState(false);
+  const [repeat, setRepeat] = useState(false);
+  const [brightness, setBrightness] = useState(1);
+  const [resolution, setResolution] = useState("");
 
   useEffect(() => {
-    const changed = () => setFullscreen(document.fullscreenElement === frame.current);
+    const changed = () => {
+      const full = document.fullscreenElement === frame.current;
+      setFullscreen(full);
+      if (!full && !rotationFallback.current) { screen.orientation?.unlock?.(); setRotated(false); }
+    };
     document.addEventListener("fullscreenchange", changed);
     return () => document.removeEventListener("fullscreenchange", changed);
   }, []);
@@ -42,7 +52,7 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
     if (!expanded) return;
     const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") setExpanded(false); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setExpanded(false); setRotated(false); setLocked(false); } };
     document.addEventListener("keydown", escape);
     return () => { document.body.style.overflow = oldOverflow; document.removeEventListener("keydown", escape); };
   }, [expanded]);
@@ -73,7 +83,7 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
     const container = frame.current;
     if (!container) return;
     setVisible(true);
-    if (expanded) { setExpanded(false); return; }
+    if (expanded) { rotationFallback.current = false; setExpanded(false); setRotated(false); return; }
     try {
       if (document.fullscreenElement === container) await document.exitFullscreen();
       else if (container.requestFullscreen) await container.requestFullscreen();
@@ -86,35 +96,41 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
     if (!container) return;
     setVisible(true);
     const orientation = screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> };
-    const landscape = rotated || (orientation?.type ?? "").startsWith("landscape");
+    const landscape = rotated;
     try {
       if (!landscape) {
         if (document.fullscreenElement !== container && container.requestFullscreen) await container.requestFullscreen();
-        await orientation.lock?.("landscape");
+        if (!orientation.lock) throw new Error("Orientation lock unavailable");
+        await orientation.lock("landscape");
         setRotated(true);
       } else {
+        rotationFallback.current = false;
         orientation.unlock?.();
         setRotated(false);
+        setExpanded(false);
+        if (document.fullscreenElement === container) await document.exitFullscreen();
       }
     } catch {
-      setRotated(!rotated);
-      setExpanded(!rotated);
+      rotationFallback.current = !landscape;
+      if (document.fullscreenElement === container) await document.exitFullscreen().catch(() => {});
+      setRotated(!landscape);
+      setExpanded(!landscape);
     }
   }
 
   const iconClass = "h-12 w-12 shrink-0 rounded-full text-player-foreground hover:bg-player-foreground/15 hover:text-player-foreground [&_svg]:size-5";
-  const controlsVisible = visible || !playing || error;
+  const controlsVisible = !locked && (visible || !playing || error);
 
   return <div ref={frame} role="region" aria-label={`${title} video player`}
     className={`tanyora-player group relative isolate overflow-hidden bg-player-background text-player-foreground ${expanded && rotated && !fullscreen ? "player-rotated fixed z-[100]" : expanded ? "fixed inset-0 z-[100] h-dvh w-screen" : "aspect-video w-full rounded-2xl shadow-lg"}`}
-    onPointerMove={() => setVisible(true)}
+    onPointerMove={() => { if (!locked) setVisible(true); }}
     onFocusCapture={() => { setVisible(true); setActive(true); }}
     onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setActive(false); }}>
     <video key={src} ref={video} src={src} aria-label={title} playsInline autoPlay preload="metadata"
       controls={false} controlsList="nodownload noremoteplayback" disablePictureInPicture disableRemotePlayback
-      className="absolute inset-0 h-full w-full object-contain"
-      onLoadStart={() => { setWaiting(true); setError(false); setTime(0); setDuration(0); setPlaying(false); setSpeed(1); }}
-      onLoadedMetadata={(event) => { setDuration(event.currentTarget.duration); setWaiting(false); }}
+      className="absolute inset-0 h-full w-full object-contain" style={{ filter: `brightness(${brightness})` }} loop={repeat}
+      onLoadStart={() => { started.current = false; setWaiting(true); setError(false); setTime(0); setDuration(0); setPlaying(false); setSpeed(1); setLocked(false); }}
+      onLoadedMetadata={(event) => { setDuration(event.currentTarget.duration); setResolution(`${event.currentTarget.videoWidth} × ${event.currentTarget.videoHeight}`); setWaiting(false); }}
       onTimeUpdate={(event) => setTime(event.currentTarget.currentTime)}
       onDurationChange={(event) => setDuration(event.currentTarget.duration)}
       onPlay={() => setPlaying(true)} onPause={() => { setPlaying(false); setVisible(true); }}
@@ -124,30 +140,35 @@ export function VideoPlayer({ src, title, onStart }: { src: string; title: strin
       onVolumeChange={(event) => { setMuted(event.currentTarget.muted); setVolume(event.currentTarget.volume); }}
       onRateChange={(event) => setSpeed(event.currentTarget.playbackRate)} />
     <Button variant="ghost" className="absolute inset-0 h-full w-full rounded-none hover:bg-transparent" aria-label={playing ? "Pause video" : "Play video"}
-      onClick={() => { if (!controlsVisible) setVisible(true); else void togglePlay(); }} tabIndex={-1} />
+      onClick={() => { if (locked) return; if (!controlsVisible) setVisible(true); else void togglePlay(); }} tabIndex={-1} />
+    <div className={`player-topbar ${controlsVisible ? "" : "player-hidden"}`} inert={!controlsVisible}>
+      <div className="player-title"><strong>{title}</strong><small>{resolution || "Video"}</small></div>
+      <Button variant="ghost" className={`${iconClass} player-tool`} aria-label="Lock controls" title="Lock controls" onClick={() => { setLocked(true); setSpeedOpen(false); }}><LockKeyhole /><small>Lock</small></Button>
+      <div className="relative">
+        <Button variant="ghost" className={`${iconClass} player-tool`} aria-label="Playback speed" aria-expanded={speedOpen} title="Playback speed" onClick={() => setSpeedOpen(!speedOpen)}><span>{speed}x</span><small>Speed</small></Button>
+        {speedOpen && <div className="player-speed-menu" role="group" aria-label="Playback speeds">{PLAYBACK_SPEEDS.map(value => <Button key={value} variant="ghost" className="h-11 text-player-foreground hover:bg-player-foreground/15 hover:text-player-foreground" aria-pressed={speed === value} onClick={() => { if (video.current) video.current.playbackRate = value; setSpeed(value); setSpeedOpen(false); }}>{value}x</Button>)}</div>}
+      </div>
+      <Button variant="ghost" className={`${iconClass} player-tool`} aria-label={rotated ? "Rotate to portrait" : "Rotate to landscape"} title="Rotate" onClick={() => void toggleRotate()}><RotateCwSquare /><small>Rotate</small></Button>
+    </div>
+    {locked && <Button variant="ghost" className={`${iconClass} player-unlock`} aria-label="Unlock controls" title="Unlock controls" onClick={() => { setLocked(false); setVisible(true); }}><UnlockKeyhole /></Button>}
+    <div className={`player-side player-side-left ${controlsVisible ? "" : "player-hidden"}`} inert={!controlsVisible}><Sun /><Slider orientation="vertical" aria-label="Video brightness" min={0.4} max={1.4} step={0.05} value={[brightness]} onValueChange={([value]) => { if (value !== undefined) setBrightness(value); }} /><Sun className="opacity-50" /></div>
+    <div className={`player-side player-side-right ${controlsVisible ? "" : "player-hidden"}`} inert={!controlsVisible}><Volume2 /><Slider orientation="vertical" aria-label="Volume" min={0} max={1} step={0.05} value={[muted ? 0 : volume]} onValueChange={([value]) => { if (video.current && value !== undefined) { video.current.volume = value; video.current.muted = value === 0; } }} /><VolumeX /></div>
     {error ? <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-player-background px-4 text-center" role="alert">
       <p className="text-sm">This video could not be loaded.</p>
       <Button variant="secondary" onClick={() => { setError(false); video.current?.load(); }}>Try again</Button>
     </div> : waiting ? <div className="pointer-events-none absolute inset-0 grid place-items-center"><Loader2 aria-label="Loading video" className="size-9 animate-spin" /></div> : null}
-    {!error && <div className={`pointer-events-none absolute inset-x-0 bottom-24 top-0 flex items-center justify-center gap-6 transition-opacity duration-200 sm:bottom-0 ${controlsVisible ? "opacity-100" : "opacity-0"}`} aria-hidden={!controlsVisible}>
+    {!error && <div className={`player-center ${controlsVisible ? "" : "player-hidden"}`} aria-hidden={!controlsVisible}>
       <Button variant="ghost" className={`${iconClass} pointer-events-auto size-14 bg-player-background/50 backdrop-blur-sm ring-1 ring-player-foreground/20`} aria-label="Rewind 10 seconds" title="Rewind 10 seconds" disabled={!duration} tabIndex={controlsVisible ? 0 : -1} onClick={() => seek(time - 10)}><span className="relative grid place-items-center"><RotateCcw className="!size-9" strokeWidth={1.75} /><span className="absolute text-[10px] font-bold">10</span></span></Button>
-      <Button variant="ghost" className="pointer-events-auto size-12 rounded-full bg-player-foreground/95 text-player-background hover:bg-player-foreground hover:text-player-background sm:size-16 [&_svg]:size-6 sm:[&_svg]:size-7" aria-label={playing ? "Pause" : "Play"} title={playing ? "Pause" : "Play"} tabIndex={controlsVisible ? 0 : -1} onClick={() => void togglePlay()}>{playing ? <Pause className="fill-current" /> : <Play className="fill-current" />}</Button>
+      <Button variant="ghost" className={`${iconClass} player-main-play`} aria-label={playing ? "Pause" : "Play"} title={playing ? "Pause" : "Play"} tabIndex={controlsVisible ? 0 : -1} onClick={() => void togglePlay()}>{playing ? <Pause className="fill-current" /> : <Play className="fill-current" />}</Button>
       <Button variant="ghost" className={`${iconClass} pointer-events-auto size-14 bg-player-background/50 backdrop-blur-sm ring-1 ring-player-foreground/20`} aria-label="Forward 10 seconds" title="Forward 10 seconds" disabled={!duration} tabIndex={controlsVisible ? 0 : -1} onClick={() => seek(time + 10)}><span className="relative grid place-items-center"><RotateCw className="!size-9" strokeWidth={1.75} /><span className="absolute text-[10px] font-bold">10</span></span></Button>
     </div>}
     <div className={`player-controls absolute inset-x-0 bottom-0 px-3 pb-2 pt-10 transition-opacity duration-200 sm:px-5 ${controlsVisible ? "opacity-100" : "pointer-events-none opacity-0"}`} inert={!controlsVisible}
       onPointerEnter={() => setActive(true)} onPointerLeave={() => setActive(false)}>
       <Slider aria-label="Seek video" className="h-6" min={0} max={Number.isFinite(duration) && duration > 0 ? duration : 1} step={0.1} value={[time]} disabled={!duration || error} onValueChange={([value]) => { if (value !== undefined) seek(value); }} />
-      <div className="flex items-center gap-2">
+      <div className="player-timeline-times"><span>{clock(time)}</span><span>{clock(duration)}</span></div>
+      <div className="player-bottom-row">
         <Button variant="ghost" className={iconClass} aria-label={muted || volume === 0 ? "Unmute" : "Mute"} title={muted || volume === 0 ? "Unmute" : "Mute"} onClick={() => { if (video.current) video.current.muted = !video.current.muted; }}>{muted || volume === 0 ? <VolumeX /> : <Volume2 />}</Button>
-        <Slider aria-label="Volume" className="hidden h-6 max-w-20 sm:flex" value={[muted ? 0 : volume]} max={1} step={0.05} onValueChange={([value]) => { if (video.current && value !== undefined) { video.current.volume = value; video.current.muted = value === 0; } }} />
-        <span className="min-w-0 text-xs tabular-nums sm:text-sm">{clock(time)} <span className="text-player-muted">/ {clock(duration)}</span></span>
-        <div className="relative ml-auto shrink-0">
-          {speedOpen && <div className="absolute bottom-full -right-14 mb-2 grid w-[min(280px,calc(100vw-56px))] grid-cols-4 gap-1 rounded-lg border border-player-foreground/20 bg-player-panel p-1" role="group" aria-label="Playback speeds">
-            {PLAYBACK_SPEEDS.map((value) => <Button key={value} variant="ghost" className="h-11 w-full justify-between text-player-foreground hover:bg-player-foreground/15 hover:text-player-foreground" aria-pressed={speed === value} onClick={() => { if (video.current) video.current.playbackRate = value; setSpeed(value); setSpeedOpen(false); }}>{value}x{speed === value && <span aria-hidden="true">✓</span>}</Button>)}
-          </div>}
-          <Button variant="ghost" className="h-12 min-w-12 text-player-foreground hover:bg-player-foreground/15 hover:text-player-foreground" aria-label="Playback speed" aria-expanded={speedOpen} title="Playback speed" onClick={() => setSpeedOpen(!speedOpen)}>{speed}x</Button>
-        </div>
-        <Button variant="ghost" className={iconClass} aria-label={rotated ? "Rotate to portrait" : "Rotate to landscape"} title="Rotate" onClick={() => void toggleRotate()}><RotateCwSquare /></Button>
+        <Button variant="ghost" className={`${iconClass} player-tool`} aria-label="Repeat video" aria-pressed={repeat} title="Repeat video" onClick={() => setRepeat(!repeat)}><Repeat2 /><small>{repeat ? "Repeat on" : "Repeat"}</small></Button>
         <Button variant="ghost" className={iconClass} aria-label={fullscreen || expanded ? "Exit fullscreen" : "Fullscreen"} title={fullscreen || expanded ? "Exit fullscreen" : "Fullscreen"} onClick={() => void toggleFullscreen()}>{fullscreen || expanded ? <Minimize /> : <Maximize />}</Button>
       </div>
     </div>

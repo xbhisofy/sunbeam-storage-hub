@@ -1,0 +1,45 @@
+.tanyora-player { container-type: inline-size; min-height: 250px; border-radius: 8px; }
+.player-topbar { position: absolute; inset: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 16px 20px 38px; background: var(--player-top-scrim); transition: opacity .2s; }
+.player-title { min-width: 0; flex: 1; }
+.player-title strong { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 18px; font-weight: 600; }
+.player-title small { color: var(--player-muted); font-size: 12px; }
+.player-tool { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
+.player-tool small { font-size: 10px; font-weight: 400; }
+.player-tool svg { width: 21px; height: 21px; }
+.player-center { position: absolute; inset: 90px 110px 100px; display: flex; align-items: center; justify-content: center; gap: 48px; pointer-events: none; transition: opacity .2s; }
+.player-center > button { pointer-events: auto; width: 76px; height: 76px; background: var(--player-control-glass); border: 1px solid var(--player-control-border); backdrop-filter: blur(8px); }
+.player-center > .player-main-play { width: 92px; height: 92px; color: var(--player-foreground); }
+.player-main-play svg { width: 38px; height: 38px; }
+.player-side { position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px 10px; border-radius: 20px; background: var(--player-control-glass); }
+.player-side-left { left: 20px; }
+.player-side-right { right: 20px; }
+.player-side > svg { width: 20px; height: 20px; }
+.player-side [data-orientation=vertical][role=group], .player-side > [data-orientation=vertical] { height: 112px; width: 20px; flex-direction: column; }
+.player-side [data-orientation=vertical] > span:first-child { width: 5px; height: 100%; }
+.player-side [data-orientation=vertical] > span:first-child > span { width: 100%; height: auto; bottom: 0; background: var(--player-accent); }
+.player-controls [data-orientation=horizontal] > span:first-child > span { background: var(--player-accent); }
+.player-side [role=slider] { background: var(--player-foreground); }
+.player-bottom-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+.player-controls [data-slot=slider-track] { background: var(--player-control-border); }
+.player-controls [data-slot=slider-range], .player-side [data-slot=slider-range] { background: var(--player-accent); }
+.player-controls [data-slot=slider-thumb], .player-side [data-slot=slider-thumb] { background: var(--player-foreground); border-color: var(--player-accent); }
+.player-timeline-times { display: flex; justify-content: space-between; font-size: 12px; font-variant-numeric: tabular-nums; }
+.player-speed-menu { position: absolute; top: 100%; right: 0; z-index: 5; width: 240px; display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; padding: 4px; border: 1px solid var(--player-control-border); border-radius: 8px; background: var(--player-panel); }
+.player-hidden { opacity: 0; pointer-events: none; }
+.player-unlock { position: absolute; top: 16px; right: 16px; background: var(--player-control-glass); }
+@container (max-width: 600px) {
+  .player-topbar { gap: 6px; padding: 10px 10px 30px; }
+  .player-title strong { font-size: 13px; }
+  .player-title small { font-size: 10px; }
+  .player-topbar .player-tool { width: 40px; height: 44px; padding: 2px; min-width: 40px; }
+  .player-topbar .player-tool small { font-size: 9px; }
+  .player-topbar .player-tool svg { width: 18px; height: 18px; }
+  .player-center { inset: 64px 12px 86px; gap: 22px; }
+  .player-center > button { width: 52px; height: 52px; }
+  .player-center > .player-main-play { width: 64px; height: 64px; }
+  .player-side { display: none; }
+  .player-bottom-row { gap: 0; margin-top: 0; }
+  .player-bottom-row button { width: 44px; height: 44px; padding: 4px; min-width: 44px; }
+  .player-speed-menu { right: -42px; }
+}
+@media (prefers-reduced-motion: reduce) { .player-topbar, .player-center { transition: none; } }
