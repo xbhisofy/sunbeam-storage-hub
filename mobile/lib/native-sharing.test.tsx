@@ -14,9 +14,11 @@ vi.mock('../node_modules/react-native/index.js', () => {
   };
 });
 vi.mock('../node_modules/@expo/vector-icons/build/Icons.js', () => ({ Ionicons: () => null }));
+vi.mock('../node_modules/@expo/vector-icons/build/IconsLazy.js', () => ({ Ionicons: () => null }));
 vi.mock('../node_modules/expo-clipboard/build/Clipboard.js', () => ({ setStringAsync: actions.clipboard }));
 vi.mock('../node_modules/expo-router/build/index.js', () => ({ router: { push: vi.fn() } }));
 vi.mock('../node_modules/react-native-safe-area-context/lib/commonjs/index.js', () => ({ useSafeAreaInsets: () => ({ bottom: 24 }) }));
+vi.mock('../node_modules/react-native-safe-area-context/lib/module/index.js', () => ({ useSafeAreaInsets: () => ({ bottom: 24 }) }));
 vi.mock('../../mobile/components/HomeThumbnail', () => ({ HomeThumbnail: () => null }));
 vi.mock('../../mobile/components/ui', () => ({ Button: ({ label, onPress, busy }: any) => createElement('button', { onClick: onPress, disabled: busy }, label) }));
 vi.mock('../../mobile/lib/config', () => ({ shareLink: (slug: string) => `https://tanyora.com/s/${slug}` }));
