@@ -10,7 +10,7 @@ import { ReviewFileRow, fileKinds } from './ReviewFileRow';
 import art from './assets/shared-folders.png';
 import s from './ReferenceScreens.module.css';
 
-export function ScreensPreview({ screen, account, loading, error, signedIn, refresh, initialKind }: { screen: Exclude<ReviewScreen, 'home'>; account: ReviewAccount | null | undefined; loading: boolean; error: boolean; signedIn: boolean; refresh: () => void; initialKind?: string }) {
+export function ScreensPreview({ screen, account, loading, error, signedIn, refresh, initialKind }: { screen: Exclude<ReviewScreen, 'home'>; account: ReviewAccount | null | undefined; loading: boolean; error: boolean; signedIn: boolean; refresh: () => void; initialKind?: string | undefined }) {
   const [search, setSearch] = useState('');
   const [kind, setKind] = useState(initialKind ?? 'all');
   const [sort, setSort] = useState('recent');
