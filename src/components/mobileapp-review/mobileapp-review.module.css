@@ -11,22 +11,22 @@
   --review-shadow: 0 8px 24px #a9c6f533;
   color-scheme: light; color: var(--review-text); background: var(--review-bg);
   font-family: 'Open Sans', sans-serif; font-size: 14px; line-height: 1.5;
-  letter-spacing: 0; min-height: 100dvh;
+  letter-spacing: 0; height: 100dvh; overflow: hidden; display: grid; grid-template-rows: minmax(0,1fr) auto;
 }
 .review *, .review *::before, .review *::after { box-sizing: border-box; letter-spacing: 0; }
 .review h1, .review h2, .review p { margin: 0; }
 .review a, .review button { font-family: inherit; touch-action: manipulation; }
 .review button, .review a { white-space: normal; }
 .review :focus-visible { outline: 2px solid var(--review-primary); outline-offset: 3px; }
-.phone { max-width: 480px; margin: auto; padding: max(24px, env(safe-area-inset-top)) 20px 112px; }
+.phone { width: 100%; max-width: 480px; margin: 0 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: contain; scrollbar-width: thin; scrollbar-color: var(--review-track) transparent; padding: max(24px, env(safe-area-inset-top)) 20px 24px; scroll-padding: 20px; }
 .sampleLabel { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--review-muted); font-size: 11px; border-bottom: 1px solid var(--review-border); margin-bottom: 12px; }
 .header { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 8px; }
-.brand { display: flex; align-items: center; gap: 8px; }
+.brand { display: flex; min-width: 0; align-items: center; gap: 8px; }
 .brand img { width: 36px; height: 36px; border-radius: 10px; }
 .brand strong { display: block; font-size: 18px; font-weight: 800; }
 .brand small { color: var(--review-muted); font-size: 10px; white-space: nowrap; }
 .headerActions { display: flex; gap: 4px; }
-.review .iconButton { width: 36px; height: 44px; padding: 0; border: 0; border-radius: 24px; color: var(--review-muted); background: var(--review-start); }
+.review .iconButton { width: 44px; height: 44px; padding: 0; border: 0; border-radius: 24px; color: var(--review-muted); background: var(--review-start); }
 .review .avatar { background: var(--review-storage); color: var(--review-primary); font-size: 21px; font-weight: 700; border: 2px solid var(--review-surface); }
 .review svg { width: 22px; height: 22px; flex-shrink: 0; }
 .intro { position: relative; min-height: 110px; padding: 18px 0 12px; }
@@ -37,7 +37,7 @@
 .intro h1 span { color: var(--review-primary); }
 .intro p { position: relative; z-index: 1; margin-top: 6px; color: var(--review-muted); font-size: 12px; max-width: 245px; }
 .storage { background: linear-gradient(135deg, var(--review-start), var(--review-end)); padding: 12px; border: 1px solid var(--review-surface); border-radius: 20px; box-shadow: var(--review-shadow); }
-.storageHeader { display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
+.storageHeader { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 6px; align-items: center; }
 .storageHeader h2 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .review .plan { padding: 4px 8px; min-height: 36px; height: auto; border-radius: 24px; background: var(--review-start); color: var(--review-primary); font-size: 12px; box-shadow: none; }
 .plan svg { width: 16px; }
@@ -118,7 +118,7 @@
 .sortBar { display: flex; justify-content: space-between; align-items: center; margin: 16px 0; color: var(--review-muted); font-size: 13px; }
 .sortBar select { min-height: 44px; border: 0; padding: 8px; background: var(--review-surface); border-radius: 12px; color: var(--review-text); }
 .expiry { display: block; color: var(--review-primary) !important; margin-top: 3px; }
-.navWrap { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 480px); padding: 16px 16px max(12px, env(safe-area-inset-bottom)); background: var(--review-bg); z-index: 10; }
+.navWrap { position: relative; margin: 0 auto; width: min(100%, 480px); padding: 16px 16px max(12px, env(safe-area-inset-bottom)); background: var(--review-bg); z-index: 10; }
 .nav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: var(--review-surface); border-radius: 32px; box-shadow: var(--review-shadow); min-height: 62px; }
 .review .navItem { min-height: 62px; height: auto; padding: 6px 2px; display: flex; flex-direction: column; gap: 2px; color: var(--review-muted); background: transparent; font-size: 10px; text-decoration: none; border-radius: 24px; }
 .review .navItem svg { width: 25px; height: 25px; }
@@ -133,4 +133,7 @@
 .review .active svg { fill: currentColor; stroke-width: 1.5; }
 .review a:active, .review button:active { opacity: .7; transition: opacity 120ms; }
 @media (max-width: 369px) { .phone { padding-inline: 16px; } .navWrap { padding-inline: 16px; } .brand strong { font-size: 16px; } .brand img { width: 30px; height: 30px; } .category { font-size: 10px; } }
+@media (min-width: 700px) { .phone, .navWrap { max-width: 720px; width: 100%; } .phone { padding-inline: 32px; } .categories { gap: 16px; } .review .category { padding: 16px; font-size: 14px; } .categoryBottom { font-size: 12px; } .intro { min-height: 140px; } .intro img { width: 140px; height: 140px; right: 16px; } .intro h1 { max-width: 430px; font-size: 30px; } .intro p { max-width: 360px; font-size: 14px; } .storage { padding: 20px; } .storageHeader h2 { font-size: 20px; } .review .utility { font-size: 10px; } .actions { grid-template-columns: minmax(0,1fr) 70px 70px; } }
+@media (max-width: 359px) { .brand img { display: none; } .storageHeader { grid-template-columns: 1fr; } .plan { justify-self: start; } .categories { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-height: 450px) { .phone { padding-top: 12px; } .navWrap { padding-top: 6px; padding-bottom: 6px; } .nav, .review .navItem { min-height: 52px; } .review .uploadNav { height: 52px; } .halo { height: 52px; } }
 @media (prefers-reduced-motion: reduce) { .review *, .review *::before { transition: none !important; animation: none !important; } }

@@ -4,8 +4,9 @@ import { currentUserId } from '@/lib/session';
 
 export const reviewScreens = ['home', 'files', 'upload', 'shared', 'profile'] as const;
 export type ReviewScreen = typeof reviewScreens[number];
-export function reviewSearch(input: Record<string, unknown>): { screen: ReviewScreen } {
-  return { screen: reviewScreens.find(screen => screen === input['screen']) ?? 'home' };
+export function reviewSearch(input: Record<string, unknown>): { screen: ReviewScreen; kind?: 'pdf' | 'image' | 'video' | 'audio' } {
+  const kind = (['pdf', 'image', 'video', 'audio'] as const).find(value => value === input['kind']);
+  return { screen: reviewScreens.find(screen => screen === input['screen']) ?? 'home', ...(kind ? { kind } : {}) };
 }
 export type ReviewFile = { id: string; name: string; file_type: string; size: number; created_at: string; slug: string | null; expires_at: string | null };
 export const sessionOptions = queryOptions({

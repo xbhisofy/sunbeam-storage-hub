@@ -11,4 +11,8 @@ describe('temporary review navigation', () => {
     expect(reviewSearch({ screen: 'https://example.com' }).screen).toBe('home');
     expect(reviewSearch({ screen: 'wallet' }).screen).toBe('home');
   });
+  it('preserves only supported file category filters', () => {
+    expect(reviewSearch({ screen: 'files', kind: 'image' })).toEqual({ screen: 'files', kind: 'image' });
+    expect(reviewSearch({ screen: 'files', kind: 'https://example.com' })).toEqual({ screen: 'files' });
+  });
 });

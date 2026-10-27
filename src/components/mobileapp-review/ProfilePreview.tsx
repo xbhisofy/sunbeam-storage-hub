@@ -1,3 +1,4 @@
+import { ReviewNotice } from './ReviewNotice';
 import { Link } from '@tanstack/react-router';
 import { Crown, PieChart, Folder, Share2, UserRound, MessageCircle, FileText, ShieldCheck, Copyright, CircleHelp, ChevronRight, LogOut, Trash2, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -33,6 +34,6 @@ export function ProfilePreview({ account, signedIn }: { account: ReviewAccount |
     </section>
     <div className={p.summary} aria-label="Account summary">{stats.map(({ icon: Icon, value, label, tone }) => <div className={p.tile} key={label}><span className={`${p.tileIcon} ${tone}`}><Icon aria-hidden="true" /></span><strong>{value}</strong><small>{label}</small></div>)}</div>
     <section className={p.settings} aria-label="Profile settings">{settings.map(({ to, icon: Icon, label, detail }) => <Button asChild variant="ghost" className={p.row} key={label}><Link to={to}><span className={p.rowIcon}><Icon aria-hidden="true" /></span><span className={p.rowText}><strong>{label}</strong><small>{detail}</small></span><ChevronRight aria-hidden="true" /></Link></Button>)}</section>
-    <div className={p.actions}><Button disabled variant="outline" className={p.logout} title="Read-only preview"><LogOut aria-hidden="true" />Log out</Button><Button disabled variant="outline" className={p.delete} title="Read-only preview"><Trash2 aria-hidden="true" />Delete account</Button></div>
+    <div className={p.actions}><ReviewNotice title="Log out" description={signedIn ? 'Manage your signed-in session from your account page.' : 'This sample profile is not a signed-in account.'} accountAction={!signedIn}><Button variant="outline" className={p.logout}><LogOut aria-hidden="true" />Log out</Button></ReviewNotice><ReviewNotice title="Delete account" description={signedIn ? 'Open account settings to confirm permanent account deletion. No files are deleted from this preview.' : 'Sample profiles cannot be deleted. Sign in to manage your own account.'} accountAction={!signedIn}><Button variant="outline" className={p.delete}><Trash2 aria-hidden="true" />Delete account</Button></ReviewNotice></div>
   </div>;
 }
