@@ -31,14 +31,25 @@
               "pathPrefix": "/s/"
             },
             {
-              "scheme": "tanyora",
-              "host": "s"
+              "scheme": "https",
+              "host": "app.tanyora.com",
+              "pathPrefix": "/s/"
+            },
+            {
+              "scheme": "https",
+              "host": "www.tanyora.com",
+              "pathPrefix": "/s/"
             }
           ],
           "category": [
             "BROWSABLE",
             "DEFAULT"
           ]
+        },
+        {
+          "action": "VIEW",
+          "data": [{ "scheme": "tanyora", "host": "s" }],
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ],
       "permissions": [
