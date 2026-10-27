@@ -70,7 +70,6 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={s.screen}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.content}>
-        <View style={s.header}><Text style={s.brand}>Tanyora</Text><Text style={s.tagline}>Cloud for Everyone</Text></View>
         <Motion><View style={s.profileCard}>
           <View style={s.avatarWrap}><View style={s.avatar}>{avatarUrl ? <Image source={{ uri: avatarUrl }} style={s.avatarImage} resizeMode="cover" /> : <Text style={s.avatarText}>{name.charAt(0).toUpperCase()}</Text>}</View><Pressable accessibilityRole="button" accessibilityLabel="Edit profile" onPress={() => router.push("/edit-profile")} style={s.avatarEdit}><Ionicons name="create-outline" size={19} color={theme.onPrimary} /></Pressable></View>
           <View style={s.identity}><View style={s.plan}><Ionicons name="ribbon-outline" size={13} color={theme.gold} /><Text style={s.planText}>{plan.name} Plan</Text></View><Text style={s.name} numberOfLines={2}>{name}</Text><Text style={s.email} numberOfLines={2}>{email}</Text></View>
@@ -91,7 +90,6 @@ export default function ProfileScreen() {
 }
 const s = StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.background }, content: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 24, gap: 10, width: "100%", maxWidth: 760, alignSelf: "center" },
-  header: { gap: 3, paddingHorizontal: 4, marginBottom: 4 }, brand: { fontSize: 24, fontWeight: "800", color: theme.text }, tagline: { fontSize: 13, color: theme.muted },
   profileCard: { flexDirection: "row", alignItems: "center", gap: 14, backgroundColor: theme.surface, borderRadius: 20, padding: 16, minHeight: 116 }, avatarWrap: { width: 76, height: 80 }, avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: theme.storage, alignItems: "center", justifyContent: "center", overflow: "hidden" }, avatarImage: { width: 76, height: 76 }, avatarText: { fontSize: 34, fontWeight: "700", color: theme.primary }, avatarEdit: { position: "absolute", bottom: -4, right: -6, width: 48, height: 48, borderRadius: 24, borderWidth: 3, borderColor: theme.surface, alignItems: "center", justifyContent: "center", backgroundColor: theme.primary }, identity: { flex: 1, minWidth: 0, gap: 6 },
   name: { fontSize: 21, fontWeight: "700", color: theme.text }, email: { fontSize: 12, lineHeight: 18, color: theme.muted }, plan: { flexDirection: "row", alignSelf: "flex-start", alignItems: "center", gap: 4, borderRadius: 12, paddingHorizontal: 7, paddingVertical: 3, backgroundColor: theme.background }, planText: { fontSize: 11, fontWeight: "600", color: theme.primary },
   summary: { flexDirection: "row", gap: 5 }, summaryCard: { flex: 1, minWidth: 0, backgroundColor: theme.surface, borderRadius: 16, paddingHorizontal: 3, paddingVertical: 10, alignItems: "center", gap: 4 }, summaryIcon: { width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center" }, summaryValue: { fontSize: 12, color: theme.text, fontWeight: "600", textAlign: "center" }, summaryLabel: { fontSize: 10, lineHeight: 14, color: theme.muted, textAlign: "center" },
