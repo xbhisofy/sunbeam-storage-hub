@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { theme } from "../../lib/theme";
 import { homeTheme } from "../../lib/home-theme";
+import { HomeTabBar } from "../../components/HomeTabBar";
 
 const icon = (name: keyof typeof Ionicons.glyphMap) => ({ color, focused }: { color: string; focused: boolean }) => (
   <Ionicons name={`${name}-outline` as keyof typeof Ionicons.glyphMap} size={22} color={color} />
@@ -15,6 +16,12 @@ export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   return (
     <Tabs
+      tabBar={home ? ({ state, navigation }) => <HomeTabBar onUpload={() => router.push("/uploader")} onNavigate={name => {
+        const route = state.routes.find(r => r.name === name);
+        if (!route) return;
+        const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+        if (!event.defaultPrevented) navigation.navigate(route.name, route.params);
+      }} /> : undefined}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: home ? homeTheme.primary : theme.primary,

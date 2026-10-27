@@ -25,7 +25,7 @@
 - Native local notifications go through `mobile/lib/notifications.ts` with one high-importance channel bound to the bundled sound; changing the sound requires a new channel id.
 - Native conversion preserves the parent file reference and never deletes shared storage when removing a converted row, so conversions retain original ownership and bonus attribution.
 - Native account screens share `useProfile` with focus/resume refresh so externally changed subscriptions are not stale; central account rules validate profile inputs and derive plan display.
-- Native Home presentation lives in mobile/components/HomeDashboard.tsx with mobile/lib/home-theme.ts; FileCard Home styling is opt-in and tab styling is Home-scoped so screenshot redesigns cannot alter website or other native screens.
+- Native Home uses HomeDashboard, HomeTabBar and home-theme; FileCard styling/thumbnails are opt-in, thumbnails use short-lived guarded storage URLs with fallback, and tab styling is Home-scoped to isolate other screens and website.
 - Native entrance motion uses the system Reduce Motion preference and the native animation driver to keep interactions accessible and smooth.
 - The native root session gate owns post-login navigation and restores only validated `/s/<slug>` destinations so sign-in never loses shared files or accepts external redirects.
 - Android assetlinks must match the shipped APK signing certificate; add the Play App Signing certificate when available because mismatches prevent verified share links from opening the installed app.
