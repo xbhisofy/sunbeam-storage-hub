@@ -34,7 +34,7 @@ export function Button({ label, onPress, busy, variant = "primary", icon, style 
       onPress={onPress}
       style={({ pressed }) => [s.btn, variant === "primary" ? s.btnPrimary : s.btnOutline, variant === "danger" && { borderColor: "#FCA5A5" }, pressed && { opacity: 0.85 }, busy && { opacity: 0.6 }, style]}
     >
-      {busy ? <ActivityIndicator color={fg} /> : <>{icon ? <Ionicons name={icon} size={18} color={fg} /> : null}<Text style={[s.btnText, { color: fg }]}>{label}</Text></>}
+      {busy ? <ActivityIndicator color={fg} /> : <>{icon ? <Ionicons name={icon} size={18} color={fg} /> : null}<Text style={[s.btnText, { color: fg }]} numberOfLines={1}>{label}</Text></>}
     </Pressable>
   );
 }
@@ -66,12 +66,12 @@ const s = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: 8, paddingHorizontal: 16, height: 56 },
   headerTitle: { flex: 1, fontSize: 20, fontWeight: "700", color: theme.text },
   iconBtn: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
-  btn: { height: 52, borderRadius: 14, flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center", paddingHorizontal: 18 },
+  btn: { minHeight: 46, borderRadius: 13, flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center", paddingHorizontal: 18 },
   btnPrimary: { backgroundColor: theme.primary },
   btnOutline: { borderWidth: 1, borderColor: theme.border, backgroundColor: theme.card },
-  btnText: { fontSize: 16, fontWeight: "600" },
+  btnText: { fontSize: 15, fontWeight: "600" },
   label: { fontSize: 14, fontWeight: "600", color: theme.text },
-  input: { height: 52, borderRadius: 14, borderWidth: 1, borderColor: theme.border, backgroundColor: theme.card, paddingHorizontal: 14, fontSize: 16, color: theme.text },
+  input: { minHeight: 48, borderRadius: 14, borderWidth: 1, borderColor: theme.border, backgroundColor: theme.card, paddingHorizontal: 14, fontSize: 16, color: theme.text },
   card: { backgroundColor: theme.card, borderRadius: theme.radius, borderWidth: 1, borderColor: theme.border, padding: 16 },
   emptyIcon: { width: 64, height: 64, borderRadius: 32, backgroundColor: theme.primarySoft, alignItems: "center", justifyContent: "center" },
 });
