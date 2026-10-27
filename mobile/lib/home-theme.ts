@@ -1,0 +1,20 @@
+// Home-only roles keep the reference redesign isolated from other native screens.
+export const homeTheme = {
+  background: "#F2F6FF",
+  surface: "#FFFFFF",
+  storage: "#E7F0FF",
+  text: "#070D2C",
+  muted: "#607293",
+  primary: "#0862FF",
+  onPrimary: "#FFFFFF",
+  track: "#C9DCFA",
+  border: "#E6EDFA",
+  gold: "#F5B400",
+  shadow: "#A9C6F5",
+  categories: {
+    pdf: { foreground: "#FF4056", background: "#FFE6E9" },
+    image: { foreground: "#00ACC5", background: "#E0F7FB" },
+    video: { foreground: "#9639F6", background: "#F0E4FF" },
+    audio: { foreground: "#EF8500", background: "#FFF0DF" },
+  } as Record<string, { foreground: string; background: string }>,
+};
