@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Match reference video player with overlay controls, 10-second skips and reliable rotation in web/native; verify controls and small-screen layout.
 - [x] Remove owner premium playback gates in native and installed-web app; 23 tests pass, build OK, browser installation restriction verified; expiry, guarded storage, ads and view recording unchanged.
 - [ ] Verify own-upload playback with a real signed-in owner on Android (blocked: no matching requesting-user account/session or Android device); updated APK/VPS release not performed.
 - [x] Make /mobileapp Profile icons professional: avatar camera badge with white ring (no monogram clipping), consistent tile icons (storage drive, shared link), distinct settings icons (support/privacy), outline active nav tab; 9 tests pass, build OK, phone and nav checks verified. Preview only; production/native unchanged.
