@@ -10,7 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Application rules
-- Isolate `/mobileapp` in `mobileapp-review/`; never import `mobile/` or change production. Signed-out views use labeled local samples, never fake auth; real sessions always win to preserve account isolation.
+- Isolate `/mobileapp` screens/styles in `mobileapp-review/`; never import `mobile/` or change production. Samples never create auth; real sessions win. Profile has its own scoped component/styles to avoid changing other tabs.
 - Self-hosted upload safety uses deploy/safety SQL, a VPS-only antivirus service and an Nginx delivery guard; clean supported scans enable sharing automatically, but report holds and blocks persist because client checks cannot protect older APKs or existing signed URLs.
 - Content-safety schema extensions use a narrowly typed client in src/lib/content-safety.ts; never edit generated backend client/types to add moderation fields.
 - Keep splash artwork and typography scoped to SplashScreen and `.splash` styles; its installed-app detection and session timers remain unchanged so visual updates do not alter launch behavior.
