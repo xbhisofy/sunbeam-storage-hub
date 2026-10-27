@@ -8,6 +8,7 @@ import { shareLink } from "../lib/config";
 import { EXPIRY, deleteFile, formatDate, formatSize, iconFor, renameFile, setExpiry, type FileRow } from "../lib/files";
 import { Button } from "./ui";
 import { homeTheme } from "../lib/home-theme";
+import { HomeThumbnail } from "./HomeThumbnail";
 
 type Sheet = null | "menu" | "rename" | "expiry" | "details";
 
@@ -72,7 +73,7 @@ export function FileCard({ file, onChange, showExpiry, presentation = "default" 
     <>
       <View style={[s.row, presentation === "home" && s.homeRow]}>
         <Pressable accessibilityRole="button" accessibilityLabel={`Open ${file.name}`} onPress={() => router.push({ pathname: "/s/[slug]", params: { slug: file.slug } })} style={({ pressed }) => [s.openFile, pressed && { opacity: 0.7 }]}>
-        <FileIcon type={file.file_type} />
+        {presentation === "home" ? <HomeThumbnail path={file.storage_path} type={file.file_type} /> : <FileIcon type={file.file_type} />}
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={[s.name, presentation === "home" && s.homeName]} numberOfLines={1}>{file.name}</Text>
           <Text style={[s.meta, presentation === "home" && s.homeMeta]} numberOfLines={1}>{showExpiry ? expiryText(file) : meta}</Text>
@@ -138,9 +139,9 @@ export function FileCard({ file, onChange, showExpiry, presentation = "default" 
 }
 
 const s = StyleSheet.create({
-  homeRow: { paddingHorizontal: 8, paddingVertical: 10, gap: 4, minHeight: 68, borderWidth: 1, borderColor: homeTheme.border, borderRadius: 14, backgroundColor: homeTheme.surface },
-  homeName: { color: homeTheme.text, fontSize: 14 },
-  homeMeta: { color: homeTheme.muted, fontSize: 12 },
+  homeRow: { paddingHorizontal: 8, paddingVertical: 2, gap: 4, minHeight: 48, borderWidth: 1, borderColor: homeTheme.border, borderRadius: 14, backgroundColor: homeTheme.surface },
+  homeName: { color: homeTheme.text, fontSize: 12 },
+  homeMeta: { color: homeTheme.muted, fontSize: 10 },
   homeMore: { width: 48, height: 48 },
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, paddingHorizontal: 16 },
   openFile: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12, minWidth: 0 },
