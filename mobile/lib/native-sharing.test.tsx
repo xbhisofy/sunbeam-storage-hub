@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const actions = vi.hoisted(() => ({ expiry: vi.fn(), clipboard: vi.fn(), share: vi.fn() }));
-vi.mock('react-native', () => {
+vi.mock('../node_modules/react-native/index.js', () => {
   const box = ({ children }: any) => createElement('div', null, children);
   return {
     View: box, Text: ({ children }: any) => createElement('span', null, children), ScrollView: box, KeyboardAvoidingView: box,
@@ -13,10 +13,10 @@ vi.mock('react-native', () => {
     StyleSheet: { create: (value: any) => value }, Platform: { OS: 'android' }, Alert: { alert: vi.fn() }, Share: { share: actions.share },
   };
 });
-vi.mock('@expo/vector-icons', () => ({ Ionicons: () => null }));
-vi.mock('expo-clipboard', () => ({ setStringAsync: actions.clipboard }));
-vi.mock('expo-router', () => ({ router: { push: vi.fn() } }));
-vi.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ bottom: 24 }) }));
+vi.mock('../node_modules/@expo/vector-icons/build/Icons.js', () => ({ Ionicons: () => null }));
+vi.mock('../node_modules/expo-clipboard/build/Clipboard.js', () => ({ setStringAsync: actions.clipboard }));
+vi.mock('../node_modules/expo-router/build/index.js', () => ({ router: { push: vi.fn() } }));
+vi.mock('../node_modules/react-native-safe-area-context/lib/commonjs/index.js', () => ({ useSafeAreaInsets: () => ({ bottom: 24 }) }));
 vi.mock('../../mobile/components/HomeThumbnail', () => ({ HomeThumbnail: () => null }));
 vi.mock('../../mobile/components/ui', () => ({ Button: ({ label, onPress, busy }: any) => createElement('button', { onClick: onPress, disabled: busy }, label) }));
 vi.mock('../../mobile/lib/config', () => ({ shareLink: (slug: string) => `https://tanyora.com/s/${slug}` }));
@@ -32,7 +32,7 @@ describe('Native sharing actions', () => {
   function open() {
     render(<FileCard file={file} onChange={vi.fn()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Actions for photo.jpg' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Share', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: /^Share$/ }));
   }
   it('selects 24 hours without changing expiry until explicit creation', async () => {
     open(); fireEvent.click(screen.getByRole('button', { name: '24 hours' }));
