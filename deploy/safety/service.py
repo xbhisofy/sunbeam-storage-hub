@@ -31,8 +31,8 @@ def decide(path, status, note):
                 next_status = 'blocked'
             elif group_reported:
                 next_status = 'pending'
-            held = old_status == 'blocked' or old_note == 'Safety report: review required'
-            cur.execute("UPDATE public.files SET scan_status=%s, scanned_at=now(), moderation_status=%s, moderation_note=%s WHERE id=%s", (status, next_status, old_note if held else note, fid))
+            next_note = old_note if old_status == 'blocked' else 'Blocked by related file moderation' if group_blocked else 'Safety report: review required' if group_reported else note
+            cur.execute("UPDATE public.files SET scan_status=%s, scanned_at=now(), moderation_status=%s, moderation_note=%s WHERE id=%s", (status, next_status, next_note, fid))
         cur.execute("INSERT INTO public.content_safety_events(file_id,action,note) SELECT id,%s,%s FROM public.files WHERE storage_path=%s AND source='original'", ('scan_' + status, note, path))
 
 
@@ -88,7 +88,7 @@ def scan_one():
             # Stream bytes across the daemon socket; services use isolated /tmp namespaces.
             # Use this exact verified config rather than a different default daemon.
             result = subprocess.run(['clamdscan', '--config-file', os.environ.get('SAFETY_CLAMD_CONFIG', '/etc/clamav/clamd.conf'), '--stream', '--no-summary', temporary.name], capture_output=True, text=True, timeout=int(os.environ.get('SAFETY_SCAN_TIMEOUT_SECONDS', '180')))
-            status = scan_result(result.returncode, result.stdout)
+            status = scan_result(result.returncode, result.stdout) if not result.stderr.strip() else 'infected' if result.returncode == 1 else 'error'
             decide(path, status, 'Malware scan passed; sharing enabled automatically' if status == 'clean' else 'Malware detected' if status == 'infected' else 'Antivirus check unavailable; sharing blocked')
         except Exception:
             decide(path, 'error', 'Safety checking failed; sharing blocked')

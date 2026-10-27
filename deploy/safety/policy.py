@@ -1,6 +1,8 @@
 """Malware scanning policy; clean scans enable sharing, not content certification."""
 from pathlib import PurePosixPath
 import zipfile
+import os
+import re
 from xml.etree import ElementTree
 
 MAX_SCAN_BYTES = 100 * 1024 * 1024
@@ -36,7 +38,7 @@ def document_restriction(path, name):
         return None
     try:
         # Bound central-directory memory before ZipFile parses untrusted entries.
-        size = __import__('os').path.getsize(path)
+        size = os.path.getsize(path)
         with open(path, 'rb') as source:
             source.seek(max(0, size - 65557))
             tail = source.read()
@@ -45,10 +47,12 @@ def document_restriction(path, name):
             return 'Invalid Office document container'
         import struct
         disk, directory_disk, disk_entries, entries, directory_size, offset, comment = struct.unpack_from('<4H2IH', tail, index + 4)
-        if disk or directory_disk or disk_entries != entries or entries > 4096 or directory_size > 2 * 1024 * 1024 or offset + directory_size > size or index + 22 + comment != len(tail):
+        if disk or directory_disk or disk_entries != entries or entries > 4096 or directory_size > 2 * 1024 * 1024 or offset + directory_size != size - len(tail) + index or index + 22 + comment != len(tail):
             return 'Office document exceeds container inspection limits'
         with zipfile.ZipFile(path) as archive:
             members = archive.infolist()
+            if len(members) != entries:
+                return 'Ambiguous Office document container'
             names = [entry.filename for entry in members]
             if len(names) != len(set(names)) or any(entry.flag_bits & 1 for entry in members):
                 return 'Encrypted or ambiguous Office document'
@@ -73,7 +77,8 @@ def document_restriction(path, name):
 def scan_result(code, output):
     if code == 1:
         return 'infected'
-    if code != 0 or 'OK' not in output:
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    if code != 0 or len(lines) != 1 or not re.fullmatch(r'.+: OK', lines[0]):
         return 'error'
     return 'clean'
 
