@@ -8,6 +8,7 @@ import cloudArt from './assets/home-cloud.png';
 import logo from './assets/icon.png';
 import { type ReviewScreen } from './data';
 import s from './mobileapp-review.module.css';
+import { ReviewFileRow } from './ReviewFileRow';
 
 // Props remain read-only; no native picker, file sharing or account mutations enter this route.
 export function HomePreview({ account, signedIn, loading, error, refresh }: {
@@ -46,11 +47,7 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
     </section>
     <section className={s.categories} aria-label="File categories">{categories.map(({ kind, label, icon: Icon }) => <Button asChild variant="ghost" className={s.category} key={kind}><Link to="/mobileapp" search={{ screen: 'files' }} aria-label={`${label}, ${known ? files.filter(f => f.file_type === kind).length : 'unavailable'} files`}><span className={`${s.categoryIcon} ${s[kind as 'pdf' | 'image' | 'video' | 'audio']}`}><Icon aria-hidden="true" /></span><strong>{label}</strong><span className={s.categoryBottom}>{known ? `${files.filter(f => f.file_type === kind).length} files` : '—'}<ChevronRight aria-hidden="true" /></span></Link></Button>)}</section>
     <section className={s.recent}><div className={s.recentHeader}><h2>Recent Files</h2>{destination('files', 'View all files', s.textLink, <>View all<ChevronRight aria-hidden="true" /></>)}</div>
-      {!signedIn ? <div className={s.message}><Cloud aria-hidden="true" /><h2>Sign in to view your files</h2><p>Reopen this page after signing in.</p><Button asChild className={s.secondary} variant="outline"><Link to="/auth">Sign in</Link></Button></div> : loading ? <div className={s.message} role="status">Loading your files…</div> : error ? <div className={s.message} role="alert"><p>Could not load your account and files.</p><Button onClick={refresh} variant="outline" className={s.secondary}>Try again</Button></div> : files.length ? <div className={s.fileList}>{files.slice(0, 3).map(file => {
-        const kind = categories.find(c => c.kind === file.file_type)?.kind ?? 'pdf';
-        const Icon = categories.find(c => c.kind === kind)?.icon ?? FileText;
-        return <article className={s.file} key={file.id}><div className={`${s.fileIcon} ${s[kind as 'pdf' | 'image' | 'video' | 'audio']}`}><Icon aria-hidden="true" /></div><div className={s.fileText}><strong>{file.name}</strong><small>{formatSize(file.size)} · {formatFileDate(file.created_at)}</small></div><Button asChild variant="ghost" className={s.fileMenu}><Link to="/content" aria-label={`Manage ${file.name}`}><MoreVertical aria-hidden="true" /></Link></Button></article>;
-      })}</div> : <div className={s.message}><CloudUpload aria-hidden="true" /><h2>No files yet</h2>{destination('upload', 'Upload a file', s.secondary, <>Upload a file</>)}</div>}
+      {!signedIn ? <div className={s.message}><Cloud aria-hidden="true" /><h2>Sign in to view your files</h2><p>Reopen this page after signing in.</p><Button asChild className={s.secondary} variant="outline"><Link to="/auth">Sign in</Link></Button></div> : loading ? <div className={s.message} role="status">Loading your files…</div> : error ? <div className={s.message} role="alert"><p>Could not load your account and files.</p><Button onClick={refresh} variant="outline" className={s.secondary}>Try again</Button></div> : files.length ? <div className={s.fileList}>{files.slice(0, 3).map(file => <ReviewFileRow key={file.id} file={file} compact />)}</div> : <div className={s.message}><CloudUpload aria-hidden="true" /><h2>No files yet</h2>{destination('upload', 'Upload a file', s.secondary, <>Upload a file</>)}</div>}
       {signedIn && known && <Button onClick={refresh} disabled={loading} variant="ghost" className={s.textLink}>Refresh</Button>}
     </section>
   </>;

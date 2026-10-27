@@ -1,39 +1,33 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { UserRound, Pencil, ChevronRight, ShieldCheck, FileText, Headphones, LogOut, Trash2, Search, CloudUpload, Image, Folder, Camera, HardDrive, Share2, MoreVertical } from 'lucide-react';
+import { Search, SlidersHorizontal, Folder, Clock, ArrowDownUp, FileText, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatSize, formatFileDate } from '@/lib/format';
-import { reviewPlan } from './plan-display';
-import type { ReviewFile, ReviewScreen } from './data';
-import art from './assets/home-cloud.png';
-import s from './mobileapp-review.module.css';
+import type { ReviewScreen } from './data';
+import type { ReviewAccount } from './sample-account';
 import { ProfilePreview } from './ProfilePreview';
+import { UploadPreview } from './UploadPreview';
+import { ReviewFileRow, fileKinds } from './ReviewFileRow';
+import art from './assets/shared-folders.png';
+import s from './ReferenceScreens.module.css';
 
-type Account = { profile: { display_name: string | null; email: string | null; premium_tier: string | null; premium_until: string | null }; files: ReviewFile[] };
-export function ScreensPreview({ screen, account, loading, error, signedIn, refresh }: { screen: Exclude<ReviewScreen, 'home'>; account: Account | null | undefined; loading: boolean; error: boolean; signedIn: boolean; refresh: () => void }) {
+export function ScreensPreview({ screen, account, loading, error, signedIn, refresh }: { screen: Exclude<ReviewScreen, 'home'>; account: ReviewAccount | null | undefined; loading: boolean; error: boolean; signedIn: boolean; refresh: () => void }) {
   const [search, setSearch] = useState('');
   const [kind, setKind] = useState('all');
   const [sort, setSort] = useState('recent');
-  const files = account?.files ?? [];
-  const plan = reviewPlan(account?.profile ?? null);
-  const title = { files: 'My Files', upload: 'Upload', shared: 'Shared Links', profile: 'Profile' }[screen];
-  const signIn = <div className={s.message}><UserRound aria-hidden="true" /><h2>Sign in to view your {screen === 'profile' ? 'account' : 'files'}</h2><Button asChild variant="outline" className={s.secondary}><Link to="/auth">Sign in</Link></Button></div>;
-  const actions = <div className={s.message}>{!signedIn ? signIn : loading ? <p role="status">Loading…</p> : error ? <><p role="alert">Could not load your account.</p><Button variant="outline" className={s.secondary} onClick={refresh}>Try again</Button></> : null}</div>;
+  const [showSort, setShowSort] = useState(false);
+  const input = useRef<HTMLInputElement>(null);
   if (screen === 'profile') return <ProfilePreview account={account} signedIn={signedIn} />;
-  if (screen === 'upload') return <>
-    <header className={s.screenHeading}><h1>Upload</h1><CloudUpload aria-hidden="true" /></header>
-    <section className={s.uploadIntro}><img src={art} alt="" width="150" height="150" /><h2>Upload to your cloud</h2><p>Keep your files safe and share them easily.</p></section>
-    <div className={s.uploadChoices}>{[{ icon: Image, name: 'Photos & Videos', caption: 'Your favourite moments, safely stored' }, { icon: FileText, name: 'Documents & Files', caption: 'PDFs, documents and more' }].map(({ icon: Icon, name, caption }) => <Button asChild variant="ghost" className={s.uploadChoice} key={name}><Link to={signedIn ? '/content' : '/auth'}><span className={s.fileIcon}><Icon aria-hidden="true" /></span><span><strong>{name}</strong><small>{caption}</small></span><ChevronRight aria-hidden="true" /></Link></Button>)}</div>
-    <div className={s.sources}><Button disabled variant="ghost" className={s.utility}><Camera aria-hidden="true" />Camera</Button><Button asChild variant="ghost" className={s.utility}><Link to={signedIn ? '/content' : '/auth'}><Folder aria-hidden="true" />Browse Files</Link></Button><Button disabled variant="ghost" className={s.utility}><HardDrive aria-hidden="true" />Drive</Button></div>
-    <div className={s.message}><ShieldCheck aria-hidden="true" /><p>Your files remain private until you share them.</p></div>
-  </>;
-  const base = screen === 'shared' ? files.filter(f => !!f.slug) : files;
+  if (screen === 'upload') return <UploadPreview signedIn={signedIn} />;
+  const shared = screen === 'shared';
+  const files = account?.files ?? [];
+  const base = shared ? files.filter(f => !!f.slug) : files;
   const shown = base.filter(f => (kind === 'all' || f.file_type === kind) && f.name.toLowerCase().includes(search.toLowerCase())).sort((a,b) => sort === 'name' ? a.name.localeCompare(b.name) : sort === 'size' ? b.size-a.size : Date.parse(b.created_at)-Date.parse(a.created_at));
-  return <>
-    <header className={s.screenHeading}><h1>{title}</h1>{screen === 'shared' ? <Share2 aria-hidden="true" /> : <Folder aria-hidden="true" />}</header>
-    <label className={s.searchBox}><Search aria-hidden="true" /><input aria-label={`Search ${title}`} placeholder={screen === 'shared' ? 'Search shared links' : 'Search your files'} value={search} onChange={e => setSearch(e.target.value)} /></label>
-    <div className={s.filters}>{['all','image','video','pdf','audio'].map(k => <Button key={k} variant="ghost" className={`${s.chip} ${k === kind ? s.selectedChip : ''}`} aria-pressed={k===kind} onClick={() => setKind(k)}>{({ all: 'All', image: 'Images', video: 'Videos', pdf: 'Docs', audio: 'Music' } as Record<string,string>)[k]}<span>{account ? base.filter(f => k==='all' || f.file_type===k).length : '—'}</span></Button>)}</div>
-    <div className={s.sortBar}><span>{account ? `${shown.length} ${screen==='shared' ? 'links' : 'files'}` : 'Your library'}</span><select aria-label="Sort files" value={sort} onChange={e => setSort(e.target.value)}><option value="recent">Recent</option><option value="name">Name</option><option value="size">Size</option><option value="date">Date</option></select></div>
-    {(!signedIn || loading || error) ? actions : shown.length ? <div className={s.fileList}>{shown.map(f => <article key={f.id} className={s.file}><div className={`${s.fileIcon} ${s.image}`}><FileText aria-hidden="true" /></div><div className={s.fileText}><strong>{f.name}</strong><small>{formatSize(f.size)} · {formatFileDate(f.created_at)}</small>{screen === 'shared' && <small className={s.expiry}>{f.expires_at ? Date.parse(f.expires_at) <= Date.now() ? 'Link expired' : `Expires ${formatFileDate(f.expires_at)}` : 'Never expires'}</small>}</div><Button asChild variant="ghost" className={s.fileMenu}><Link to={screen === 'shared' ? '/shared' : '/content'} aria-label={`Manage ${f.name}`}><MoreVertical aria-hidden="true" /></Link></Button></article>)}</div> : <div className={s.message}><img src={art} alt="" width="112" height="112" /><h2>{search || kind !== 'all' ? 'No matching files' : screen === 'shared' ? 'No shared links yet' : 'No files yet'}</h2><Button asChild variant="outline" className={s.secondary}><Link to="/mobileapp" search={{ screen: 'upload' }}>{screen==='shared' ? 'Share a File' : 'Upload a file'}</Link></Button></div>}
-  </>;
+  const categories = [{ kind: 'all', label: 'All', icon: Folder }, ...(shared ? [fileKinds[1],fileKinds[2],fileKinds[0],fileKinds[3]] : fileKinds)];
+  return <div className={shared ? s.shared : ''}>
+    <header className={s.heading}><small>{shared ? 'TANYORA' : 'MY LIBRARY'}</small><h1>{shared ? 'Shared' : 'My'} <span>{shared ? 'Links' : 'Files'}</span></h1><p>{shared ? "Manage all the files you've shared with others." : 'Manage and access all your files in one place.'}</p>{shared ? <img src={art} alt="" width="104" height="92" /> : <Button variant="ghost" className={s.searchAction} aria-label="Focus file search" onClick={() => input.current?.focus()}><Search aria-hidden="true" /></Button>}</header>
+    <div className={s.search}><label><Search aria-hidden="true" /><input ref={input} aria-label={shared ? 'Search shared links' : 'Search My Files'} placeholder={shared ? 'Search shared files...' : 'Search files...'} value={search} onChange={e => setSearch(e.target.value)} /></label><Button variant="ghost" className={s.filter} aria-label="Toggle sorting" aria-pressed={showSort} onClick={() => setShowSort(v => !v)}><SlidersHorizontal aria-hidden="true" /></Button></div>
+    <div className={s.chips}>{categories.map(({ kind: k, label, icon: Icon }) => <Button key={k} variant="ghost" className={`${s.chip} ${k === kind ? s.selected : ''}`} aria-pressed={k===kind} onClick={() => setKind(k)}><span className={`${s.chipIcon} ${k === 'all' ? '' : s[k as 'pdf'|'image'|'video'|'audio']}`}><Icon aria-hidden="true" /></span><span>{label}<small>{base.filter(f => k === 'all' || f.file_type === k).length}</small></span></Button>)}</div>
+    {(!shared || showSort) && <div className={s.sort} aria-label="Sort files">{[{ value:'recent',label:'Recent',icon:Clock },{ value:'name',label:'Name',icon:ArrowDownUp },{ value:'size',label:'Size',icon:FileText },{ value:'date',label:'Date',icon:CalendarDays }].map(({ value,label,icon:Icon }) => <Button key={value} variant="ghost" className={`${s.sortButton} ${sort===value ? s.selectedSort : ''}`} aria-pressed={sort===value} onClick={() => setSort(value)}><Icon aria-hidden="true" />{label}</Button>)}</div>}
+    {loading ? <div className={s.empty} role="status">Loading your files…</div> : error ? <div className={s.empty} role="alert"><p>Could not load your files.</p><Button variant="outline" onClick={refresh}>Try again</Button></div> : shown.length ? <div className={s.list}>{shown.map(file => <ReviewFileRow key={file.id} file={file} shared={shared} />)}</div> : <div className={s.empty}>{shared && <img src={art} alt="" width="140" height="110" />}<h2>{search || kind !== 'all' ? 'No matching files' : shared ? 'No shared links yet' : 'No files yet'}</h2><p>{shared ? 'When you share a file, it will appear here.' : 'Your uploaded files will appear here.'}</p><Button asChild className={s.cta}><Link to="/mobileapp" search={{ screen:'upload' }}>{shared ? 'Share a File' : 'Upload a file'}</Link></Button></div>}
+  </div>;
 }

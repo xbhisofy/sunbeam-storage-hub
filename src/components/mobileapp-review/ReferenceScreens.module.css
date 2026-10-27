@@ -1,0 +1,81 @@
+.heading { position: relative; margin: 12px 0 20px; padding-right: 74px; }
+.heading small { color: var(--review-muted); font-size: 12px; font-weight: 600; }
+.heading h1 { font-size: 30px; font-weight: 800; line-height: 1.2; margin: 4px 0; }
+.heading h1 span { color: var(--review-primary); }
+.heading p { font-size: 13px; color: var(--review-muted); }
+.heading img { position: absolute; right: -10px; top: -8px; width: 104px; height: 92px; object-fit: contain; }
+.heading .searchAction { position: absolute; right: 0; top: 6px; width: 44px; height: 44px; border-radius: 50%; background: var(--review-surface); color: var(--review-primary); padding: 0; }
+.search { display: grid; grid-template-columns: minmax(0,1fr) 44px; gap: 8px; }
+.search label { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 12px 16px; border-radius: 20px; background: var(--review-surface); color: var(--review-muted); }
+.search input { width: 100%; min-width: 0; border: 0; outline: none; background: transparent; color: var(--review-text); font-size: 14px; }
+.search .filter { border-radius: 18px; padding: 0; height: 52px; background: var(--review-surface); color: var(--review-primary); }
+.chips { display: grid; grid-template-columns: .85fr 1.2fr 1fr 1fr .95fr; gap: 5px; margin: 14px 0; }
+.chips .chip { display: flex; gap: 4px; height: auto; min-height: 49px; padding: 6px 4px; border-radius: 14px; background: var(--review-surface); color: var(--review-text); min-width: 0; }
+.chip > span:last-child { display: flex; flex-direction: column; text-align: left; font-size: 8px; min-width: 0; }
+.chip small { color: var(--review-muted); font-size: 11px; }
+.chips .selected { background: var(--review-storage); color: var(--review-primary); }
+.shared .chips .selected { background: var(--review-primary); color: var(--review-on-primary); }
+.shared .selected small { color: inherit; }
+.chipIcon { display: grid; place-items: center; width: 21px; height: 26px; flex-shrink: 0; border-radius: 6px; background: var(--review-storage); color: var(--review-primary); }
+.chipIcon svg { width: 17px; height: 17px; }
+.pdf { background: var(--review-red-bg); color: var(--review-red); }
+.image { background: var(--review-cyan-bg); color: var(--review-cyan); }
+.video { background: var(--review-purple-bg); color: var(--review-purple); }
+.audio { background: var(--review-orange-bg); color: var(--review-orange); }
+.sort { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 2px; border: 1px solid var(--review-surface); border-radius: 28px; margin-bottom: 12px; padding: 3px; }
+.sort .sortButton { min-height: 44px; padding: 4px; font-size: 12px; border-radius: 24px; background: transparent; color: var(--review-muted); gap: 4px; }
+.sortButton svg { width: 16px; height: 16px; }
+.sort .selectedSort { background: linear-gradient(135deg,var(--review-light),var(--review-primary)); color: var(--review-on-primary); box-shadow: var(--review-shadow); }
+.list { display: grid; gap: 8px; }
+.row { background: var(--review-surface); border-radius: 20px; padding: 10px; display: grid; grid-template-columns: 54px minmax(0,1fr) 32px; gap: 12px; align-items: center; min-height: 88px; }
+.thumbnail { width: 54px; height: 58px; border-radius: 11px; display: grid; place-items: center; overflow: hidden; }
+.thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+.thumbnail svg { width: 30px; height: 30px; }
+.name { min-width: 0; }
+.name strong { display: block; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; line-height: 1.35; }
+.name small { display: block; color: var(--review-muted); font-size: 11px; margin-top: 3px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 1px 5px; margin-top: 4px; border-radius: 7px; }
+.tag svg { width: 12px; height: 12px; }
+.expiry { color: var(--review-cyan); background: var(--review-cyan-bg); }
+.row .menu { background: transparent; color: var(--review-muted); padding: 0; width: 32px; height: 44px; }
+.compact { min-height: 56px; grid-template-columns: 36px minmax(0,1fr) 28px; padding: 6px; gap: 10px; border: 1px solid var(--review-border); border-radius: 14px; }
+.compact .thumbnail { width: 36px; height: 36px; border-radius: 7px; }
+.compact .name strong { font-size: 12px; }
+.empty { text-align: center; padding: 32px 12px; color: var(--review-muted); }
+.empty img { width: 140px; height: 110px; object-fit: contain; margin: auto; }
+.empty h2 { font-size: 18px; color: var(--review-text); margin: 12px 0 4px; }
+.empty p { font-size: 13px; }
+.empty .cta { margin-top: 16px; background: var(--review-primary); color: var(--review-on-primary); border-radius: 24px; min-height: 44px; }
+.uploadHeader { display: grid; grid-template-columns: 36px minmax(0,1fr); gap: 8px; align-items: center; }
+.uploadHeader .back { width: 36px; min-height: 44px; padding: 0; background: transparent; color: var(--review-text); }
+.uploadHeader h1 { font-size: 22px; font-weight: 800; }
+.uploadHeader p { font-size: 12px; color: var(--review-muted); }
+.uploadHero { position: relative; min-height: 218px; padding: 26px 0 16px; }
+.uploadHero > div { position: relative; z-index: 1; max-width: 59%; }
+.uploadHero small { font-size: 10px; color: var(--review-muted); font-weight: 600; }
+.uploadHero h2 { font-size: 27px; font-weight: 800; line-height: 1.1; margin: 8px 0; }
+.uploadHero h2 span { color: var(--review-primary); }
+.uploadHero p { font-size: 12px; line-height: 1.5; color: var(--review-muted); max-width: 170px; }
+.uploadHero img { position: absolute; width: 188px; height: 188px; right: -20px; top: 15px; object-fit: contain; }
+.reassurance { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 12px 8px; border: 1px solid var(--review-surface); border-radius: 14px; margin-bottom: 18px; }
+.reassurance span { display: flex; align-items: center; gap: 4px; color: var(--review-muted); font-size: 9px; font-weight: 600; }
+.reassurance svg { width: 15px; height: 15px; color: var(--review-primary); fill: var(--review-storage); }
+.uploadCards { display: grid; gap: 12px; }
+.uploadCards .uploadCard { display: grid; grid-template-columns: 52px minmax(0,1fr) 28px; gap: 14px; width: 100%; min-height: 124px; height: auto; padding: 14px 12px; border-radius: 22px; background: var(--review-surface); color: var(--review-text); text-decoration: none; text-align: left; }
+.uploadIcon { display: grid; place-items: center; width: 52px; height: 56px; border-radius: 16px; color: var(--review-primary); background: var(--review-storage); }
+.uploadIcon svg { width: 32px; height: 32px; }
+.uploadCard strong { display: block; font-size: 17px; font-weight: 800; }
+.uploadCard small { display: block; font-size: 12px; color: var(--review-muted); margin-top: 3px; font-weight: 400; }
+.formats { grid-column: 2 / 4; display: flex; flex-wrap: wrap; gap: 4px; }
+.formats span { display: inline-flex; gap: 3px; align-items: center; padding: 5px 6px; background: var(--review-start); border-radius: 16px; font-size: 9px; color: var(--review-muted); }
+.formats svg { width: 12px; height: 12px; color: var(--review-primary); }
+.divider { text-align: center; color: var(--review-muted); font-size: 10px; margin: 18px 0 12px; }
+.sources { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.sources .source { display: flex; flex-direction: column; gap: 6px; width: 100%; min-height: 112px; height: auto; border-radius: 20px; padding: 12px 4px; color: var(--review-text); background: var(--review-surface); }
+.source > svg { color: var(--review-primary); width: 28px; height: 28px; }
+.source strong { font-size: 12px; }
+.source small { font-size: 10px; color: var(--review-muted); font-weight: 400; }
+.sources .source:disabled { opacity: .6; }
+.privacy { display: flex; gap: 12px; align-items: center; padding: 16px 12px; margin-top: 18px; border-radius: 16px; border: 1px solid var(--review-surface); color: var(--review-muted); font-size: 12px; }
+.privacy svg { color: var(--review-primary); width: 30px; height: 30px; }
+@media (max-width: 350px) { .uploadHero h2 { font-size: 24px; } .uploadHero img { width: 150px; right: -16px; } .row { gap: 8px; } .chips { display: flex; flex-wrap: wrap; } .chips .chip { padding: 6px; } }
