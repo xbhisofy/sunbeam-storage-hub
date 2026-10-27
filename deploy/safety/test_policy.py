@@ -104,7 +104,8 @@ class SafetyRules(unittest.TestCase):
     def test_office_encrypted_members(self):
         with tempfile.NamedTemporaryFile() as file:
             self.office(file.name, 'word/document.xml')
-            data = bytearray(open(file.name, 'rb').read())
+            with open(file.name, 'rb') as source:
+                data = bytearray(source.read())
             index = data.index(b'PK\x01\x02')
             struct.pack_into('<H', data, index + 8, 1)
             file.seek(0); file.write(data); file.flush()

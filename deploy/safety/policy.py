@@ -60,6 +60,10 @@ def document_restriction(path, name):
                 return 'Invalid Office document paths'
             if OFFICE_XML[suffix] not in names or '[Content_Types].xml' not in names:
                 return 'Office document does not match its file type'
+            if any(entry.is_dir() or entry.file_size <= 0 for entry in (archive.getinfo(OFFICE_XML[suffix]), archive.getinfo('[Content_Types].xml'))):
+                return 'Office document main part is not a regular file'
+            if any(entry.compress_type not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED) for entry in members):
+                return 'Unsupported Office document compression'
             types = archive.getinfo('[Content_Types].xml')
             if types.file_size > 65536:
                 return 'Office document exceeds container inspection limits'
@@ -69,7 +73,7 @@ def document_restriction(path, name):
             root = ElementTree.fromstring(xml)
             if not any(item.get('PartName') == '/' + OFFICE_XML[suffix] for item in root):
                 return 'Office document is missing its declared main part'
-    except (OSError, ValueError, zipfile.BadZipFile, RuntimeError, ElementTree.ParseError):
+    except (OSError, ValueError, zipfile.BadZipFile, RuntimeError, NotImplementedError, ElementTree.ParseError):
         return 'Office document validation failed'
     return None
 
