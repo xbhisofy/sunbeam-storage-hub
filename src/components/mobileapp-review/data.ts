@@ -7,7 +7,7 @@ export type ReviewScreen = typeof reviewScreens[number];
 export function reviewSearch(input: Record<string, unknown>): { screen: ReviewScreen } {
   return { screen: reviewScreens.find(screen => screen === input['screen']) ?? 'home' };
 }
-export type ReviewFile = { id: string; name: string; file_type: string; size: number; created_at: string };
+export type ReviewFile = { id: string; name: string; file_type: string; size: number; created_at: string; slug: string | null; expires_at: string | null };
 export const sessionOptions = queryOptions({
   queryKey: ['mobileapp-review', 'session'],
   queryFn: currentUserId,
@@ -24,7 +24,7 @@ export function accountOptions(uid: string | null) {
       const files: ReviewFile[] = [];
       for (let start = 0; ; start += 1000) {
         const { data, error: fileError } = await supabase.from('files')
-          .select('id,name,file_type,size,created_at').eq('owner_id', uid)
+          .select('id,name,file_type,size,created_at,slug,expires_at').eq('owner_id', uid)
           .order('created_at', { ascending: false }).order('id').range(start, start + 999);
         if (fileError) throw new Error('Could not load your files. Please try again.');
         files.push(...(data ?? []));
