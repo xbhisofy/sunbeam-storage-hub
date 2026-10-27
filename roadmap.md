@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Redesign Android Profile only: real account summary, existing settings/actions, no membership/billing; preserve approved tab geometry.
 - [x] Redesign Android Shared Links with real filters/search/expiry, existing link actions and unchanged approved navigation geometry; 16 tests and isolated screen/menu/empty-state/layout checks pass; website/backend unchanged.
 - [ ] Verify Shared Links with real account on Android: guarded thumbnails, clipboard/share/expiry updates, safe areas and large text (blocked: Android device/emulator unavailable).
 - [x] Redesign Android Upload only from reference; consent and gallery/documents/browse handlers preserved, Camera/Drive unavailable; 8 tests and isolated screen/picker-to-success checks pass.
