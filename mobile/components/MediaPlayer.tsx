@@ -88,7 +88,7 @@ export function MediaPlayer({ url, title, audio, onPlaying }: { url: string; tit
             <View style={{ flex: 1 }} />
             {tool(muted ? "volume-mute-outline" : "volume-high-outline", muted ? "Unmute" : "Mute", () => { player.muted = !muted; setMuted(!muted); })}
             {tool("repeat-outline", "Repeat", () => { player.loop = !repeat; setRepeat(!repeat); }, repeat)}
-            {!audio && tool(full ? "contract-outline" : "expand-outline", full ? "Exit fullscreen" : "Fullscreen", () => full ? void close() : setFullscreen(true))}
+            {!audio && tool(full ? "contract-outline" : "expand-outline", full ? "Exit fullscreen" : "Fullscreen", () => full ? void close() : void rotate())}
           </View>
         </LinearGradient>
       </>}

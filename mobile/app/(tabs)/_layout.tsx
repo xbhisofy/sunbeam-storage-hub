@@ -19,12 +19,12 @@ export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   return (
     <Tabs
-      tabBar={home || library || shared || profile ? ({ state, navigation }) => <HomeTabBar active={profile ? "profile" : shared ? "shared" : library ? "content" : "index"} onUpload={() => router.push("/uploader")} onNavigate={name => {
+      tabBar={({ state, navigation }) => { const current = state.routes[state.index]?.name; return <HomeTabBar active={current === "profile" || current === "shared" || current === "content" ? current : profile ? "profile" : shared ? "shared" : library ? "content" : "index"} onUpload={() => router.push("/uploader")} onNavigate={name => {
         const route = state.routes.find(r => r.name === name);
         if (!route) return;
         const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
         if (!event.defaultPrevented) navigation.navigate(route.name, route.params);
-      }} /> : undefined}
+      }} />; }}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: home ? homeTheme.primary : theme.primary,
