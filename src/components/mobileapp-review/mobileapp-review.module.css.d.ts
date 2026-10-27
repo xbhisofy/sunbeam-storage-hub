@@ -1,5 +1,5 @@
 declare const styles: {
-  review: string; phone: string; header: string; brand: string; headerActions: string;
+  review: string; phone: string; sampleLabel: string; header: string; brand: string; headerActions: string;
   iconButton: string; avatar: string; intro: string; greeting: string; storage: string;
   storageHeader: string; plan: string; used: string; capacity: string; progressRow: string;
   actions: string; upload: string; utility: string; categories: string; category: string;

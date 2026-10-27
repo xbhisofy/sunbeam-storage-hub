@@ -19,6 +19,7 @@
 .review button, .review a { white-space: normal; }
 .review :focus-visible { outline: 2px solid var(--review-primary); outline-offset: 3px; }
 .phone { max-width: 480px; margin: auto; padding: max(16px, env(safe-area-inset-top)) 24px 128px; }
+.sampleLabel { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--review-muted); font-size: 11px; border-bottom: 1px solid var(--review-border); margin-bottom: 12px; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .brand { display: flex; align-items: center; gap: 8px; }
 .brand img { width: 34px; height: 34px; border-radius: 9px; }
