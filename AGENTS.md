@@ -14,7 +14,7 @@
 - Upload safety uses VPS SQL, full-file ClamAV and an Nginx guard. Verify capacity against the exact daemon config; retryable scan failures stay private, not permanently blocked. Audited recovery must rescan files and preserve report/admin holds across copies; clients cannot protect old APKs/signed URLs.
 - Content-safety schema extensions use a narrowly typed client in src/lib/content-safety.ts; never edit generated backend client/types to add moderation fields.
 - Keep splash artwork and typography scoped to SplashScreen and `.splash` styles; its installed-app detection and session timers remain unchanged so visual updates do not alter launch behavior.
-- Web VideoPlayer uses wrapper fullscreen; native MediaPlayer mounts one VideoView across modal rotation, preserving custom controls and playback.
+- Web uses wrapper fullscreen; native retains one VideoView across rotation. FileCard owns sharing state/APIs; ShareLinkPanel renders expiry/ready UI.
 - Format file dates and app-safe file metadata through src/lib/format.ts so Home, file lists and details remain consistent without exposing website-only analytics in the app.
 - Centralize brand, operator contacts and the verified public host in src/lib/site.ts; keep intended domains separate to avoid unverified canonical and app links.
 - Use Brand and LegalFooter for shared branding and legal navigation; legal claims must match shipped functionality.
