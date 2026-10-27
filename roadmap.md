@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Match all five /mobileapp screens to latest references: Home artwork/rows, Files filters/sorts/thumbnails, Upload artwork/cards, Shared filters/expiry, Profile proportions and screen-specific nav; verify layouts and interactions.
+- [x] Refine all five /mobileapp reference layouts: Home artwork/rows, Files category strip/sort/thumbnails, Upload cloud/cards, Shared expiry and Profile/square nav; 8 tests and five screens across four viewports pass, no runtime errors, build OK. Sample-only verification; native/auth/production unchanged, unsupported Camera/Drive remain disabled.
 - [x] Match /mobileapp Profile account card, four colored summary tiles, seven grouped settings and outlined account actions to reference; phone/desktop and Files navigation verified, 6 tests pass, build OK. Preview remains demo/read-only; production unchanged.
 - [x] Show labeled local sample account/files in signed-out /mobileapp only; 8 tests and phone Profile, Files search, Shared/Home navigation pass, build OK; no real login or production changes.
 - [x] Fix /mobileapp build boundary: removed Expo-tree imports, isolated unchanged artwork and web-safe plan display; 10 tests, live Home/navigation and original website checks pass, build OK; native configuration unchanged.
