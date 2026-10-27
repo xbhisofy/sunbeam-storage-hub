@@ -39,7 +39,7 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
         {destination('profile', 'Open profile', `${s.iconButton} ${s.avatar}`, known ? name.charAt(0).toUpperCase() : <span>–</span>)}
       </div>
     </header>
-    <section className={s.intro}><img src={cloudArt} alt="" width="112" height="112" /><div className={s.greeting}>{greeting}, {name}<Sun aria-hidden="true" /></div><h1>Your files, <span>your space.</span></h1><p>Upload, manage, and share everything easily.</p></section>
+    <section className={s.intro}><img src={cloudArt} alt="" width="74" height="74" /><div className={s.greeting}>{greeting}, {name}<Sun aria-hidden="true" /></div><h1>Your files, <span>your space.</span></h1><p>Upload, manage, and share everything easily.</p></section>
     <section className={s.storage} aria-label="Cloud storage">
       <div className={s.storageHeader}><h2><Cloud aria-hidden="true" />Cloud Storage</h2>{destination('profile', 'View profile', s.plan, <><Award aria-hidden="true" />{known ? `${plan.name} Plan` : '—'}<ChevronRight aria-hidden="true" /></>)}</div>
       <p className={s.used}>{known ? formatSize(used) : '—'}</p><p className={s.capacity}>{known ? `of ${plan.storage / 1024 ** 3} GB used` : 'Storage details unavailable'}</p>
