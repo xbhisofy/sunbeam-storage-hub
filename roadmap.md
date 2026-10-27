@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Redesign Android Shared Links only with real filters/search/expiry, existing link actions and unchanged approved navigation geometry.
 - [x] Redesign Android Upload only from reference; consent and gallery/documents/browse handlers preserved, Camera/Drive unavailable; 8 tests and isolated screen/picker-to-success checks pass.
 - [ ] Verify redesigned Upload with real account/storage on Android, system pickers, safe areas and large text (blocked: Android device/emulator unavailable).
 - [x] Redesign Android My Files only: real categories/search/sorting, guarded thumbnails, long-press selection and Files-active navigation; 13 tests and isolated actual-screen interaction/layout checks pass; website/backend unchanged.
