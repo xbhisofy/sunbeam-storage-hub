@@ -20,19 +20,19 @@
 - Use Brand and LegalFooter for shared branding and legal navigation; legal claims must match shipped functionality.
 - Public landing visuals are scoped to .landing; use StoreBadges for centralized store destinations and WebsiteAppPreview for explicitly illustrative previews without affecting installed-app screens.
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
-- App viewers use local `shared-file` loaders without owner subscription checks; retain expiry/guarded storage. Browser links only offer installation, never fetch content or start countdowns.
-- The Android app is a separate native Expo (React Native) codebase in `mobile/` talking directly to the same backend as app.tanyora.com; keep mobile code out of `src/` and provide native account/content/earnings screens, with checkout and payouts on the external website to avoid duplicating payment logic.
+- Local `shared-file` loaders require guarded HTTPS storage and fail closed on query/signing/expiry errors without owner premium checks; browsers only offer installation. Native async/ad lifecycle stays in `use-shared-playback` to reject stale work.
+- Android is native Expo in `mobile/`, separate from `src/`, using the website backend; keep website payment logic external and never duplicate it.
 - The native app is cloud sharing only (Home, My Files, Upload, Shared, Profile); earnings, wallet, referrals, OC Bonus, plans and menu stay website-only for Play policy, and plan status is read from the profile so website upgrades reflect automatically.
 - Native local notifications go through `mobile/lib/notifications.ts` with one high-importance channel bound to the bundled sound; changing the sound requires a new channel id.
-- Native conversion preserves the parent file reference and never deletes shared storage when removing a converted row, so conversions retain original ownership and bonus attribution.
+- Conversion preserves parent ownership/bonus attribution; ordinary and paginated privileged account deletion must remove only original objects within the verified owner's namespace, never converted storage.
 - Native account screens share `useProfile` with focus/resume refresh so externally changed subscriptions are not stale; central account rules validate profile inputs and derive plan display.
 - Native tab screens use the approved HomeTabBar with explicit active destination; opt-in FileCard presentations, guarded thumbnails and screen-scoped themes isolate the website. Library behavior and shared expiry logic use pure native helpers; Profile reads existing profile/files hooks without duplicating account APIs.
 - Native entrance motion uses the system Reduce Motion preference and the native animation driver to keep interactions accessible and smooth.
 - Native Upload keeps its screen-specific theme/artwork isolated and retains existing consent and picker functions; unsupported sources stay disabled rather than introducing new permissions or integrations.
-- The native root session gate owns post-login navigation and restores only validated `/s/<slug>` destinations so sign-in never loses shared files or accepts external redirects.
+- Native root restores validated `/s/<slug>` paths; `share-navigation` strictly parses owner-host/custom-scheme URLs so links cannot redirect externally or lose pending content.
 - Android assetlinks must match the shipped APK signing certificate; add the Play App Signing certificate when available because mismatches prevent verified share links from opening the installed app.
 - Public API routes under `src/routes/api/public/*` must verify callers with `requireBearerUserId`; account-deletion logic lives only in `src/lib/delete-account.ts` so the web server function and the mobile-app route stay identical.
-- Signed-in UI reads the local session via `currentUserId()` in src/lib/session.ts instead of `auth.getUser()`; a network auth check on every click made navigation slow, and the backend still verifies each request.
+- UI uses local `currentUserId()` instead of per-click network auth; backend requests remain verified. Cross-tree hook tests use root React so the DOM renderer has one dispatcher, without changing native dependencies.
 
 - PWABuilder uses the web screens with a responsive app shell; preserve the Expo code separately and never hide external identity-provider browser controls.
 - App login is email/password only (same accounts as the website); ads use AdMob with Google test IDs until owner IDs are supplied.

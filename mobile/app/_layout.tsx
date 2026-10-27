@@ -9,6 +9,7 @@ import { supabase } from "../lib/supabase";
 import { theme } from "../lib/theme";
 import { sharedDestination } from "../lib/account-rules";
 import { setupNotifications } from "../lib/notifications";
+import { shareDestinationFromUrl } from "../lib/share-navigation";
 
 const SessionContext = createContext<Session | null>(null);
 // eslint-disable-next-line react-refresh/only-export-components
@@ -39,11 +40,10 @@ export default function RootLayout() {
   useEffect(() => {
     const openShared = (url: string | null) => {
       if (!url) return;
-      const m = url.match(/\/s\/([A-Za-z0-9_-]+)/);
-      if (!m) return;
-      const slug = m[1];
-      if (sessionRef.current) router.push({ pathname: "/s/[slug]", params: { slug } });
-      else setPendingFile(`/s/${slug}`);
+      const destination = shareDestinationFromUrl(url);
+      if (!destination) return;
+      if (sessionRef.current) router.push({ pathname: "/s/[slug]", params: { slug: destination.slice(3) } });
+      else setPendingFile(destination);
     };
     Linking.getInitialURL().then(openShared).catch(() => {});
     const sub = Linking.addEventListener("url", ({ url }) => openShared(url));
@@ -56,7 +56,8 @@ export default function RootLayout() {
     if (!ready) return;
     const atLogin = segments[0] === "(auth)";
     if (!session && !atLogin) {
-      setPendingFile(sharedDestination(pathname));
+      const destination = sharedDestination(pathname);
+      if (destination) setPendingFile(destination);
       router.replace("/login");
     } else if (session && atLogin) {
       const destination = pendingFile;

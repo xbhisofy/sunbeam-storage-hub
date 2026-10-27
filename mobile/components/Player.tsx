@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Image, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
 import { AdEventType, InterstitialAd } from "react-native-google-mobile-ads";
@@ -12,43 +12,23 @@ import { useSession } from "../app/_layout";
 import { Motion } from "./Motion";
 import { loadSharedFile } from "../lib/shared-file";
 import { MediaPlayer } from "./MediaPlayer";
+import { useSharedPlayback, type PlaybackAd } from "../lib/use-shared-playback";
 
 type Shared = { name: string; file_type: string; mime: string | null; source: string; url: string };
-type State = { kind: "loading" } | { kind: "missing" } | { kind: "expired" } | ({ kind: "ok" } & Shared);
+function createPlaybackAd(): PlaybackAd {
+  const ad = InterstitialAd.createForAdRequest(ADS.interstitial);
+  const events = { loaded: AdEventType.LOADED, closed: AdEventType.CLOSED, error: AdEventType.ERROR };
+  return { subscribe: (event, callback) => ad.addAdEventListener(events[event], callback), load: () => ad.load(), show: () => ad.show() };
+}
+function recordPlaybackView(slug: string) { void supabase.rpc("record_view", { _slug: slug }); }
 
 const REASONS = ["Copyright infringement", "Sexual or adult content", "Child safety", "Violence or harmful content", "Spam or scam", "Other"];
 
 export function PlayerScreen({ slug }: { slug: string }) {
   const session = useSession();
-  const [st, setSt] = useState<State>({ kind: "loading" });
-  const [open, setOpen] = useState(false);
-  const [adBusy, setAdBusy] = useState(false);
+  const { st, open, adBusy, showAdThenOpen, countView } = useSharedPlayback(slug, session?.user.id, loadSharedFile, createPlaybackAd, recordPlaybackView);
   const [report, setReport] = useState(false);
-  const counted = useRef(false);
-
-  useEffect(() => {
-    (async () => {
-      const result = await loadSharedFile(slug);
-      setSt(result);
-    })();
-  }, [slug, session?.user.id]);
-
-  // A view counts only when the content actually plays or is shown.
-  const countView = () => { if (!counted.current) { counted.current = true; supabase.rpc("record_view", { _slug: slug }); } };
-
-  function showAdThenOpen() {
-    setAdBusy(true);
-    const ad = InterstitialAd.createForAdRequest(ADS.interstitial);
-    let finished = false;
-    const finish = () => { if (finished) return; finished = true; setAdBusy(false); setOpen(true); unsub.forEach((u) => u()); };
-    const unsub = [
-      ad.addAdEventListener(AdEventType.LOADED, () => ad.show().catch(finish)),
-      ad.addAdEventListener(AdEventType.CLOSED, finish),
-      ad.addAdEventListener(AdEventType.ERROR, finish),
-    ];
-    ad.load();
-    setTimeout(finish, 8000); // never block the file if no ad is available
-  }
+  useEffect(() => setReport(false), [slug, session?.user.id]);
 
   async function sendReport(reason: string, details: string) {
     const { error } = await supabase.from("reports").insert({ file_slug: slug, file_name: st.kind === "ok" ? st.name : null, reason, details: details || null, email: session?.user.email ?? null, reporter_id: session?.user.id ?? null });
@@ -97,7 +77,6 @@ function Notice({ icon, title, text }: { icon: keyof typeof Ionicons.glyphMap; t
 function Viewer({ file, onShown }: { file: Shared; onShown: () => void }) {
   if (file.file_type === "image") return <Image source={{ uri: file.url }} onLoad={onShown} resizeMode="contain" style={{ width: "100%", aspectRatio: 1, borderRadius: 16, backgroundColor: "#000" }} />;
   if (file.file_type === "video" || file.file_type === "audio") return <MediaPlayer url={file.url} title={file.name} audio={file.file_type === "audio"} onPlaying={onShown} />;
-  if (file.source === "converted") return <Button label="Open link" icon="open-outline" onPress={() => Linking.openURL(file.url)} />;
   return <View style={{ height: 520, borderRadius: 16, overflow: "hidden" }}><WebView source={{ uri: `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(file.url)}` }} onLoadEnd={onShown} /></View>;
 }
 

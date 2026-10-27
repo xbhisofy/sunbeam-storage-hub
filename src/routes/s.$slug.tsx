@@ -31,7 +31,7 @@ function SharePage() {
   // Android browsers jump straight into the app, or to the Play Store when it isn't installed.
   useEffect(() => {
     if (isApp || !/Android/i.test(navigator.userAgent)) return;
-    window.location.href = `intent://${new URL(site.shareUrl).host}/s/${slug}#Intent;scheme=https;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`;
+    window.location.href = `intent://${new URL(site.shareUrl).host}/s/${encodeURIComponent(slug)}#Intent;scheme=https;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`;
   }, [isApp, slug]);
 
   const { data, isLoading } = useQuery({
@@ -56,7 +56,7 @@ function SharePage() {
   }
 
   function play() {
-    if (data && !("expired" in data) && data.source === "converted" && data.url) { countView(); window.location.href = data.url; return; }
+    if (!data || "expired" in data) return;
     setOpen(true);
   }
 
@@ -76,7 +76,7 @@ function SharePage() {
             <p className="mt-2 text-sm text-muted-foreground">Videos, audio and files open only in our Android app.</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Button size="lg" asChild><a href={PLAY_URL(slug)}>Get it on Play Store</a></Button>
-              <Button size="lg" variant="outline" asChild><a href={`intent://${new URL(site.shareUrl).host}/s/${slug}#Intent;scheme=https;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`}>Already installed? Open app</a></Button>
+              <Button size="lg" variant="outline" asChild><a href={`intent://${new URL(site.shareUrl).host}/s/${encodeURIComponent(slug)}#Intent;scheme=https;package=${APP_ID};S.browser_fallback_url=${encodeURIComponent(PLAY_URL(slug))};end`}>Already installed? Open app</a></Button>
             </div>
           </div>
         ) : isLoading ? <p className="text-muted-foreground">Loading…</p> : !data ? (
