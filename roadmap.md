@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Fix large-video/common-document sharing safely (blocked: approval of coordinated scanner/configuration/recovery plan and verification of actual VPS capacity); 101 MiB video, DOC/DOCX/XLSX/PPTX restrictions and permanent automatic-block retry reproduced. No sharing gates relaxed.
 - [x] Native generated links: strict owner-host/custom-scheme parser, separate HTTPS/custom filters and pending-login preservation; 17 link tests pass. Existing file/player controls have no download/export action; no uncopyable-content claim.
 - [ ] Device/emulator/AdMob/Play verification and Integrity implementation (blocked: Android device/current certificate/provider setup; no guarantee of perfect bypass prevention). Ad consent/test-mode/reporting and custom rate-limit tradeoffs require separate approved stage.
 - [x] Master security audit: architecture/share/ads/backend findings and staged report delivered; 36 Vitest + 11 safety tests passed, three public assetlinks responses checked, managed-preview ACLs read. No app/security/production changes; VPS and actual Android behavior unverified.
