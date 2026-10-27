@@ -20,7 +20,7 @@
 - Use Brand and LegalFooter for shared branding and legal navigation; legal claims must match shipped functionality.
 - Public landing visuals are scoped to .landing; use StoreBadges for centralized store destinations and WebsiteAppPreview for explicitly illustrative previews without affecting installed-app screens.
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
-- Fetch shared-file details and start countdowns only inside the native app because browser share links only offer installation.
+- App viewers use local `shared-file` loaders without owner subscription checks; retain expiry/guarded storage. Browser links only offer installation, never fetch content or start countdowns.
 - The Android app is a separate native Expo (React Native) codebase in `mobile/` talking directly to the same backend as app.tanyora.com; keep mobile code out of `src/` and provide native account/content/earnings screens, with checkout and payouts on the external website to avoid duplicating payment logic.
 - The native app is cloud sharing only (Home, My Files, Upload, Shared, Profile); earnings, wallet, referrals, OC Bonus, plans and menu stay website-only for Play policy, and plan status is read from the profile so website upgrades reflect automatically.
 - Native local notifications go through `mobile/lib/notifications.ts` with one high-importance channel bound to the bundled sound; changing the sound requires a new channel id.

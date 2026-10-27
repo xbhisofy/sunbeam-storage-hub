@@ -13,16 +13,15 @@ import { ADS } from "../lib/config";
 import { theme } from "../lib/theme";
 import { useSession } from "../app/_layout";
 import { Motion } from "./Motion";
-import { useProfile } from "../lib/useProfile";
+import { loadSharedFile } from "../lib/shared-file";
 
 type Shared = { name: string; file_type: string; mime: string | null; source: string; url: string };
-type State = { kind: "loading" } | { kind: "missing" } | { kind: "expired" } | { kind: "own"; name: string } | ({ kind: "ok" } & Shared);
+type State = { kind: "loading" } | { kind: "missing" } | { kind: "expired" } | ({ kind: "ok" } & Shared);
 
 const REASONS = ["Copyright infringement", "Sexual or adult content", "Child safety", "Violence or harmful content", "Spam or scam", "Other"];
 
 export function PlayerScreen({ slug }: { slug: string }) {
   const session = useSession();
-  const { profile } = useProfile();
   const [st, setSt] = useState<State>({ kind: "loading" });
   const [open, setOpen] = useState(false);
   const [adBusy, setAdBusy] = useState(false);
@@ -31,18 +30,10 @@ export function PlayerScreen({ slug }: { slug: string }) {
 
   useEffect(() => {
     (async () => {
-      const { data: f } = await supabase.from("files").select("owner_id,name,file_type,mime,storage_path,source,external_url,expires_at").eq("slug", slug).maybeSingle();
-      if (!f) return setSt({ kind: "missing" });
-      if (f.owner_id === session?.user.id) {
-        const { data: me } = await supabase.from("profiles").select("premium_tier,premium_until").eq("id", f.owner_id).maybeSingle();
-        if (!(me?.premium_tier && me.premium_until && new Date(me.premium_until) > new Date())) return setSt({ kind: "own", name: f.name });
-      }
-      if (f.expires_at && new Date(f.expires_at).getTime() < Date.now()) return setSt({ kind: "expired" });
-      let url = f.external_url ?? "";
-      if (f.storage_path) url = (await supabase.storage.from("files").createSignedUrl(f.storage_path, 3 * 3600)).data?.signedUrl ?? "";
-      setSt({ kind: "ok", name: f.name, file_type: f.file_type, mime: f.mime, source: f.source, url });
+      const result = await loadSharedFile(slug);
+      setSt(result);
     })();
-  }, [slug, session?.user.id, profile?.premium_tier, profile?.premium_until]);
+  }, [slug, session?.user.id]);
 
   // A view counts only when the content actually plays or is shown.
   const countView = () => { if (!counted.current) { counted.current = true; supabase.rpc("record_view", { _slug: slug }); } };
@@ -74,7 +65,6 @@ export function PlayerScreen({ slug }: { slug: string }) {
         {st.kind === "loading" && <ActivityIndicator color={theme.primary} style={{ marginTop: 60 }} />}
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
-        {st.kind === "own" && <Notice icon="lock-closed-outline" title="This is your file" text="Your share link is ready for others. Find this file in My Files." />}
         {st.kind === "ok" && !open && (
           <Motion><View style={{ alignItems: "center", gap: 18, paddingVertical: 48 }}>
             <FileIcon type={st.file_type} size={64} />
