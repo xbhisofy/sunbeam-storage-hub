@@ -24,9 +24,9 @@ def validated_capacity(text, requested):
         if clam_size(settings.get(key, '0')) < requested:
             raise ValueError('Antivirus capacity is lower than requested: ' + key)
     for key in ('AlertExceedsMax', 'AlertEncrypted'):
-        if settings.get(key, '').lower() != 'yes':
+        if settings.get(key, '').lower() not in ('yes', 'true', '1'):
             raise ValueError('Required antivirus fail-closed option: ' + key)
-    if settings.get('ScanArchive', '').lower() != 'yes':
+    if settings.get('ScanArchive', '').lower() not in ('yes', 'true', '1'):
         raise ValueError('Office containers require archive scanning')
     return requested
 
