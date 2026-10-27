@@ -1,22 +1,27 @@
 import { Pressable, View } from "react-native";
-import { Tabs, router } from "expo-router";
+import { Tabs, router, usePathname } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { theme } from "../../lib/theme";
+import { homeTheme } from "../../lib/home-theme";
 
 const icon = (name: keyof typeof Ionicons.glyphMap) => ({ color, focused }: { color: string; focused: boolean }) => (
   <Ionicons name={`${name}-outline` as keyof typeof Ionicons.glyphMap} size={22} color={color} />
 );
 
 export default function TabsLayout() {
+  const pathname = usePathname();
+  const home = pathname === "/" || pathname === "/(tabs)";
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.primary,
+        tabBarActiveTintColor: home ? homeTheme.primary : theme.primary,
         tabBarInactiveTintColor: theme.muted,
-        tabBarStyle: { backgroundColor: theme.card, borderTopColor: theme.border, height: 64, paddingBottom: 8, paddingTop: 6 },
+        tabBarStyle: home ? { backgroundColor: homeTheme.surface, borderTopWidth: 0, height: 68 + insets.bottom, paddingBottom: Math.max(8, insets.bottom), paddingTop: 8, marginHorizontal: 20, borderRadius: 32, marginBottom: insets.bottom ? 0 : 12 } : { backgroundColor: theme.card, borderTopColor: theme.border, height: 64, paddingBottom: 8, paddingTop: 6 },
         tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
-        sceneStyle: { backgroundColor: theme.bg },
+        sceneStyle: { backgroundColor: home ? homeTheme.background : theme.bg },
       }}
     >
       <Tabs.Screen name="index" options={{ title: "Home", tabBarIcon: icon("home") }} />
@@ -27,8 +32,8 @@ export default function TabsLayout() {
           title: "",
           tabBarButton: () => (
             <Pressable accessibilityLabel="Upload a file" onPress={() => router.push("/uploader")} style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-              <View style={{ width: 48, height: 48, borderRadius: 16, backgroundColor: theme.primary, alignItems: "center", justifyContent: "center" }}>
-                <Ionicons name="add" size={28} color="#FFFFFF" />
+              <View style={{ width: 48, height: 48, borderRadius: home ? 18 : 16, backgroundColor: home ? homeTheme.primary : theme.primary, alignItems: "center", justifyContent: "center" }}>
+                <Ionicons name="add" size={28} color={theme.onPrimary} />
               </View>
             </Pressable>
           ),
