@@ -1,5 +1,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import * as ScreenOrientation from "expo-screen-orientation";
+
+// Cap system font scaling so large display/font settings do not blow up buttons and layouts.
+type Scalable = { defaultProps?: { maxFontSizeMultiplier?: number } };
+for (const C of [Text, TextInput] as unknown as Scalable[]) C.defaultProps = { ...(C.defaultProps ?? {}), maxFontSizeMultiplier: 1.15 };
+ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
 import { Stack, router, usePathname, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as Linking from "expo-linking";
