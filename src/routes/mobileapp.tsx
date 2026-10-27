@@ -14,7 +14,7 @@ export const Route = createFileRoute('/mobileapp')({
   head: () => pageHead('Android Home UI Review', 'Temporary Tanyora Android interface review with existing account data.', undefined, true),
   loader: async ({ context }) => {
     const uid = await context.queryClient.ensureQueryData(sessionOptions);
-    if (uid) await context.queryClient.ensureQueryData(accountOptions(uid));
+    if (uid) await context.queryClient.prefetchQuery(accountOptions(uid));
   },
   pendingComponent: () => <div className={s.review}><div className={s.phone} role="status">Loading Tanyora…</div></div>,
   component: MobileAppReview,

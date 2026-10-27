@@ -5,7 +5,7 @@ import { currentUserId } from '@/lib/session';
 export const reviewScreens = ['home', 'files', 'upload', 'shared', 'profile'] as const;
 export type ReviewScreen = typeof reviewScreens[number];
 export function reviewSearch(input: Record<string, unknown>): { screen: ReviewScreen } {
-  return { screen: reviewScreens.find(screen => screen === input.screen) ?? 'home' };
+  return { screen: reviewScreens.find(screen => screen === input['screen']) ?? 'home' };
 }
 export type ReviewFile = { id: string; name: string; file_type: string; size: number; created_at: string };
 export const sessionOptions = queryOptions({
