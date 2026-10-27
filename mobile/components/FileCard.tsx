@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, Share, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
@@ -11,6 +11,8 @@ import { homeTheme } from "../lib/home-theme";
 import { HomeThumbnail } from "./HomeThumbnail";
 import { libraryTheme as lt } from "../lib/library-theme";
 import { fileExtension, libraryType } from "../lib/library";
+import { sharedTheme as st } from "../lib/shared-theme";
+import { linkExpiry } from "../lib/shared-links";
 
 type Sheet = null | "menu" | "rename" | "expiry" | "details";
 
@@ -29,12 +31,21 @@ export function expiryText(f: FileRow) {
   return t < Date.now() ? "Link expired" : `Expires ${formatDate(f.expires_at)}`;
 }
 
-export function FileCard({ file, onChange, showExpiry, presentation = "default", selectionMode = false, selected = false, onToggleSelection, onStartSelection }: { file: FileRow; onChange: () => void; showExpiry?: boolean; presentation?: "default" | "home" | "library"; selectionMode?: boolean; selected?: boolean; onToggleSelection?: () => void; onStartSelection?: () => void }) {
+export function FileCard({ file, onChange, showExpiry, presentation = "default", selectionMode = false, selected = false, onToggleSelection, onStartSelection }: { file: FileRow; onChange: () => void; showExpiry?: boolean; presentation?: "default" | "home" | "library" | "shared"; selectionMode?: boolean; selected?: boolean; onToggleSelection?: () => void; onStartSelection?: () => void }) {
   const [sheet, setSheet] = useState<Sheet>(null);
   const [name, setName] = useState(file.name);
   const [busy, setBusy] = useState(false);
   const meta = `${file.storage_path ? `${formatSize(file.size)} · ` : ""}${formatDate(file.created_at)}`;
   const library = presentation === "library";
+  const shared = presentation === "shared";
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    if (!shared || !file.expires_at) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [shared, file.expires_at]);
+  const expiry = linkExpiry(file.expires_at, now);
+  const expired = expiry.kind === "expired" || expiry.kind === "unknown";
   const typeColor = lt.categories[file.file_type] ?? lt.categories.pdf;
 
   async function copy() {
@@ -75,17 +86,18 @@ export function FileCard({ file, onChange, showExpiry, presentation = "default",
 
   return (
     <>
-      <View style={[s.row, presentation === "home" && s.homeRow, library && s.libraryRow, library && selected && s.selectedRow]}>
+      <View style={[s.row, presentation === "home" && s.homeRow, (library || shared) && s.libraryRow, shared && s.sharedRow, library && selected && s.selectedRow]}>
         <Pressable accessibilityRole={selectionMode ? "checkbox" : "button"} accessibilityState={selectionMode ? { checked: selected } : undefined} accessibilityLabel={`${selectionMode ? "Select" : "Open"} ${file.name}`} onLongPress={onStartSelection} delayLongPress={350} onPress={() => selectionMode ? onToggleSelection?.() : router.push({ pathname: "/s/[slug]", params: { slug: file.slug } })} style={({ pressed }) => [s.openFile, library && s.libraryOpen, pressed && { opacity: 0.7 }]}>
         {selectionMode && <Ionicons name={selected ? "checkbox" : "square-outline"} size={24} color={lt.primary} />}
-        {presentation === "home" || library ? <HomeThumbnail path={file.storage_path} type={file.file_type} size={library ? 48 : 36} /> : <FileIcon type={file.file_type} />}
+        {presentation === "home" || library || shared ? <HomeThumbnail path={file.storage_path} type={file.file_type} size={shared ? 52 : library ? 48 : 36} /> : <FileIcon type={file.file_type} />}
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={[s.name, presentation === "home" && s.homeName, library && s.libraryName]} numberOfLines={1}>{file.name}</Text>
-          <Text style={[s.meta, presentation === "home" && s.homeMeta, library && s.libraryMeta]} numberOfLines={1}>{showExpiry ? expiryText(file) : library ? `${meta} · ${fileExtension(file.name)}` : meta}</Text>
+          <Text style={[s.name, presentation === "home" && s.homeName, (library || shared) && s.libraryName]} numberOfLines={1}>{file.name}</Text>
+          <Text style={[s.meta, presentation === "home" && s.homeMeta, (library || shared) && s.libraryMeta]} numberOfLines={1}>{shared ? meta : showExpiry ? expiryText(file) : library ? `${meta} · ${fileExtension(file.name)}` : meta}</Text>
+          {shared && <View style={[s.typeBadge, { backgroundColor: expired ? st.expiredBackground : st.activeLinkBackground }]}><Ionicons name={expired ? "time-outline" : "link"} size={13} color={expired ? st.expired : st.primary} /><Text style={[s.typeLabel, { color: expired ? st.expired : st.activeLink }]}>{expiry.label}</Text></View>}
           {library && <View style={[s.typeBadge, { backgroundColor: typeColor.background }]}><Ionicons name={iconFor(file.file_type)} size={11} color={typeColor.foreground} /><Text style={[s.typeLabel, { color: typeColor.foreground }]}>{libraryType(file.file_type)}</Text></View>}
         </View>
         </Pressable>
-        <Pressable accessibilityRole="button" accessibilityLabel={`Actions for ${file.name}`} hitSlop={10} onPress={() => setSheet("menu")} style={[s.more, (presentation === "home" || library) && s.homeMore]}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Actions for ${file.name}`} hitSlop={10} onPress={() => setSheet("menu")} style={[s.more, (presentation === "home" || library || shared) && s.homeMore]}>
           <Ionicons name="ellipsis-vertical" size={18} color={theme.muted} />
         </Pressable>
       </View>
@@ -145,6 +157,7 @@ export function FileCard({ file, onChange, showExpiry, presentation = "default",
 }
 
 const s = StyleSheet.create({
+  sharedRow: { shadowColor: st.shadow, shadowOpacity: 0.1, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
   libraryRow: { backgroundColor: lt.surface, borderRadius: 18, paddingHorizontal: 12, paddingVertical: 10, gap: 0, minHeight: 86, borderWidth: 1, borderColor: lt.surface },
   selectedRow: { backgroundColor: lt.selected, borderColor: lt.selectedBorder },
   libraryOpen: { gap: 12, minHeight: 64 },
