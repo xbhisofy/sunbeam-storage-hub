@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Allow uploaders to view their own files in the app without premium; preserve safety, expiry and earning rules.
 - [x] Make /mobileapp Profile icons professional: avatar camera badge with white ring (no monogram clipping), consistent tile icons (storage drive, shared link), distinct settings icons (support/privacy), outline active nav tab; 9 tests pass, build OK, phone and nav checks verified. Preview only; production/native unchanged.
 - [x] Adapt all five /mobileapp screens with one scroll area and non-overlay bottom navigation; category deep links, search/sort, file-details menus, authenticated upload handoff and account-action explanations wired. 30 viewport/screen combinations, 9 tests pass, no runtime errors and build OK. No production/native changes.
 - [ ] Verify real upload and account management from /mobileapp (blocked: no requesting-user account/session). New Folder, Scan, Camera and Drive remain unsupported; real Android checks need device/emulator.
