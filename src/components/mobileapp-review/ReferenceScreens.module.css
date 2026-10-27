@@ -9,15 +9,15 @@
 .search label { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 12px 16px; border-radius: 20px; background: var(--review-surface); color: var(--review-muted); }
 .search input { width: 100%; min-width: 0; border: 0; outline: none; background: transparent; color: var(--review-text); font-size: 14px; }
 .search .filter { border-radius: 18px; padding: 0; height: 52px; background: var(--review-surface); color: var(--review-primary); }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
-.chips .chip { display: flex; gap: 6px; height: auto; min-height: 49px; padding: 7px 9px; border-radius: 15px; background: var(--review-surface); color: var(--review-text); }
-.chip > span:last-child { display: flex; flex-direction: column; text-align: left; font-size: 10px; }
+.chips { display: grid; grid-template-columns: .85fr 1.2fr 1fr 1fr .95fr; gap: 5px; margin: 14px 0; }
+.chips .chip { display: flex; gap: 4px; height: auto; min-height: 49px; padding: 6px 4px; border-radius: 14px; background: var(--review-surface); color: var(--review-text); min-width: 0; }
+.chip > span:last-child { display: flex; flex-direction: column; text-align: left; font-size: 8px; min-width: 0; }
 .chip small { color: var(--review-muted); font-size: 11px; }
 .chips .selected { background: var(--review-storage); color: var(--review-primary); }
 .shared .chips .selected { background: var(--review-primary); color: var(--review-on-primary); }
 .shared .selected small { color: inherit; }
-.chipIcon { display: grid; place-items: center; width: 27px; height: 30px; border-radius: 8px; background: var(--review-storage); color: var(--review-primary); }
-.chipIcon svg { width: 20px; height: 20px; }
+.chipIcon { display: grid; place-items: center; width: 21px; height: 26px; flex-shrink: 0; border-radius: 6px; background: var(--review-storage); color: var(--review-primary); }
+.chipIcon svg { width: 17px; height: 17px; }
 .pdf { background: var(--review-red-bg); color: var(--review-red); }
 .image { background: var(--review-cyan-bg); color: var(--review-cyan); }
 .video { background: var(--review-purple-bg); color: var(--review-purple); }
@@ -78,4 +78,4 @@
 .sources .source:disabled { opacity: .6; }
 .privacy { display: flex; gap: 12px; align-items: center; padding: 16px 12px; margin-top: 18px; border-radius: 16px; border: 1px solid var(--review-surface); color: var(--review-muted); font-size: 12px; }
 .privacy svg { color: var(--review-primary); width: 30px; height: 30px; }
-@media (max-width: 350px) { .uploadHero h2 { font-size: 24px; } .uploadHero img { width: 150px; right: -16px; } .row { gap: 8px; } }
+@media (max-width: 350px) { .uploadHero h2 { font-size: 24px; } .uploadHero img { width: 150px; right: -16px; } .row { gap: 8px; } .chips { display: flex; flex-wrap: wrap; } .chips .chip { padding: 6px; } }

@@ -29,22 +29,22 @@
 .review .iconButton { width: 36px; height: 44px; padding: 0; border: 0; border-radius: 24px; color: var(--review-muted); background: var(--review-start); }
 .review .avatar { background: var(--review-storage); color: var(--review-primary); font-size: 21px; font-weight: 700; border: 2px solid var(--review-surface); }
 .review svg { width: 22px; height: 22px; flex-shrink: 0; }
-.intro { position: relative; min-height: 132px; padding: 24px 0 16px; }
+.intro { position: relative; min-height: 110px; padding: 18px 0 12px; }
 .intro img { position: absolute; width: 100px; height: 100px; right: -8px; bottom: -8px; object-fit: contain; }
 .greeting { color: var(--review-muted); display: flex; gap: 5px; align-items: center; font-size: 13px; margin-bottom: 6px; }
 .greeting svg { color: var(--review-gold); width: 18px; }
 .intro h1 { position: relative; z-index: 1; font-size: 24px; line-height: 1.25; font-weight: 800; max-width: 290px; }
 .intro h1 span { color: var(--review-primary); }
 .intro p { position: relative; z-index: 1; margin-top: 6px; color: var(--review-muted); font-size: 12px; max-width: 245px; }
-.storage { background: linear-gradient(135deg, var(--review-start), var(--review-end)); padding: 16px; border: 1px solid var(--review-surface); border-radius: 20px; box-shadow: var(--review-shadow); }
+.storage { background: linear-gradient(135deg, var(--review-start), var(--review-end)); padding: 12px; border: 1px solid var(--review-surface); border-radius: 20px; box-shadow: var(--review-shadow); }
 .storageHeader { display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
 .storageHeader h2 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.review .plan { padding: 4px 8px; min-height: 44px; height: auto; border-radius: 24px; background: var(--review-start); color: var(--review-primary); font-size: 12px; box-shadow: none; }
+.review .plan { padding: 4px 8px; min-height: 36px; height: auto; border-radius: 24px; background: var(--review-start); color: var(--review-primary); font-size: 12px; box-shadow: none; }
 .plan svg { width: 16px; }
 .plan svg:first-child { color: var(--review-gold); }
-.used { font-size: 36px; font-weight: 800; margin-top: 6px !important; }
+.used { font-size: 32px; font-weight: 800; margin-top: 0 !important; line-height: 1.25; }
 .capacity { font-size: 13px; color: var(--review-muted); }
-.progressRow { display: flex; gap: 10px; align-items: center; margin: 14px 0 18px; color: var(--review-muted); }
+.progressRow { display: flex; gap: 10px; align-items: center; margin: 8px 0 10px; color: var(--review-muted); }
 .progressRow progress { appearance: none; width: 100%; height: 8px; border: 0; border-radius: 4px; overflow: hidden; background: var(--review-track); }
 .progressRow progress::-webkit-progress-bar { background: var(--review-track); }
 .progressRow progress::-webkit-progress-value { background: var(--review-primary); }
