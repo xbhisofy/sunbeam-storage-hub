@@ -11,6 +11,8 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{ts,tsx}", "mobile/lib/**/*.{test,spec}.{ts,tsx}"],
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    // Native helpers have their own React installation; the DOM test renderer
+    // must use one dispatcher. This does not change either application's build.
+    alias: { "@": path.resolve(__dirname, "./src"), react: path.resolve(__dirname, "./node_modules/react") },
   },
 });
