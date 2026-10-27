@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Image, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useVideoPlayer, VideoView } from "expo-video";
-import { useEvent } from "expo";
-import * as ScreenOrientation from "expo-screen-orientation";
 import { WebView } from "react-native-webview";
 import { AdEventType, InterstitialAd } from "react-native-google-mobile-ads";
 import { Screen, Button, Card } from "./ui";
@@ -14,6 +11,7 @@ import { theme } from "../lib/theme";
 import { useSession } from "../app/_layout";
 import { Motion } from "./Motion";
 import { loadSharedFile } from "../lib/shared-file";
+import { MediaPlayer } from "./MediaPlayer";
 
 type Shared = { name: string; file_type: string; mime: string | null; source: string; url: string };
 type State = { kind: "loading" } | { kind: "missing" } | { kind: "expired" } | ({ kind: "ok" } & Shared);
@@ -98,112 +96,9 @@ function Notice({ icon, title, text }: { icon: keyof typeof Ionicons.glyphMap; t
 
 function Viewer({ file, onShown }: { file: Shared; onShown: () => void }) {
   if (file.file_type === "image") return <Image source={{ uri: file.url }} onLoad={onShown} resizeMode="contain" style={{ width: "100%", aspectRatio: 1, borderRadius: 16, backgroundColor: "#000" }} />;
-  if (file.file_type === "video" || file.file_type === "audio") return <MediaPlayer url={file.url} audio={file.file_type === "audio"} onPlaying={onShown} />;
+  if (file.file_type === "video" || file.file_type === "audio") return <MediaPlayer url={file.url} title={file.name} audio={file.file_type === "audio"} onPlaying={onShown} />;
   if (file.source === "converted") return <Button label="Open link" icon="open-outline" onPress={() => Linking.openURL(file.url)} />;
   return <View style={{ height: 520, borderRadius: 16, overflow: "hidden" }}><WebView source={{ uri: `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(file.url)}` }} onLoadEnd={onShown} /></View>;
-}
-
-const SPEEDS = [0.5, 1, 1.25, 1.5, 2, 3];
-function MediaPlayer({ url, audio, onPlaying }: { url: string; audio: boolean; onPlaying: () => void }) {
-  const player = useVideoPlayer(url, (p) => { p.timeUpdateEventInterval = 0.5; p.play(); });
-  const { isPlaying } = useEvent(player, "playingChange", { isPlaying: player.playing });
-  const { currentTime } = useEvent(player, "timeUpdate", { currentTime: 0, currentLiveTimestamp: null, currentOffsetFromLive: null, bufferedPosition: 0 });
-  const [speed, setSpeed] = useState(1);
-  const [land, setLand] = useState(false);
-
-  useEffect(() => { if (isPlaying) onPlaying(); }, [isPlaying, onPlaying]);
-  useEffect(() => () => { ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {}); }, []);
-
-  const seek = (d: number) => { player.currentTime = Math.max(0, player.currentTime + d); };
-  const fmt = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
-  // Landscape plays in a full-screen overlay so controls never get squashed by rotation.
-  async function enterLand() {
-    setLand(true);
-    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).catch(() => {});
-  }
-  async function exitLand() {
-    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
-    setLand(false);
-  }
-  const nextSpeed = () => { const s = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]; player.playbackRate = s; setSpeed(s); };
-  const dur = player.duration || 0;
-  const progress = dur ? Math.min(100, (currentTime / dur) * 100) : 0;
-
-  const controls = (
-    <>
-      <View style={ps.track}><View style={[ps.fill, { width: `${progress}%` }]} /></View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={ps.time}>{fmt(currentTime)}</Text><Text style={ps.time}>{fmt(dur)}</Text>
-      </View>
-      <View style={ps.controls}>
-        <Ctrl icon="play-back" label="10" on={() => seek(-10)} />
-        <Pressable accessibilityLabel={isPlaying ? "Pause" : "Play"} onPress={() => (isPlaying ? player.pause() : player.play())} style={ps.play}>
-          <Ionicons name={isPlaying ? "pause" : "play"} size={30} color="#FFFFFF" />
-        </Pressable>
-        <Ctrl icon="play-forward" label="10" on={() => seek(10)} />
-      </View>
-      <View style={ps.controls}>
-        <Pressable onPress={nextSpeed} style={ps.pill}><Text style={ps.pillText}>{speed}×</Text></Pressable>
-        {!audio && (
-          <Pressable onPress={land ? exitLand : enterLand} style={ps.pill}>
-            <Ionicons name={land ? "phone-portrait-outline" : "phone-landscape-outline"} size={18} color={theme.primary} />
-            <Text style={ps.pillText}>{land ? "Portrait" : "Rotate"}</Text>
-          </Pressable>
-        )}
-      </View>
-    </>
-  );
-
-  return (
-    <View style={{ gap: 12 }}>
-      {audio ? (
-        <Card style={{ alignItems: "center", paddingVertical: 28 }}><Ionicons name="musical-notes" size={56} color={theme.primary} /></Card>
-      ) : (
-        <VideoView player={player} nativeControls={false} contentFit="contain" style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: 16, backgroundColor: "#000" }} />
-      )}
-      {controls}
-      {!audio && (
-        <Modal visible={land} animationType="fade" supportedOrientations={["landscape"]} onRequestClose={() => void exitLand()}>
-          <View style={ls.root}>
-            <VideoView player={player} nativeControls={false} contentFit="contain" style={ls.video} />
-            <View style={ls.bar}>
-              <Text style={ls.time}>{fmt(currentTime)}</Text>
-              <View style={ls.track}><View style={[ps.fill, { width: `${progress}%` }]} /></View>
-              <Text style={ls.time}>{fmt(dur)}</Text>
-            </View>
-            <View style={ls.controls}>
-              <Pressable accessibilityLabel="Back 10 seconds" onPress={() => seek(-10)} style={ls.btn}><Ionicons name="play-back" size={24} color="#FFFFFF" /></Pressable>
-              <Pressable accessibilityLabel={isPlaying ? "Pause" : "Play"} onPress={() => (isPlaying ? player.pause() : player.play())} style={ls.play}>
-                <Ionicons name={isPlaying ? "pause" : "play"} size={30} color="#FFFFFF" />
-              </Pressable>
-              <Pressable accessibilityLabel="Forward 10 seconds" onPress={() => seek(10)} style={ls.btn}><Ionicons name="play-forward" size={24} color="#FFFFFF" /></Pressable>
-              <Pressable onPress={nextSpeed} style={ls.btn}><Text style={{ color: "#FFFFFF", fontWeight: "700" }}>{speed}×</Text></Pressable>
-              <Pressable accessibilityLabel="Back to portrait" onPress={() => void exitLand()} style={ls.btn}><Ionicons name="phone-portrait-outline" size={22} color="#FFFFFF" /></Pressable>
-            </View>
-          </View>
-        </Modal>
-      )}
-    </View>
-  );
-}
-
-const ls = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#000", justifyContent: "center" },
-  video: { flex: 1 },
-  bar: { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingBottom: 4 },
-  track: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.25)", overflow: "hidden" },
-  time: { color: "#FFFFFF", fontSize: 12, minWidth: 36, textAlign: "center" },
-  controls: { flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 14, paddingBottom: 14, paddingHorizontal: 8 },
-  play: { width: 56, height: 56, borderRadius: 28, backgroundColor: theme.primary, alignItems: "center", justifyContent: "center" },
-  btn: { minWidth: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.12)" },
-});
-
-function Ctrl({ icon, label, on }: { icon: keyof typeof Ionicons.glyphMap; label: string; on: () => void }) {
-  return (
-    <Pressable onPress={on} style={ps.ctrl} accessibilityLabel={`${icon === "play-back" ? "Back" : "Forward"} 10 seconds`}>
-      <Ionicons name={icon} size={22} color={theme.text} /><Text style={{ fontSize: 11, color: theme.muted }}>{label}s</Text>
-    </Pressable>
-  );
 }
 
 function ReportSheet({ visible, onClose, onSend }: { visible: boolean; onClose: () => void; onSend: (r: string, d: string) => void }) {
@@ -226,14 +121,3 @@ function ReportSheet({ visible, onClose, onSend }: { visible: boolean; onClose: 
     </Modal>
   );
 }
-
-const ps = StyleSheet.create({
-  track: { height: 4, borderRadius: 2, backgroundColor: theme.border, overflow: "hidden" },
-  fill: { height: 4, backgroundColor: theme.primary },
-  time: { fontSize: 12, color: theme.muted },
-  controls: { flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 18 },
-  play: { width: 64, height: 64, borderRadius: 32, backgroundColor: theme.primary, alignItems: "center", justifyContent: "center" },
-  ctrl: { width: 52, height: 52, borderRadius: 26, backgroundColor: theme.card, borderWidth: 1, borderColor: theme.border, alignItems: "center", justifyContent: "center" },
-  pill: { flexDirection: "row", gap: 6, alignItems: "center", paddingHorizontal: 14, height: 38, borderRadius: 19, backgroundColor: theme.primarySoft },
-  pillText: { color: theme.primary, fontWeight: "700" },
-});
