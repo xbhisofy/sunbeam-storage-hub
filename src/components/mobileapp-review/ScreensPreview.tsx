@@ -7,6 +7,7 @@ import { reviewPlan } from './plan-display';
 import type { ReviewFile, ReviewScreen } from './data';
 import art from './assets/home-cloud.png';
 import s from './mobileapp-review.module.css';
+import { ProfilePreview } from './ProfilePreview';
 
 type Account = { profile: { display_name: string | null; email: string | null; premium_tier: string | null; premium_until: string | null }; files: ReviewFile[] };
 export function ScreensPreview({ screen, account, loading, error, signedIn, refresh }: { screen: Exclude<ReviewScreen, 'home'>; account: Account | null | undefined; loading: boolean; error: boolean; signedIn: boolean; refresh: () => void }) {
@@ -18,20 +19,7 @@ export function ScreensPreview({ screen, account, loading, error, signedIn, refr
   const title = { files: 'My Files', upload: 'Upload', shared: 'Shared Links', profile: 'Profile' }[screen];
   const signIn = <div className={s.message}><UserRound aria-hidden="true" /><h2>Sign in to view your {screen === 'profile' ? 'account' : 'files'}</h2><Button asChild variant="outline" className={s.secondary}><Link to="/auth">Sign in</Link></Button></div>;
   const actions = <div className={s.message}>{!signedIn ? signIn : loading ? <p role="status">Loading…</p> : error ? <><p role="alert">Could not load your account.</p><Button variant="outline" className={s.secondary} onClick={refresh}>Try again</Button></> : null}</div>;
-  if (screen === 'profile') return <>
-    <header className={s.screenHeading}><h1>Profile</h1><ShieldCheck aria-hidden="true" /></header>
-    <section className={s.accountPanel}><div className={s.profileAvatar}><UserRound aria-hidden="true" /></div><div className={s.profileInfo}><h2>{account?.profile.display_name || (signedIn ? 'Your account' : 'Welcome to Tanyora')}</h2><p>{account?.profile.email || 'Sign in to access your account'}</p><span className={s.plan}>{account ? `${plan.name} Plan` : '—'}</span></div></section>
-    <div className={s.stats}>{[['Storage', account ? `${plan.storage / 1024 ** 3} GB` : '—'], ['Files', account ? String(files.length) : '—'], ['Links', account ? String(files.filter(f => !!f.slug).length) : '—']].map(([label,value]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div>
-    <section className={s.settings}>
-      <Button asChild variant="ghost" className={s.setting}><Link to={signedIn ? '/profile' : '/auth'}><Pencil aria-hidden="true" />Edit Profile<ChevronRight aria-hidden="true" /></Link></Button>
-      <Button asChild variant="ghost" className={s.setting}><Link to="/contact"><Headphones aria-hidden="true" />Help &amp; Support<ChevronRight aria-hidden="true" /></Link></Button>
-      <Button asChild variant="ghost" className={s.setting}><Link to="/privacy"><ShieldCheck aria-hidden="true" />Privacy Policy<ChevronRight aria-hidden="true" /></Link></Button>
-      <Button asChild variant="ghost" className={s.setting}><Link to="/terms"><FileText aria-hidden="true" />Terms of Service<ChevronRight aria-hidden="true" /></Link></Button>
-      <Button asChild variant="ghost" className={s.setting}><Link to="/copyright"><FileText aria-hidden="true" />Copyright &amp; DMCA<ChevronRight aria-hidden="true" /></Link></Button>
-    </section>
-    <div className={s.accountActions}><Button disabled variant="outline" className={s.secondary} title="Read-only preview"><LogOut aria-hidden="true" />Log out</Button><Button disabled variant="ghost" className={s.danger} title="Read-only preview"><Trash2 aria-hidden="true" />Delete account</Button></div>
-    {!signedIn && signIn}
-  </>;
+  if (screen === 'profile') return <ProfilePreview account={account} signedIn={signedIn} />;
   if (screen === 'upload') return <>
     <header className={s.screenHeading}><h1>Upload</h1><CloudUpload aria-hidden="true" /></header>
     <section className={s.uploadIntro}><img src={art} alt="" width="150" height="150" /><h2>Upload to your cloud</h2><p>Keep your files safe and share them easily.</p></section>

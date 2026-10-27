@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Match /mobileapp Profile account card, four colored summary tiles, seven grouped settings and outlined account actions to reference; phone/desktop and Files navigation verified, 6 tests pass, build OK. Preview remains demo/read-only; production unchanged.
 - [x] Show labeled local sample account/files in signed-out /mobileapp only; 8 tests and phone Profile, Files search, Shared/Home navigation pass, build OK; no real login or production changes.
 - [x] Fix /mobileapp build boundary: removed Expo-tree imports, isolated unchanged artwork and web-safe plan display; 10 tests, live Home/navigation and original website checks pass, build OK; native configuration unchanged.
 - [x] Temporary /mobileapp Home review implemented in isolated route/components/styles; five-destination navigation, artwork, sign-in link, original homepage, phone/landscape/desktop layouts and 7 tests pass; no console errors, latest build OK.
