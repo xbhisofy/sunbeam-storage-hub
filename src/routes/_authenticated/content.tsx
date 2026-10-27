@@ -93,7 +93,7 @@ function Content() {
         owner_id: uid, name: f.name, file_type: fileKind(f.type), mime: f.type, size: f.size, storage_path: path, source: "original",
       });
       if (e2) toast.error("Upload failed", { description: e2.message });
-      else toast.success(`${f.name} uploaded`, { description: "Sharing will start automatically after the malware check passes." });
+      else toast.success(`${f.name} uploaded`, { description: "Sharing starts only after a complete safety check. Files beyond scanning limits remain private." });
     }
     setUploading(null);
     if (input.current) input.current.value = "";
@@ -171,7 +171,7 @@ function Content() {
       <div className="hidden items-center justify-between lg:flex">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{app ? "My Files" : "My Content"}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{app ? "Your uploaded files." : "Everything in your account with a shareable link. Upload a file and get a link back instantly."}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{app ? "Your uploaded files." : "Manage your uploads. Sharing becomes available after a complete safety check."}</p>
         </div>
         {app && <Button className="gap-2" onClick={() => input.current?.click()} disabled={!!uploading}><Upload className="h-4 w-4" />Upload files</Button>}
       </div>
@@ -208,7 +208,7 @@ function Content() {
       {kind && <div className="flex items-center justify-between"><h2 className="font-semibold capitalize">{kind === "pdf" ? "Documents" : kind}</h2><Button variant="link" asChild><Link to="/content">All files</Link></Button></div>}
 
       {/* Upload (hidden input — triggered by the + button or the desktop Upload button) */}
-      <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.txt,.zip,application/*" : "video/*,audio/*,image/*,application/*"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
+      <input ref={input} type="file" accept={upload === "video" ? "video/*" : upload === "audio" ? "audio/*" : upload === "image" ? "image/*" : upload === "document" ? ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" : "video/*,audio/*,image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"} multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
       {uploading && app && (
         <div role="status" aria-live="polite" className="fixed inset-x-3 bottom-24 z-40 mx-auto max-w-md rounded-2xl border bg-card p-4 shadow-xl md:bottom-6">
           <div className="flex items-center gap-3">

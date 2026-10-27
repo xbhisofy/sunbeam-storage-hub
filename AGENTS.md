@@ -11,7 +11,7 @@
 
 ## Application rules
 - Isolate `/mobileapp` in `mobileapp-review/`; never import Expo or edit production for review. Subdirectories have their own `AGENTS.md`; read them before changing files there.
-- Self-hosted upload safety uses deploy/safety SQL, a VPS-only antivirus service and an Nginx delivery guard; clean supported scans enable sharing automatically, but report holds and blocks persist because client checks cannot protect older APKs or existing signed URLs.
+- Upload safety uses VPS SQL, full-file ClamAV and an Nginx guard. Verify capacity against the exact daemon config; retryable scan failures stay private, not permanently blocked. Audited recovery must rescan files and preserve report/admin holds across copies; clients cannot protect old APKs/signed URLs.
 - Content-safety schema extensions use a narrowly typed client in src/lib/content-safety.ts; never edit generated backend client/types to add moderation fields.
 - Keep splash artwork and typography scoped to SplashScreen and `.splash` styles; its installed-app detection and session timers remain unchanged so visual updates do not alter launch behavior.
 - Web VideoPlayer uses wrapper fullscreen; native MediaPlayer mounts one VideoView across modal rotation, preserving custom controls and playback.

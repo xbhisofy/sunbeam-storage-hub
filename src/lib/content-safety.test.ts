@@ -7,4 +7,10 @@ describe('Upload safety rules', () => {
   it('allows only approved and clean files', () => { expect(sharingAllowed({ moderation_status: 'approved', scan_status: 'clean' })).toBe(true); });
   it('blocks executable uploads', () => { expect(UNSUPPORTED_UPLOAD.test('malware.EXE')).toBe(true); });
   it('blocks archives', () => { expect(UNSUPPORTED_UPLOAD.test('hidden.zip')).toBe(true); });
+  it.each(['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'])('allows %s to reach backend safety scanning', (extension) => {
+    expect(UNSUPPORTED_UPLOAD.test(`report.${extension}`)).toBe(false);
+  });
+  it.each(['unsupported', 'error', 'scanning', 'pending'])('never shares a retryable %s file', (scan_status) => {
+    expect(sharingAllowed({ moderation_status: 'pending', scan_status })).toBe(false);
+  });
 });

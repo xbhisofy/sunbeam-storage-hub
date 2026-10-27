@@ -5,25 +5,37 @@ import subprocess
 import tempfile
 import threading
 import time
+import shutil
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 
 import psycopg2
 import requests
-from policy import MAX_SCAN_BYTES, dangerous_signature, restriction, scan_result, automatic_sharing_status
+from policy import dangerous_signature, document_restriction, restriction, scan_result, automatic_sharing_status
+from scan_config import scan_capacity
 
 
 def db():
     return psycopg2.connect(host=os.environ['SAFETY_DB_HOST'], port=5432, dbname='postgres', user='postgres', password=os.environ['POSTGRES_PASSWORD'], connect_timeout=5)
 
 
-def decide(path, status, note):
+def decide(path, status, note, claim):
     with db() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.files WHERE id=%s AND scanned_at=%s AND scan_status='scanning' FOR UPDATE", claim)
+        if cur.fetchone() is None:
+            return  # Interrupted/requeued attempts cannot overwrite a newer result.
         cur.execute("SELECT id,moderation_status,moderation_note FROM public.files WHERE storage_path=%s FOR UPDATE", (path,))
-        for fid, old_status, old_note in cur.fetchall():
+        rows = cur.fetchall()
+        group_blocked = any(old_status == 'blocked' for _, old_status, _ in rows)
+        group_reported = any(old_note == 'Safety report: review required' for _, _, old_note in rows)
+        for fid, old_status, old_note in rows:
             next_status = automatic_sharing_status(status, old_status, old_note)
-            held = old_status == 'blocked' or old_note == 'Safety report: review required'
-            cur.execute("UPDATE public.files SET scan_status=%s, scanned_at=now(), moderation_status=%s, moderation_note=%s WHERE id=%s", (status, next_status, old_note if held else note, fid))
+            if group_blocked:
+                next_status = 'blocked'
+            elif group_reported:
+                next_status = 'pending'
+            next_note = old_note if old_status == 'blocked' else 'Blocked by related file moderation' if group_blocked else 'Safety report: review required' if group_reported else note
+            cur.execute("UPDATE public.files SET scan_status=%s, scanned_at=now(), moderation_status=%s, moderation_note=%s WHERE id=%s", (status, next_status, next_note, fid))
         cur.execute("INSERT INTO public.content_safety_events(file_id,action,note) SELECT id,%s,%s FROM public.files WHERE storage_path=%s AND source='original'", ('scan_' + status, note, path))
 
 
@@ -34,12 +46,25 @@ def scan_one():
         if row is None:
             return False
         fid, path, name, size = row
-        cur.execute("UPDATE public.files SET scan_status='scanning',scanned_at=now() WHERE id=%s", (fid,))
-    issue = restriction(name, size)
+        cur.execute("UPDATE public.files SET scan_status='scanning',scanned_at=now() WHERE id=%s RETURNING scanned_at", (fid,))
+        claim = (fid, cur.fetchone()[0])
+    def finish(status, note):
+        decide(path, status, note, claim)
+    try:
+        max_bytes = scan_capacity()
+    except (OSError, ValueError):
+        finish('error', 'Antivirus capacity configuration requires verification')
+        return True
+    # Storage identity is immutable; display names can be renamed while queued.
+    scan_name = path or name
+    issue = restriction(scan_name, size, max_bytes)
     if issue or not path:
-        decide(path, 'unsupported', issue or 'Missing uploaded file')
+        finish('unsupported', issue or 'Missing uploaded file')
         return True
     key = os.environ['SERVICE_ROLE_KEY']
+    if shutil.disk_usage(tempfile.gettempdir()).free < size + 64 * 1024 * 1024:
+        finish('error', 'Insufficient temporary capacity for a complete scan')
+        return True
     with tempfile.NamedTemporaryFile() as temporary:
         try:
             from urllib.parse import quote
@@ -48,37 +73,53 @@ def scan_one():
                 total = 0
                 prefix = b''
                 for chunk in response.iter_content(65536):
-                    if not prefix:
-                        prefix = chunk[:32]
+                    if len(prefix) < 32:
+                        prefix += chunk[:32 - len(prefix)]
                     total += len(chunk)
-                    if total > MAX_SCAN_BYTES:
-                        decide(path, 'unsupported', 'File exceeds antivirus scan limit')
+                    if total > max_bytes:
+                        finish('unsupported', 'File exceeds antivirus scan limit')
                         return True
                     temporary.write(chunk)
                 if total != size:
-                    decide(path, 'error', 'Stored file size does not match upload metadata')
+                    finish('error', 'Stored file size does not match upload metadata')
                     return True
-                if dangerous_signature(prefix):
-                    decide(path, 'unsupported', 'Executable or archive disguised as another file type')
+                if dangerous_signature(prefix, scan_name):
+                    finish('unsupported', 'Executable or archive disguised as another file type')
                     return True
             temporary.flush()
+            issue = document_restriction(temporary.name, scan_name)
+            if issue:
+                finish('unsupported', issue)
+                return True
             # Stream bytes across the daemon socket; services use isolated /tmp namespaces.
-            result = subprocess.run(['clamdscan', '--stream', '--no-summary', temporary.name], capture_output=True, text=True, timeout=180)
-            status = scan_result(result.returncode, result.stdout)
-            decide(path, status, 'Malware scan passed; sharing enabled automatically' if status == 'clean' else 'Malware detected' if status == 'infected' else 'Antivirus check unavailable; sharing blocked')
+            # Use this exact verified config rather than a different default daemon.
+            result = subprocess.run(['clamdscan', '--config-file', os.environ.get('SAFETY_CLAMD_CONFIG', '/etc/clamav/clamd.conf'), '--stream', '--no-summary', temporary.name], capture_output=True, text=True, timeout=int(os.environ.get('SAFETY_SCAN_TIMEOUT_SECONDS', '180')))
+            status = scan_result(result.returncode, result.stdout) if not result.stderr.strip() else 'infected' if result.returncode == 1 else 'error'
+            finish(status, 'Malware scan passed; sharing enabled automatically' if status == 'clean' else 'Malware detected' if status == 'infected' else 'Antivirus check unavailable; sharing blocked')
         except Exception:
-            decide(path, 'error', 'Safety checking failed; sharing blocked')
+            finish('error', 'Safety checking failed; sharing blocked')
     return True
 
 
 def worker():
-    # Interrupted scans never become implicitly clean.
+    # One worker across processes: no overlapping temp budgets or scan attempts.
     while True:
         try:
-            with db() as conn, conn.cursor() as cur:
-                cur.execute("UPDATE public.files SET scan_status='pending' WHERE scan_status='scanning' AND scanned_at<now()-interval '10 minutes'")
-            if not scan_one():
-                time.sleep(5)
+            with db() as lease, lease.cursor() as cur:
+                cur.execute('SELECT pg_try_advisory_lock(3199001)')
+                if not cur.fetchone()[0]:
+                    time.sleep(15)
+                    continue
+                try:
+                    # The previous sole worker is gone; all interrupted claims can retry.
+                    cur.execute("UPDATE public.files SET scan_status='pending' WHERE scan_status='scanning'")
+                    lease.commit()
+                    while True:
+                        cur.execute('SELECT 1')  # Detect lost lock connection before starting work.
+                        if not scan_one():
+                            time.sleep(5)
+                finally:
+                    cur.execute('SELECT pg_advisory_unlock(3199001)')
         except Exception:
             time.sleep(15)
 

@@ -38,7 +38,7 @@ export default function Uploader() {
     }
     setCurrent(null);
     setDone((d) => d + ok);
-    if (ok) void notify("Upload complete", ok === 1 ? `${items[0].name} is ready to share.` : `${ok} files are ready to share.`);
+    if (ok) void notify("Upload complete", `${ok} file${ok === 1 ? "" : "s"} uploaded. Sharing requires a complete safety check; files beyond scanning limits remain private.`);
   }
 
   async function startMedia() {
@@ -72,8 +72,8 @@ export default function Uploader() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.content, { paddingBottom: Math.max(insets.bottom, 16) + 16 }]}>
         <Motion><View style={s.hero}><View style={s.heroCopy}><Text style={s.eyebrow}>UPLOAD TO TANYORA</Text><Text style={s.heroTitle}>Add to your<Text style={s.blue}> cloud storage</Text></Text><Text style={s.heroText}>Your files are accessible everywhere and also available on the website.</Text></View><Image source={uploadCloud} resizeMode="contain" accessible={false} style={s.art} /></View></Motion>
         <View style={s.benefits}>{["Secure Upload", "Access Anywhere", "Sync to Website"].map(label => <View key={label} style={s.benefit}><Ionicons name="checkmark-circle" size={16} color={theme.primary} /><Text style={s.benefitText}>{label}</Text></View>)}</View>
-        <Motion delay={60}><Option icon="images" title="Photos & Videos" text="Choose from your gallery" types={["JPG", "PNG", "MP4", "MOV", "HEIC"]} on={startMedia} /></Motion>
-        <Motion delay={100}><Option icon="document-text" title="Documents & Files" text="PDF, music and other files" types={["PDF", "DOC", "XLS", "MP3", "ZIP"]} on={pickDocuments} /></Motion>
+        <Motion delay={60}><Option icon="images" title="Photos & Videos" text="Choose from your gallery" types={["JPG", "PNG", "MP4", "MOV", "WEBM"]} on={startMedia} /></Motion>
+        <Motion delay={100}><Option icon="document-text" title="Documents & Files" text="PDF, Office documents and music" types={["PDF", "DOCX", "XLSX", "PPTX", "MP3"]} on={pickDocuments} /></Motion>
         <View style={s.divider}><View style={s.line} /><Text style={s.or}>OR UPLOAD FROM</Text><View style={s.line} /></View>
         <View style={s.sources}><Source icon="camera" title="Camera" description="Not available" /><Source icon="folder" title="Browse Files" description="Choose from your device" on={pickDocuments} /><Source icon="cloud-outline" title="Drive" description="Not connected" /></View>
         <View style={s.info}><View style={s.infoIcon}><Ionicons name="shield-checkmark" size={25} color={theme.primary} /></View><Text style={s.infoText}>Only the files you choose are uploaded. They appear on the website too.</Text><Ionicons name="cloud" size={42} color={theme.track} /></View>

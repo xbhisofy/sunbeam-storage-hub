@@ -18,6 +18,8 @@ export function sharingAllowed(file: { moderation_status?: string; scan_status?:
 export function safetyLabel(file: { moderation_status?: string; scan_status?: string }) {
   if (file.moderation_status === 'blocked') return 'Sharing blocked';
   if (sharingAllowed(file)) return 'Ready to share';
+  if (file.scan_status === 'unsupported') return 'Sharing unavailable: scan limit or file type';
+  if (file.scan_status === 'error') return 'Safety check failed: sharing unavailable';
   if (file.scan_status === 'clean') return 'Sharing on hold';
   return 'Safety check pending';
 }
