@@ -5,12 +5,14 @@ import subprocess
 import tempfile
 import threading
 import time
+import shutil
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import unquote, urlsplit
 
 import psycopg2
 import requests
-from policy import MAX_SCAN_BYTES, dangerous_signature, restriction, scan_result, automatic_sharing_status
+from policy import dangerous_signature, document_restriction, restriction, scan_result, automatic_sharing_status
+from scan_config import scan_capacity
 
 
 def db():
@@ -20,8 +22,15 @@ def db():
 def decide(path, status, note):
     with db() as conn, conn.cursor() as cur:
         cur.execute("SELECT id,moderation_status,moderation_note FROM public.files WHERE storage_path=%s FOR UPDATE", (path,))
-        for fid, old_status, old_note in cur.fetchall():
+        rows = cur.fetchall()
+        group_blocked = any(old_status == 'blocked' for _, old_status, _ in rows)
+        group_reported = any(old_note == 'Safety report: review required' for _, _, old_note in rows)
+        for fid, old_status, old_note in rows:
             next_status = automatic_sharing_status(status, old_status, old_note)
+            if group_blocked:
+                next_status = 'blocked'
+            elif group_reported:
+                next_status = 'pending'
             held = old_status == 'blocked' or old_note == 'Safety report: review required'
             cur.execute("UPDATE public.files SET scan_status=%s, scanned_at=now(), moderation_status=%s, moderation_note=%s WHERE id=%s", (status, next_status, old_note if held else note, fid))
         cur.execute("INSERT INTO public.content_safety_events(file_id,action,note) SELECT id,%s,%s FROM public.files WHERE storage_path=%s AND source='original'", ('scan_' + status, note, path))
@@ -35,11 +44,21 @@ def scan_one():
             return False
         fid, path, name, size = row
         cur.execute("UPDATE public.files SET scan_status='scanning',scanned_at=now() WHERE id=%s", (fid,))
-    issue = restriction(name, size)
+    try:
+        max_bytes = scan_capacity()
+    except (OSError, ValueError):
+        decide(path, 'error', 'Antivirus capacity configuration requires verification')
+        return True
+    # Storage identity is immutable; display names can be renamed while queued.
+    scan_name = path or name
+    issue = restriction(scan_name, size, max_bytes)
     if issue or not path:
         decide(path, 'unsupported', issue or 'Missing uploaded file')
         return True
     key = os.environ['SERVICE_ROLE_KEY']
+    if shutil.disk_usage(tempfile.gettempdir()).free < size + 64 * 1024 * 1024:
+        decide(path, 'error', 'Insufficient temporary capacity for a complete scan')
+        return True
     with tempfile.NamedTemporaryFile() as temporary:
         try:
             from urllib.parse import quote
@@ -48,22 +67,27 @@ def scan_one():
                 total = 0
                 prefix = b''
                 for chunk in response.iter_content(65536):
-                    if not prefix:
-                        prefix = chunk[:32]
+                    if len(prefix) < 32:
+                        prefix += chunk[:32 - len(prefix)]
                     total += len(chunk)
-                    if total > MAX_SCAN_BYTES:
+                    if total > max_bytes:
                         decide(path, 'unsupported', 'File exceeds antivirus scan limit')
                         return True
                     temporary.write(chunk)
                 if total != size:
                     decide(path, 'error', 'Stored file size does not match upload metadata')
                     return True
-                if dangerous_signature(prefix):
+                if dangerous_signature(prefix, scan_name):
                     decide(path, 'unsupported', 'Executable or archive disguised as another file type')
                     return True
             temporary.flush()
+            issue = document_restriction(temporary.name, scan_name)
+            if issue:
+                decide(path, 'unsupported', issue)
+                return True
             # Stream bytes across the daemon socket; services use isolated /tmp namespaces.
-            result = subprocess.run(['clamdscan', '--stream', '--no-summary', temporary.name], capture_output=True, text=True, timeout=180)
+            # Use this exact verified config rather than a different default daemon.
+            result = subprocess.run(['clamdscan', '--config-file', os.environ.get('SAFETY_CLAMD_CONFIG', '/etc/clamav/clamd.conf'), '--stream', '--no-summary', temporary.name], capture_output=True, text=True, timeout=int(os.environ.get('SAFETY_SCAN_TIMEOUT_SECONDS', '180')))
             status = scan_result(result.returncode, result.stdout)
             decide(path, status, 'Malware scan passed; sharing enabled automatically' if status == 'clean' else 'Malware detected' if status == 'infected' else 'Antivirus check unavailable; sharing blocked')
         except Exception:
