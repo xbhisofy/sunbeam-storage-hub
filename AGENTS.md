@@ -25,7 +25,7 @@
 - Native local notifications go through `mobile/lib/notifications.ts` with one high-importance channel bound to the bundled sound; changing the sound requires a new channel id.
 - Native conversion preserves the parent file reference and never deletes shared storage when removing a converted row, so conversions retain original ownership and bonus attribution.
 - Native account screens share `useProfile` with focus/resume refresh so externally changed subscriptions are not stale; central account rules validate profile inputs and derive plan display.
-- Native Home, My Files and Shared use opt-in FileCard presentations and the approved HomeTabBar with explicit active destination; guarded thumbnails and screen-scoped themes isolate other screens and website. Library behavior and shared expiry logic use pure native helpers for testing.
+- Native tab screens use the approved HomeTabBar with explicit active destination; opt-in FileCard presentations, guarded thumbnails and screen-scoped themes isolate the website. Library behavior and shared expiry logic use pure native helpers; Profile reads existing profile/files hooks without duplicating account APIs.
 - Native entrance motion uses the system Reduce Motion preference and the native animation driver to keep interactions accessible and smooth.
 - Native Upload keeps its screen-specific theme/artwork isolated and retains existing consent and picker functions; unsupported sources stay disabled rather than introducing new permissions or integrations.
 - The native root session gate owns post-login navigation and restores only validated `/s/<slug>` destinations so sign-in never loses shared files or accepts external redirects.

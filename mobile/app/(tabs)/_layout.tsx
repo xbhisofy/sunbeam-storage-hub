@@ -15,10 +15,11 @@ export default function TabsLayout() {
   const home = pathname === "/" || pathname === "/(tabs)";
   const library = pathname === "/content" || pathname === "/(tabs)/content";
   const shared = pathname === "/shared" || pathname === "/(tabs)/shared";
+  const profile = pathname === "/profile" || pathname === "/(tabs)/profile";
   const insets = useSafeAreaInsets();
   return (
     <Tabs
-      tabBar={home || library || shared ? ({ state, navigation }) => <HomeTabBar active={shared ? "shared" : library ? "content" : "index"} onUpload={() => router.push("/uploader")} onNavigate={name => {
+      tabBar={home || library || shared || profile ? ({ state, navigation }) => <HomeTabBar active={profile ? "profile" : shared ? "shared" : library ? "content" : "index"} onUpload={() => router.push("/uploader")} onNavigate={name => {
         const route = state.routes.find(r => r.name === name);
         if (!route) return;
         const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
