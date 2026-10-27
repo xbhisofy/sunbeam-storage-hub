@@ -69,7 +69,10 @@ describe("Account deletion safeguards", () => {
     await run({ context: { userId: "owner" } });
     expect(mocks.range.mock.calls).toEqual([[0, 999], [1000, 1999]]);
     expect(mocks.remove).toHaveBeenCalledWith(["owner/duplicate.jpg", "owner/last.jpg"]);
-    expect(mocks.deleteFiles.mock.invocationCallOrder[0]).toBeGreaterThan(mocks.range.mock.invocationCallOrder[1]);
+    const deletionOrder = mocks.deleteFiles.mock.invocationCallOrder[0];
+    const lastListOrder = mocks.range.mock.invocationCallOrder[1];
+    if (deletionOrder === undefined || lastListOrder === undefined) throw new Error("Expected list and deletion calls");
+    expect(deletionOrder).toBeGreaterThan(lastListOrder);
   });
   it("stops before all mutations when a later list page fails", async () => {
     mocks.range.mockResolvedValueOnce({ data: Array.from({ length: 1000 }, () => ({ source: "original", storage_path: "owner/file.jpg" })), error: null })
@@ -83,6 +86,6 @@ describe("Account deletion safeguards", () => {
     mocks.range.mockResolvedValue({ data: Array.from({ length: 101 }, (_, i) => ({ source: "original", storage_path: `owner/${i}.jpg` })), error: null });
     await run({ context: { userId: "owner" } });
     expect(mocks.remove.mock.calls.map(([paths]) => paths.length)).toEqual([100, 1]);
-    expect(mocks.remove.mock.calls[1][0]).toEqual(["owner/100.jpg"]);
+    expect(mocks.remove.mock.calls[1]?.[0]).toEqual(["owner/100.jpg"]);
   });
 });

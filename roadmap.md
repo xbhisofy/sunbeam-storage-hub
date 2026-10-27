@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] New safety requirements: no in-app download/export, safe direct opening of generated Tanyora links, emulator/integrity and AdMob/Play policy review; no absolute bypass/compliance guarantees, production/ad changes remain separately gated.
 - [x] Master security audit: architecture/share/ads/backend findings and staged report delivered; 36 Vitest + 11 safety tests passed, three public assetlinks responses checked, managed-preview ACLs read. No app/security/production changes; VPS and actual Android behavior unverified.
 - [ ] Implement security hardening in small stages (blocked: approval after audit; production/domain/ad changes require explicit approval).
 - [x] Reference-style web/native player: overlay title/controls, 10-second skips, seek, speed, lock, repeat, mute and fullscreen/rotation. 25 tests pass; web real sample playback and desktop/phone/rotated layouts verified. Ads/access unchanged; unsupported cast/subtitle/PiP controls omitted.
