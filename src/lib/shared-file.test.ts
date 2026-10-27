@@ -27,6 +27,39 @@ describe("installed app owner viewing", () => {
   it("never substitutes an external URL when guarded signing is denied", async () => {
     backend.single.mockResolvedValue({ data: { ...file, external_url: "https://example.com/unguarded" } });
     backend.sign.mockResolvedValue({ data: null, error: { message: "Blocked" } });
-    expect(await loadSharedFile("blocked")).toMatchObject({ url: "" });
+    expect(await loadSharedFile("blocked")).toBeNull();
+  });
+  it("rejects metadata errors even if a row is present", async () => {
+    backend.single.mockResolvedValue({ data: file, error: { message: "Denied" } });
+    expect(await loadSharedFile("denied")).toBeNull();
+    expect(backend.sign).not.toHaveBeenCalled();
+  });
+  it("rejects malformed expiry without signing", async () => {
+    backend.single.mockResolvedValue({ data: { ...file, expires_at: "invalid" } });
+    expect(await loadSharedFile("invalid-expiry")).toBeNull();
+    expect(backend.sign).not.toHaveBeenCalled();
+  });
+  it("blocks expiry at the exact current instant", async () => {
+    const clock = vi.spyOn(Date, "now").mockReturnValue(Date.parse("2026-10-27T08:00:00Z"));
+    try {
+      backend.single.mockResolvedValue({ data: { ...file, expires_at: "2026-10-27T08:00:00Z" } });
+      expect(await loadSharedFile("exact-expiry")).toEqual({ expired: true });
+      expect(backend.sign).not.toHaveBeenCalled();
+    } finally { clock.mockRestore(); }
+  });
+  it.each([null, {}, { signedUrl: "" }, { signedUrl: "javascript:alert(1)" }, { signedUrl: "invalid-url" }])("rejects absent or unsafe signing data %j", async data => {
+    backend.single.mockResolvedValue({ data: file });
+    backend.sign.mockResolvedValue({ data });
+    expect(await loadSharedFile("bad-signing")).toBeNull();
+  });
+  it("never opens an external-only row instead of guarded storage", async () => {
+    backend.single.mockResolvedValue({ data: { ...file, storage_path: null, external_url: "https://example.com/external" } });
+    expect(await loadSharedFile("external")).toBeNull();
+    expect(backend.sign).not.toHaveBeenCalled();
+  });
+  it.each(["metadata", "signing"])("fails closed on a thrown %s error", async operation => {
+    backend.single.mockResolvedValue({ data: file });
+    (operation === "metadata" ? backend.single : backend.sign).mockRejectedValue(new Error("Network failed"));
+    expect(await loadSharedFile("network-failure")).toBeNull();
   });
 });
