@@ -1,5 +1,6 @@
 # Roadmap
-- [ ] Match reference video player with overlay controls, 10-second skips and reliable rotation in web/native; verify controls and small-screen layout.
+- [x] Reference-style web/native player: overlay title/controls, 10-second skips, seek, speed, lock, repeat, mute and fullscreen/rotation. 25 tests pass; web real sample playback and desktop/phone/rotated layouts verified. Ads/access unchanged; unsupported cast/subtitle/PiP controls omitted.
+- [ ] Verify redesigned native player and rotation on Android, then release updated APK (blocked: Android device/emulator unavailable; APK/VPS release not requested).
 - [x] Remove owner premium playback gates in native and installed-web app; 23 tests pass, build OK, browser installation restriction verified; expiry, guarded storage, ads and view recording unchanged.
 - [ ] Verify own-upload playback with a real signed-in owner on Android (blocked: no matching requesting-user account/session or Android device); updated APK/VPS release not performed.
 - [x] Make /mobileapp Profile icons professional: avatar camera badge with white ring (no monogram clipping), consistent tile icons (storage drive, shared link), distinct settings icons (support/privacy), outline active nav tab; 9 tests pass, build OK, phone and nav checks verified. Preview only; production/native unchanged.
