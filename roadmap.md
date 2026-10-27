@@ -1,7 +1,9 @@
 # Roadmap
-- [ ] New safety requirements: no in-app download/export, safe direct opening of generated Tanyora links, emulator/integrity and AdMob/Play policy review; no absolute bypass/compliance guarantees, production/ad changes remain separately gated.
+- [x] Native generated links: strict owner-host/custom-scheme parser, separate HTTPS/custom filters and pending-login preservation; 17 link tests pass. Existing file/player controls have no download/export action; no uncopyable-content claim.
+- [ ] Device/emulator/AdMob/Play verification and Integrity implementation (blocked: Android device/current certificate/provider setup; no guarantee of perfect bypass prevention). Ad consent/test-mode/reporting and custom rate-limit tradeoffs require separate approved stage.
 - [x] Master security audit: architecture/share/ads/backend findings and staged report delivered; 36 Vitest + 11 safety tests passed, three public assetlinks responses checked, managed-preview ACLs read. No app/security/production changes; VPS and actual Android behavior unverified.
-- [ ] Implement security hardening in small stages (blocked: approval after audit; production/domain/ad changes require explicit approval).
+- [x] Stage 1 source hardening: ownership-safe paginated deletion, fail-safe shared signing/expiry, stale native file/ad cleanup; 131 Vitest tests + 11 safety tests + isolated PostgreSQL ACL test passed. Browser fallback issues no file/storage requests; latest build OK.
+- [ ] Apply prepared payment ACL on actual backend and release website/APK (blocked: explicit production approval, coordinated backups/VPS evidence and Android testing). SQL prepared and tested locally only.
 - [x] Reference-style web/native player: overlay title/controls, 10-second skips, seek, speed, lock, repeat, mute and fullscreen/rotation. 25 tests pass; web real sample playback and desktop/phone/rotated layouts verified. Ads/access unchanged; unsupported cast/subtitle/PiP controls omitted.
 - [ ] Verify redesigned native player and rotation on Android, then release updated APK (blocked: Android device/emulator unavailable; APK/VPS release not requested).
 - [x] Remove owner premium playback gates in native and installed-web app; 23 tests pass, build OK, browser installation restriction verified; expiry, guarded storage, ads and view recording unchanged.

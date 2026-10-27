@@ -29,7 +29,7 @@
 - Native tab screens use the approved HomeTabBar with explicit active destination; opt-in FileCard presentations, guarded thumbnails and screen-scoped themes isolate the website. Library behavior and shared expiry logic use pure native helpers; Profile reads existing profile/files hooks without duplicating account APIs.
 - Native entrance motion uses the system Reduce Motion preference and the native animation driver to keep interactions accessible and smooth.
 - Native Upload keeps its screen-specific theme/artwork isolated and retains existing consent and picker functions; unsupported sources stay disabled rather than introducing new permissions or integrations.
-- The native root session gate owns post-login navigation and restores only validated `/s/<slug>` destinations so sign-in never loses shared files or accepts external redirects.
+- Native root restores validated `/s/<slug>` paths; `share-navigation` strictly parses owner-host/custom-scheme URLs so links cannot redirect externally or lose pending content.
 - Android assetlinks must match the shipped APK signing certificate; add the Play App Signing certificate when available because mismatches prevent verified share links from opening the installed app.
 - Public API routes under `src/routes/api/public/*` must verify callers with `requireBearerUserId`; account-deletion logic lives only in `src/lib/delete-account.ts` so the web server function and the mobile-app route stay identical.
 - UI uses local `currentUserId()` instead of per-click network auth; backend requests remain verified. Cross-tree hook tests use root React so the DOM renderer has one dispatcher, without changing native dependencies.
