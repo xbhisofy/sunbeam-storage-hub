@@ -5,9 +5,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { homeTheme as t } from "../lib/home-theme";
 
 type Destination = "index" | "content" | "shared" | "profile";
-export function HomeTabBar({ onNavigate, onUpload }: { onNavigate: (name: Destination) => void; onUpload: () => void }) {
+export function HomeTabBar({ onNavigate, onUpload, active = "index" }: { onNavigate: (name: Destination) => void; onUpload: () => void; active?: Destination }) {
   const insets = useSafeAreaInsets();
-  const item = (name: Destination, label: string, icon: keyof typeof Ionicons.glyphMap) => <Pressable key={name} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{ selected: name === "index" }} onPress={() => onNavigate(name)} style={({ pressed }) => [s.item, pressed && s.pressed]}><Ionicons name={icon} size={25} color={name === "index" ? t.primary : t.muted} /><Text style={[s.label, name === "index" && s.active]}>{label}</Text>{name === "index" && <View style={s.dot} />}</Pressable>;
+  const item = (name: Destination, label: string, icon: keyof typeof Ionicons.glyphMap) => <Pressable key={name} accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{ selected: name === active }} onPress={() => onNavigate(name)} style={({ pressed }) => [s.item, pressed && s.pressed]}><Ionicons name={name === "content" && active === name ? "folder" : icon} size={25} color={name === active ? t.primary : t.muted} /><Text style={[s.label, name === active && s.active]}>{label}</Text>{name === active && <View style={s.dot} />}</Pressable>;
   return <View style={[s.wrap, { paddingBottom: Math.max(insets.bottom, 12) }]}><View style={s.bar}>
     {item("index", "Home", "home")}{item("content", "Files", "folder-outline")}
     <Pressable accessibilityRole="button" accessibilityLabel="Upload a file" onPress={onUpload} style={({ pressed }) => [s.plusWrap, pressed && s.pressed]}><View style={s.plusHalo}><LinearGradient colors={[t.primaryLight, t.primary, t.primaryDeep]} style={s.diamond}><Ionicons name="add" size={35} color={t.onPrimary} style={{ transform: [{ rotate: "-45deg" }] }} /></LinearGradient></View></Pressable>

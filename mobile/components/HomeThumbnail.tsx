@@ -5,7 +5,7 @@ import { supabase } from "../lib/supabase";
 import { theme } from "../lib/theme";
 import { iconFor } from "../lib/files";
 
-export function HomeThumbnail({ path, type }: { path: string | null; type: string }) {
+export function HomeThumbnail({ path, type, size = 36 }: { path: string | null; type: string; size?: number }) {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
     let active = true;
@@ -18,5 +18,5 @@ export function HomeThumbnail({ path, type }: { path: string | null; type: strin
     return () => { active = false; };
   }, [path, type]);
   const color = theme.cat[type] ?? theme.cat.other;
-  return url ? <Image source={{ uri: url }} accessible={false} resizeMode="cover" onError={() => setUrl(null)} style={{ width: 36, height: 36, borderRadius: 8 }} /> : <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: color.bg, alignItems: "center", justifyContent: "center" }}><Ionicons name={iconFor(type)} size={20} color={color.fg} /></View>;
+  return url ? <Image source={{ uri: url }} accessible={false} resizeMode="cover" onError={() => setUrl(null)} style={{ width: size, height: size, borderRadius: size * 0.2 }} /> : <View style={{ width: size, height: size, borderRadius: size * 0.2, backgroundColor: color.bg, alignItems: "center", justifyContent: "center" }}><Ionicons name={iconFor(type)} size={size * 0.55} color={color.fg} /></View>;
 }
