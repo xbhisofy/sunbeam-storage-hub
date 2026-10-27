@@ -11,6 +11,12 @@ export const homeTheme = {
   border: "#E6EDFA",
   gold: "#F5B400",
   shadow: "#A9C6F5",
+  storageStart: "#F7FAFF",
+  storageEnd: "#E2EEFF",
+  primaryLight: "#2984FF",
+  primaryDeep: "#004EEB",
+  disabled: "#8490A8",
+  sheen: "#FFFFFF75",
   categories: {
     pdf: { foreground: "#FF4056", background: "#FFE6E9" },
     image: { foreground: "#00ACC5", background: "#E0F7FB" },
