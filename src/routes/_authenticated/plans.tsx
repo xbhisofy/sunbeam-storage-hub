@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authenticated/plans")({
 });
 
 const plans: { id: "free" | PremiumTier; name: string; price: number; period: string; icon: typeof Zap; perks: string[]; popular?: boolean }[] = [
-  { id: "free", name: "Free", price: 0, period: "forever", icon: Zap, perks: ["1 TB per file", "Share links", "Custom video player"] },
+  { id: "free", name: "Free", price: 0, period: "forever", icon: Zap, perks: ["1 GB storage", "Share links", "Custom video player"] },
   { id: "plus", name: "Plus", price: PREMIUM_PLANS.plus.priceInr, period: "per month", icon: Sparkles, perks: ["1 TB per file", "100 GB storage", "No ads while browsing", "Priority uploads", "View your own shared files"], popular: true },
   { id: "pro", name: "Pro", price: PREMIUM_PLANS.pro.priceInr, period: "per month", icon: Crown, perks: ["1 TB per file", "1 TB storage", "No ads", "Priority support", "View your own shared files"] },
 ];
