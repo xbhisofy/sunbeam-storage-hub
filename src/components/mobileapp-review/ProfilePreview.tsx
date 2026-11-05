@@ -4,6 +4,7 @@ import { Crown, HardDrive, Folder, Link2, UserRound, Headphones, Lock, FileText,
 import { Button } from '@/components/ui/button';
 import type { ReviewAccount } from './sample-account';
 import { reviewPlan } from './plan-display';
+import ref from './ReferenceScreens.module.css';
 import p from './ProfilePreview.module.css';
 
 export function ProfilePreview({ account, signedIn }: { account: ReviewAccount | null | undefined; signedIn: boolean }) {
