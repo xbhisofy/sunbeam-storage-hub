@@ -13,6 +13,8 @@ export const BRAND = { name: "Tanyora", supportEmail: "tanyora@support.com" };
 // Owner's real AdMob ad units (app ID lives in app.json).
 export const ADS = {
   interstitial: process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL ?? "ca-app-pub-2600116803972478/4484980349",
+  // Non-skippable full-screen video before playback; falls back to interstitial until set.
+  rewarded: process.env.EXPO_PUBLIC_ADMOB_REWARDED ?? "",
   banner: process.env.EXPO_PUBLIC_ADMOB_BANNER ?? "ca-app-pub-2600116803972478/3271136873",
 };
 

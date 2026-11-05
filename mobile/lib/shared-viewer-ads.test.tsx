@@ -10,7 +10,7 @@ vi.mock("../node_modules/react-native/index.js", () => {
     Image: () => createElement("div", { "data-testid": "photo" }),
     Pressable: ({ children, onPress }: any) => createElement("button", { onClick: onPress }, children),
     Modal: () => null, TextInput: () => null, ActivityIndicator: () => null,
-    StyleSheet: { create: (styles: any) => styles }, Alert: { alert: vi.fn() },
+    StyleSheet: { create: (styles: any) => styles, absoluteFill: {}, absoluteFillObject: {} }, BackHandler: { addEventListener: () => ({ remove: () => {} }) }, Alert: { alert: vi.fn() },
     useWindowDimensions: () => ({ width: state.width, height: state.height }),
   };
 });
@@ -18,9 +18,11 @@ vi.mock("../node_modules/@expo/vector-icons/build/Icons.js", () => ({ Ionicons: 
 vi.mock("../node_modules/@expo/vector-icons/build/IconsLazy.js", () => ({ Ionicons: () => null }));
 vi.mock("../node_modules/react-native-webview/index.js", () => ({ WebView: () => createElement("div", { "data-testid": "document" }) }));
 vi.mock("../node_modules/expo-router/build/index.js", () => ({ router: { back: vi.fn() } }));
-vi.mock("../node_modules/react-native-google-mobile-ads/lib/module/index.js", () => ({ AdEventType: {}, InterstitialAd: {} }));
-vi.mock("../node_modules/react-native-google-mobile-ads/lib/commonjs/index.js", () => ({ AdEventType: {}, InterstitialAd: {} }));
+vi.mock("../node_modules/react-native-google-mobile-ads/lib/module/index.js", () => ({ AdEventType: {}, InterstitialAd: { createForAdRequest: () => ({ addAdEventListener: () => () => {}, load: () => {}, show: () => {} }) }, RewardedAd: {}, RewardedAdEventType: {} }));
+vi.mock("../node_modules/react-native-google-mobile-ads/lib/commonjs/index.js", () => ({ AdEventType: {}, InterstitialAd: { createForAdRequest: () => ({ addAdEventListener: () => () => {}, load: () => {}, show: () => {} }) }, RewardedAd: {}, RewardedAdEventType: {} }));
 vi.mock("../components/ui", () => ({ Screen: ({ children }: any) => createElement("main", null, children), Card: ({ children }: any) => createElement("div", null, children), Button: ({ label }: any) => createElement("button", null, label) }));
+vi.mock("expo-linear-gradient", () => ({ LinearGradient: ({ children }: any) => createElement("div", null, children) }));
+vi.mock("./files", () => ({ formatSize: () => "1 KB" }));
 vi.mock("../components/FileCard", () => ({ FileIcon: () => null }));
 vi.mock("../components/Motion", () => ({ Motion: ({ children }: any) => createElement("div", null, children) }));
 vi.mock("../components/SharedDisplayAd", () => ({ SharedDisplayAd: () => createElement("div", { "data-testid": "ad" }) }));
