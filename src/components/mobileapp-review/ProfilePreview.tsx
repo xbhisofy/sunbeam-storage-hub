@@ -28,6 +28,7 @@ export function ProfilePreview({ account, signedIn }: { account: ReviewAccount |
     { icon: Link2, value: `${files.filter(f => !!f.slug).length} Links`, label: 'Shared Links', tone: p.links },
   ];
   return <div className={p.profile}>
+    <header className={ref.heading}><small>ACCOUNT</small><h1>Your <span>Profile</span></h1><p>Manage your account, settings and support.</p></header>
     <section className={p.account} aria-label="Account details">
       <div className={p.avatar}>{name.charAt(0).toUpperCase()}<Button asChild variant="ghost" className={p.edit}><Link to={editPath} aria-label="Edit account details"><Camera aria-hidden="true" /></Link></Button></div>
       <div className={p.identity}><span className={p.badge}><Crown aria-hidden="true" />{plan.name} Plan</span><h2>{name}</h2><p>{account?.profile.email || 'Account email unavailable'}</p></div>
