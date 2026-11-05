@@ -5,14 +5,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { theme } from "../lib/theme";
 
-export function Screen({ title, children, back, right }: { title?: string; children: ReactNode; back?: boolean; right?: ReactNode }) {
+export function Screen({ title, children, back, right, onBack }: { title?: string; children: ReactNode; back?: boolean; right?: ReactNode; onBack?: () => void }) {
   const insets = useSafeAreaInsets();
   return (
     <View style={{ flex: 1, backgroundColor: theme.bg, paddingTop: insets.top }}>
       {title ? (
         <View style={s.header}>
           {back ? (
-            <Pressable accessibilityLabel="Go back" hitSlop={12} onPress={() => router.back()} style={s.iconBtn}>
+            <Pressable accessibilityLabel="Go back" hitSlop={12} onPress={onBack ?? (() => router.back())} style={s.iconBtn}>
               <Ionicons name="chevron-back" size={22} color={theme.text} />
             </Pressable>
           ) : null}

@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Alert, BackHandler, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
 import { router } from "expo-router";
-import { AdEventType, InterstitialAd } from "react-native-google-mobile-ads";
+import { AdEventType, InterstitialAd, RewardedAd, RewardedAdEventType } from "react-native-google-mobile-ads";
+import { LinearGradient } from "expo-linear-gradient";
+import { formatSize } from "../lib/files";
 import { Screen, Button, Card } from "./ui";
 import { FileIcon } from "./FileCard";
 import { supabase } from "../lib/supabase";
@@ -17,8 +19,13 @@ import { useSharedPlayback, type PlaybackAd } from "../lib/use-shared-playback";
 import { SharedDisplayAd } from "./SharedDisplayAd";
 import { canShowSharedDisplayAd } from "../lib/display-ad";
 
-type Shared = { name: string; file_type: string; mime: string | null; source: string; url: string };
+type Shared = { name: string; file_type: string; mime: string | null; size: number; source: string; url: string };
 function createPlaybackAd(): PlaybackAd {
+  if (ADS.rewarded) {
+    const rewarded = RewardedAd.createForAdRequest(ADS.rewarded);
+    const ev = { loaded: RewardedAdEventType.LOADED, closed: AdEventType.CLOSED, error: AdEventType.ERROR } as const;
+    return { subscribe: (event, callback) => rewarded.addAdEventListener(ev[event] as never, callback as never), load: () => rewarded.load(), show: () => rewarded.show() };
+  }
   const ad = InterstitialAd.createForAdRequest(ADS.interstitial);
   const events = { loaded: AdEventType.LOADED, closed: AdEventType.CLOSED, error: AdEventType.ERROR };
   return { subscribe: (event, callback) => ad.addAdEventListener(events[event], callback), load: () => ad.load(), show: () => ad.show() };
@@ -34,6 +41,28 @@ export function PlayerScreen({ slug }: { slug: string }) {
   const [fullscreen, setFullscreen] = useState(false);
   const { width, height } = useWindowDimensions();
   useEffect(() => { setReport(false); setFullscreen(false); }, [slug, session?.user.id]);
+  const exitAd = useRef<InterstitialAd | null>(null);
+  const exitReady = useRef(false);
+  useEffect(() => {
+    if (!open) return;
+    const ad = InterstitialAd.createForAdRequest(ADS.interstitial);
+    exitAd.current = ad; exitReady.current = false;
+    const offs = [ad.addAdEventListener(AdEventType.LOADED, () => { exitReady.current = true; }), ad.addAdEventListener(AdEventType.ERROR, () => { exitReady.current = false; })];
+    ad.load();
+    return () => { offs.forEach(off => off()); exitAd.current = null; exitReady.current = false; };
+  }, [open, slug]);
+  function leave() {
+    const ad = exitAd.current;
+    if (!ad || !exitReady.current) return router.back();
+    exitReady.current = false;
+    const off = ad.addAdEventListener(AdEventType.CLOSED, () => { off(); router.back(); });
+    try { ad.show(); } catch { off(); router.back(); }
+  }
+  useEffect(() => {
+    if (!open || fullscreen) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => { leave(); return true; });
+    return () => sub.remove();
+  }, [open, fullscreen]);
   const displayAd = canShowSharedDisplayAd({ ready: st.kind === "ok", width, height, fullscreen, adBusy, reportOpen: report });
 
   async function sendReport(reason: string, details: string) {
@@ -44,19 +73,31 @@ export function PlayerScreen({ slug }: { slug: string }) {
   }
 
   return (
-    <Screen title={st.kind === "ok" ? st.name : "Shared file"} back>
+    <Screen title={st.kind === "ok" ? st.name : "Shared file"} back onBack={open ? leave : undefined}>
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         {displayAd && <SharedDisplayAd compact key={`top:${slug}:${session?.user.id ?? ""}`} />}
         {st.kind === "loading" && <ActivityIndicator color={theme.primary} style={{ marginTop: 60 }} />}
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
         {st.kind === "ok" && !open && (
-          <Motion><View style={{ alignItems: "center", gap: 18, paddingVertical: 48 }}>
-            <FileIcon type={st.file_type} size={64} />
-            <Text style={{ fontSize: 17, fontWeight: "700", color: theme.text, textAlign: "center" }} numberOfLines={2}>{st.name}</Text>
-            <Text style={{ color: theme.muted, fontSize: 13 }}>Shared with you</Text>
+          <Motion><View style={{ gap: 14 }}>
+            <View style={pv.card}>
+              {st.file_type === "image"
+                ? <Image source={{ uri: st.url }} blurRadius={25} resizeMode="cover" style={StyleSheet.absoluteFill} />
+                : <LinearGradient colors={["#E0E7FF", "#F1F5F9", "#DBEAFE"]} style={StyleSheet.absoluteFill}><View style={pv.ghost}><FileIcon type={st.file_type} size={72} /></View></LinearGradient>}
+              <View style={pv.veil} />
+              <Pressable accessibilityRole="button" disabled={adBusy} onPress={showAdThenOpen} style={pv.openWrap}>
+                <LinearGradient colors={["#0EA5E9", "#4F46E5"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={pv.open}>
+                  {adBusy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={pv.openText}>{adUnavailable ? "Retry" : "Open"}</Text>}
+                </LinearGradient>
+              </Pressable>
+              <Pressable accessibilityRole="button" onPress={() => setReport(true)} style={pv.report}><Text style={pv.reportText}>Report</Text></Pressable>
+            </View>
+            <View style={{ gap: 4, paddingHorizontal: 4 }}>
+              <Text style={{ fontSize: 18, fontWeight: "700", color: theme.text }} numberOfLines={2}>{st.name}</Text>
+              <Text style={{ color: theme.muted, fontSize: 14 }}>{formatSize(st.size)}</Text>
+            </View>
             {adUnavailable && <Text accessibilityRole="alert" style={{ color: theme.muted, textAlign: "center", lineHeight: 21 }}>The ad could not load. Check your connection and allow ads for Tanyora, then try again.</Text>}
-            <Button label={adUnavailable ? "Retry" : "Open file"} icon={adUnavailable ? "refresh" : "play"} busy={adBusy} onPress={showAdThenOpen} style={{ alignSelf: "stretch" }} />
             {adUnavailable && <>
               <Button label="Continue" icon="play" variant="outline" onPress={continueWithoutAd} style={{ alignSelf: "stretch" }} />
               <Button label="Back" icon="arrow-back" variant="outline" onPress={() => router.back()} style={{ alignSelf: "stretch" }} />
@@ -64,7 +105,7 @@ export function PlayerScreen({ slug }: { slug: string }) {
           </View></Motion>
         )}
         {st.kind === "ok" && open && <Viewer file={st} onShown={countView} onFullscreenChange={setFullscreen} />}
-        {st.kind === "ok" && (
+        {st.kind === "ok" && open && (
           <Pressable onPress={() => setReport(true)} style={{ flexDirection: "row", alignSelf: "center", alignItems: "center", gap: 6, padding: 8 }}>
             <Ionicons name="flag-outline" size={15} color={theme.muted} />
             <Text style={{ color: theme.muted }}>Report this file</Text>
@@ -113,3 +154,14 @@ function ReportSheet({ visible, onClose, onSend }: { visible: boolean; onClose: 
     </Modal>
   );
 }
+
+const pv = StyleSheet.create({
+  card: { height: 320, borderRadius: 20, overflow: "hidden", borderWidth: 1, borderColor: theme.border, backgroundColor: "#F1F5F9" },
+  ghost: { flex: 1, alignItems: "center", justifyContent: "center", opacity: 0.35 },
+  veil: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(255,255,255,0.35)" },
+  openWrap: { position: "absolute", top: "50%", left: "50%", transform: [{ translateX: -62 }, { translateY: -28 }], borderRadius: 14, overflow: "hidden", elevation: 6 },
+  open: { width: 124, height: 56, alignItems: "center", justifyContent: "center" },
+  openText: { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
+  report: { position: "absolute", right: 16, bottom: 16, backgroundColor: "rgba(148,163,184,0.55)", paddingHorizontal: 22, paddingVertical: 12, borderRadius: 12 },
+  reportText: { color: "#DC2626", fontSize: 15, fontWeight: "600" },
+});
