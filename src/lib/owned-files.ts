@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 const PAGE_SIZE = 200;
-type FileRow = Database["public"]["Tables"]["files"]["Row"];
+type FileRow = Database["public"]["Tables"]["files"]["Row"] & { moderation_status?: string; scan_status?: string };
 
 // Keep complete totals while respecting backend response caps. One shared
 // account-scoped query prevents duplicate loads between Home, Content and Shared.
