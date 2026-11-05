@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Modal, Pressable, StatusBar, StyleSheet, Text, View, useWindowDimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useEvent } from "expo";
@@ -77,9 +77,9 @@ export function MediaPlayer({ url, title, audio, onPlaying }: { url: string; tit
         </LinearGradient>
         {speedMenu && <View style={s.menu}>{speeds.map(value => <Pressable key={value} accessibilityRole="button" accessibilityLabel={`${value}x`} onPress={() => { player.playbackRate = value; setSpeed(value); setSpeedMenu(false); }} style={s.speedOption}><Text style={[s.time, speed === value && { color: t.accent }]}>{value}x</Text></Pressable>)}</View>}
         <View style={[s.center, { top: small ? 40 : compact ? 52 : 76, bottom: small ? 64 : compact ? 78 : 112, gap: compact ? 18 : 28 }]} pointerEvents="box-none">
-          <Pressable accessibilityRole="button" accessibilityLabel="Rewind 10 seconds" onPress={() => skip(-10)} style={[s.skip, { width: skipSize, height: skipSize, borderRadius: skipSize / 2 }]}><Ionicons name="refresh-outline" size={skipSize * 0.66} color={t.foreground} /><Text style={[s.ten, { fontSize: small ? 10 : 12 }]} maxFontSizeMultiplier={1}>10</Text></Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel="Rewind 10 seconds" onPress={() => skip(-10)} style={[s.skip, { width: skipSize, height: skipSize, borderRadius: skipSize / 2 }]}><MaterialIcons name="replay-10" size={skipSize * 0.62} color={t.foreground} /></Pressable>
           <Pressable accessibilityRole="button" accessibilityLabel={isPlaying ? "Pause" : "Play"} onPress={() => isPlaying ? player.pause() : player.play()} style={[s.play, { width: playSize, height: playSize, borderRadius: playSize / 2 }]}><Ionicons name={isPlaying ? "pause" : "play"} size={playSize * 0.48} color={t.foreground} /></Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="Forward 10 seconds" onPress={() => skip(10)} style={[s.skip, { width: skipSize, height: skipSize, borderRadius: skipSize / 2 }]}><Ionicons name="refresh-outline" size={skipSize * 0.66} color={t.foreground} style={{ transform: [{ scaleX: -1 }] }} /><Text style={[s.ten, { fontSize: small ? 10 : 12 }]} maxFontSizeMultiplier={1}>10</Text></Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel="Forward 10 seconds" onPress={() => skip(10)} style={[s.skip, { width: skipSize, height: skipSize, borderRadius: skipSize / 2 }]}><MaterialIcons name="forward-10" size={skipSize * 0.62} color={t.foreground} /></Pressable>
         </View>
         <LinearGradient colors={[t.scrim[1], t.scrim[0]]} style={[s.bottom, compact && { paddingTop: 14, paddingHorizontal: 10, paddingBottom: 2 }, full && { paddingBottom: Math.max(8, insets.bottom), paddingLeft: Math.max(16, insets.left), paddingRight: Math.max(16, insets.right) }]}>
           <Pressable accessibilityRole="adjustable" accessibilityLabel="Seek video" accessibilityValue={{ min: 0, max: duration, now: currentTime }} accessibilityActions={[{ name: "increment" }, { name: "decrement" }]} onAccessibilityAction={e => skip(e.nativeEvent.actionName === "increment" ? 10 : -10)} onLayout={e => setWidth(e.nativeEvent.layout.width)} onPress={e => { player.currentTime = timelineTime(e.nativeEvent.locationX, width, duration); setVisible(true); }} style={s.seekTouch}><View pointerEvents="none" style={s.track}><View style={[s.progress, { width: `${duration ? Math.min(100, currentTime / duration * 100) : 0}%` }]} /></View></Pressable>
