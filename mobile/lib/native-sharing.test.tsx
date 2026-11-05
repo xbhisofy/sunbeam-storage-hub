@@ -45,7 +45,7 @@ describe('Native sharing actions', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Copy share link' }));
     await waitFor(() => expect(actions.clipboard).toHaveBeenCalledWith('https://tanyora.com/s/abc'));
     fireEvent.click(screen.getByRole('button', { name: 'Share via…' }));
-    await waitFor(() => expect(actions.share).toHaveBeenCalledWith({ message: 'photo.jpg\nhttps://tanyora.com/s/abc' }));
+    await waitFor(() => expect(actions.share).toHaveBeenCalledWith({ message: 'https://tanyora.com/s/abc' }));
   });
   it('keeps failed expiry creation out of ready state and clipboard', async () => {
     actions.expiry.mockRejectedValue(new Error('Safety restriction'));
