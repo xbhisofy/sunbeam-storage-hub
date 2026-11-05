@@ -154,12 +154,15 @@ function ReportSheet({ visible, onClose, onSend }: { visible: boolean; onClose: 
 }
 
 const pv = StyleSheet.create({
-  card: { height: 320, borderRadius: 20, overflow: "hidden", borderWidth: 1, borderColor: theme.border, backgroundColor: "#F1F5F9" },
-  ghost: { flex: 1, alignItems: "center", justifyContent: "center", opacity: 0.35 },
-  veil: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(255,255,255,0.35)" },
-  openWrap: { position: "absolute", top: "50%", left: "50%", transform: [{ translateX: -62 }, { translateY: -28 }], borderRadius: 14, overflow: "hidden", elevation: 6 },
-  open: { width: 124, height: 56, alignItems: "center", justifyContent: "center" },
-  openText: { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
-  report: { position: "absolute", right: 16, bottom: 16, backgroundColor: "rgba(148,163,184,0.55)", paddingHorizontal: 22, paddingVertical: 12, borderRadius: 12 },
-  reportText: { color: "#DC2626", fontSize: 15, fontWeight: "600" },
+  stage: { alignSelf: "center", width: 200, height: 200, borderRadius: 28, alignItems: "center", justifyContent: "center" },
+  name: { fontSize: 18, fontWeight: "700", color: theme.text, textAlign: "center" },
+  sub: { fontSize: 14, color: theme.muted, textAlign: "center" },
+  size: { fontSize: 12, color: theme.placeholder, textAlign: "center" },
+  open: { alignSelf: "stretch", height: 54, borderRadius: 27, backgroundColor: theme.primary, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
+  openPressed: { opacity: 0.88 },
+  openDisabled: { opacity: 0.6 },
+  openText: { color: theme.onPrimary, fontSize: 16, fontWeight: "700" },
+  notice: { color: theme.muted, textAlign: "center", lineHeight: 21, fontSize: 13 },
+  reportLink: { flexDirection: "row", alignSelf: "center", alignItems: "center", gap: 6, padding: 8 },
+  reportText: { color: theme.muted, fontSize: 14 },
 });
