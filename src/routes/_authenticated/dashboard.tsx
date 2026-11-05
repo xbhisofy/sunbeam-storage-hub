@@ -51,7 +51,7 @@ function Dashboard() {
   if (app) return <div className="space-y-7">
     <div className="hidden lg:block"><h1 className="text-3xl font-bold">Your cloud</h1><p className="mt-1 text-muted-foreground">{p?.display_name ? `Welcome back, ${p.display_name}` : "Welcome to Tanyora"}</p></div>
     <section className="app-storage-card rounded-2xl border p-5 shadow-sm">{(() => {
-      const total = 1024 * 1024 * 1024; // Free plan: 1 GB
+      const total = 1024 ** 4; // Free plan: 1 TB
       const pct = Math.min(100, Math.round((used / total) * 100));
       return <>
         <div className="flex items-center gap-4">
@@ -59,7 +59,7 @@ function Dashboard() {
           <div className="ml-auto flex items-center gap-3"><h2 className="font-semibold">Storage</h2><span className="grid h-11 w-11 place-items-center rounded-xl bg-card text-primary shadow-sm"><Cloud className="h-5 w-5" /></span></div>
         </div>
         <div className="app-storage-track mt-5 h-2 overflow-hidden rounded-full"><div className="h-full rounded-full bg-primary transition-all" style={{ width: `${Math.max(pct, 2)}%` }} /></div>
-        <div className="mt-3 flex items-center justify-between text-sm"><span className="font-semibold text-primary">{pct}%</span><span className="text-muted-foreground">{isPending ? "Loading…" : `${formatSize(used)} of 1 GB used`}</span></div>
+        <div className="mt-3 flex items-center justify-between text-sm"><span className="font-semibold text-primary">{pct}%</span><span className="text-muted-foreground">{isPending ? "Loading…" : `${formatSize(used)} of 1 TB used`}</span></div>
       </>;
     })()}</section>
     <section><h2 className="mb-4 text-lg font-semibold">Categories</h2><div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{categories.map(c => <Button key={c.kind} variant="ghost" asChild className={`category-tile ${c.tone} h-auto items-start justify-start rounded-lg p-5`}><Link to="/content" search={{ kind: c.kind }}><span className="flex min-h-32 w-full flex-col items-start"><span className="mb-5 grid h-12 w-12 place-items-center rounded-lg bg-card/70"><c.icon className="h-6 w-6" /></span><span className="text-base font-semibold">{c.label}</span><span className="mt-1 text-sm">{files.filter(f => f.file_type === c.kind).length} files</span></span></Link></Button>)}</div></section>

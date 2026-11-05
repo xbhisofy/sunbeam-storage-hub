@@ -6,5 +6,5 @@ export function reviewPlan(profile: { premium_tier: string | null; premium_until
   const tier = activePremium(profile);
   return tier
     ? { name: PREMIUM_PLANS[tier].name, storage: (tier === 'plus' ? 100 : 1024) * 1024 ** 3 }
-    : { name: 'Free', storage: 1024 ** 3 };
+    : { name: 'Free', storage: 1024 ** 4 };
 }

@@ -42,7 +42,7 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
     <section className={s.intro}><img src={cloudArt} alt="" width="74" height="74" /><div className={s.greeting}>{greeting}, {name}<Sun aria-hidden="true" /></div><h1>Your files, <span>your space.</span></h1><p>Upload, manage, and share everything easily.</p></section>
     <section className={s.storage} aria-label="Cloud storage">
       <div className={s.storageHeader}><h2><Cloud aria-hidden="true" />Cloud Storage</h2>{destination('profile', 'View profile', s.plan, <><Award aria-hidden="true" />{known ? `${plan.name} Plan` : '—'}<ChevronRight aria-hidden="true" /></>)}</div>
-      <p className={s.used}>{known ? formatSize(used) : '—'}</p><p className={s.capacity}>{known ? `of ${plan.storage / 1024 ** 3} GB used` : 'Storage details unavailable'}</p>
+      <p className={s.used}>{known ? formatSize(used) : '—'}</p><p className={s.capacity}>{known ? `of ${plan.storage >= 1024 ** 4 ? `${plan.storage / 1024 ** 4} TB` : `${plan.storage / 1024 ** 3} GB`} used` : 'Storage details unavailable'}</p>
       <div className={s.progressRow}><progress aria-label="Cloud storage used" max={100} value={known ? percent : 0} /><span>{known ? `${Math.round(percent)}%` : '—'}</span></div>
       <div className={s.actions}>{destination('upload', 'Upload & Share', s.upload, <><CloudUpload aria-hidden="true" />Upload &amp; Share<ChevronRight aria-hidden="true" /></>)}<Button disabled title="New Folder unavailable" variant="ghost" className={s.utility}><Folder aria-hidden="true" />New Folder</Button><Button disabled title="Scan unavailable" variant="ghost" className={s.utility}><ScanLine aria-hidden="true" />Scan</Button></div>
     </section>
