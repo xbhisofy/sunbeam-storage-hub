@@ -9,7 +9,7 @@ function deferred() {
   return { promise, resolve };
 }
 function setup() {
-  const listeners = new Map<string, () => void>();
+  const listeners = new Map<string, (error?: unknown) => void>();
   const unsub = [vi.fn(), vi.fn(), vi.fn()];
   const show = vi.fn().mockResolvedValue(undefined);
   const ad: PlaybackAd = {
@@ -61,25 +61,26 @@ describe("shared playback lifecycle", () => {
     h.unsub.forEach(fn => expect(fn).toHaveBeenCalledTimes(1));
     expect(vi.getTimerCount()).toBe(0);
   });
-  it.each(["closed", "error"])("finishes once and cleans listeners on %s", async event => {
+  it("finishes once and cleans listeners on close", async () => {
     const h = setup();
     await waitFor(() => expect(h.result.current.st.kind).toBe("ok"));
     vi.useFakeTimers();
     act(() => { h.result.current.showAdThenOpen(); h.result.current.showAdThenOpen(); });
-    act(() => { h.listeners.get(event)?.(); h.listeners.get(event)?.(); });
+    act(() => { h.listeners.get("closed")?.(); h.listeners.get("closed")?.(); });
     expect(h.create).toHaveBeenCalledTimes(1);
     expect(h.result.current.open).toBe(true);
     h.unsub.forEach(fn => expect(fn).toHaveBeenCalledTimes(1));
     expect(vi.getTimerCount()).toBe(0);
   });
-  it("opens on no-fill timeout and prevents a late ad from showing", async () => {
+  it("offers retry on the eight-second timeout and prevents a late ad from showing", async () => {
     const h = setup();
     await waitFor(() => expect(h.result.current.st.kind).toBe("ok"));
     vi.useFakeTimers();
     act(() => h.result.current.showAdThenOpen());
     act(() => vi.advanceTimersByTime(8000));
     h.listeners.get("loaded")?.();
-    expect(h.result.current.open).toBe(true);
+    expect(h.result.current.open).toBe(false);
+    expect(h.result.current.adUnavailable).toBe(true);
     expect(h.show).not.toHaveBeenCalled();
     h.unsub.forEach(fn => expect(fn).toHaveBeenCalledTimes(1));
   });
@@ -100,8 +101,63 @@ describe("shared playback lifecycle", () => {
     h.show.mockRejectedValueOnce(new Error("Test SDK rejection"));
     act(() => h.result.current.showAdThenOpen());
     await act(async () => h.listeners.get("loaded")?.());
-    expect(h.result.current.open).toBe(true);
+    expect(h.result.current.open).toBe(false);
+    expect(h.result.current.adUnavailable).toBe(true);
     h.unsub.forEach(fn => expect(fn).toHaveBeenCalledTimes(1));
+  });
+  it("offers retry on network failure, then opens after a successful new ad closes", async () => {
+    const h = setup();
+    await waitFor(() => expect(h.result.current.st.kind).toBe("ok"));
+    act(() => h.result.current.showAdThenOpen());
+    const staleClose = h.listeners.get("closed");
+    act(() => h.listeners.get("error")?.({ code: "googleMobileAds/network-error" }));
+    expect(h.result.current.open).toBe(false);
+    expect(h.result.current.adUnavailable).toBe(true);
+    act(() => h.result.current.countView());
+    expect(h.record).not.toHaveBeenCalled();
+    act(() => h.result.current.showAdThenOpen());
+    expect(h.result.current.adUnavailable).toBe(false);
+    act(() => staleClose?.());
+    expect(h.result.current.open).toBe(false);
+    await act(async () => h.listeners.get("loaded")?.());
+    expect(h.show).toHaveBeenCalledTimes(1);
+    act(() => h.listeners.get("closed")?.());
+    expect(h.result.current.open).toBe(true);
+    expect(h.create).toHaveBeenCalledTimes(2);
+  });
+  it("preserves automatic fallback for explicit provider no-fill", async () => {
+    const h = setup();
+    await waitFor(() => expect(h.result.current.st.kind).toBe("ok"));
+    act(() => h.result.current.showAdThenOpen());
+    act(() => h.listeners.get("error")?.({ code: "googleMobileAds/no-fill" }));
+    expect(h.result.current.open).toBe(true);
+    expect(h.result.current.adUnavailable).toBe(false);
+    expect(h.show).not.toHaveBeenCalled();
+  });
+  it("allows Continue only after ad unavailability, not during loading", async () => {
+    const h = setup();
+    await waitFor(() => expect(h.result.current.st.kind).toBe("ok"));
+    act(() => h.result.current.continueWithoutAd());
+    expect(h.result.current.open).toBe(false);
+    act(() => h.result.current.showAdThenOpen());
+    act(() => h.result.current.continueWithoutAd());
+    expect(h.result.current.open).toBe(false);
+    act(() => h.listeners.get("error")?.({ code: "internal-error" }));
+    act(() => h.result.current.continueWithoutAd());
+    expect(h.result.current.open).toBe(true);
+    expect(h.result.current.adUnavailable).toBe(false);
+  });
+  it("clears retry state and rejects stale Continue after changing files", async () => {
+    const h = setup();
+    await waitFor(() => expect(h.result.current.st.kind).toBe("ok"));
+    act(() => h.result.current.showAdThenOpen());
+    act(() => h.listeners.get("error")?.());
+    const staleContinue = h.result.current.continueWithoutAd;
+    h.rerender({ slug: "B", user: "owner" });
+    await waitFor(() => expect(h.result.current.st.kind).toBe("ok"));
+    act(staleContinue);
+    expect(h.result.current.open).toBe(false);
+    expect(h.result.current.adUnavailable).toBe(false);
   });
   it("resets view counting per slug and blocks stale ad completion", async () => {
     const h = setup();

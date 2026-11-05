@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { isAdNoFill } from "./ad-error";
 
 export type SharedPlaybackFile = { kind: "ok"; name: string; file_type: string; mime: string | null; source: string; url: string };
 export type SharedPlaybackState = { kind: "loading" } | { kind: "missing" } | { kind: "expired" } | SharedPlaybackFile;
 export type PlaybackAd = {
-  subscribe: (event: "loaded" | "closed" | "error", callback: () => void) => () => void;
+  subscribe: (event: "loaded" | "closed" | "error", callback: (error?: unknown) => void) => () => void;
   load: () => void;
   show: () => Promise<void>;
 };
@@ -19,31 +20,31 @@ export function useSharedPlayback(slug: string, viewerId: string | undefined,
   const cancelAd = useRef<(() => void) | null>(null);
   const counted = useRef(false);
   const busy = useRef(false);
-  const [state, setState] = useState<{ key: string; file: SharedPlaybackState; open: boolean; adBusy: boolean }>({ key, file: { kind: "loading" }, open: false, adBusy: false });
+  const [state, setState] = useState<{ key: string; file: SharedPlaybackState; open: boolean; adBusy: boolean; adUnavailable: boolean }>({ key, file: { kind: "loading" }, open: false, adBusy: false, adUnavailable: false });
 
   useEffect(() => {
     const version = ++generation.current;
     cancelAd.current?.();
     counted.current = false;
     busy.current = false;
-    setState({ key, file: { kind: "loading" }, open: false, adBusy: false });
+    setState({ key, file: { kind: "loading" }, open: false, adBusy: false, adUnavailable: false });
     const valid = () => generation.current === version && currentKey.current === key;
     void loadFile(slug).then(file => {
-      if (valid()) setState({ key, file, open: false, adBusy: false });
+      if (valid()) setState({ key, file, open: false, adBusy: false, adUnavailable: false });
     }).catch(() => {
-      if (valid()) setState({ key, file: { kind: "missing" }, open: false, adBusy: false });
+      if (valid()) setState({ key, file: { kind: "missing" }, open: false, adBusy: false, adUnavailable: false });
     });
     return () => { ++generation.current; cancelAd.current?.(); busy.current = false; };
   }, [key, slug, loadFile]);
 
-  const visible = state.key === key ? state : { key, file: { kind: "loading" } as SharedPlaybackState, open: false, adBusy: false };
+  const visible = state.key === key ? state : { key, file: { kind: "loading" } as SharedPlaybackState, open: false, adBusy: false, adUnavailable: false };
 
   function showAdThenOpen() {
     if (busy.current || visible.file.kind !== "ok" || visible.open) return;
     busy.current = true;
     const version = generation.current;
     const valid = () => generation.current === version && currentKey.current === key;
-    setState(previous => ({ ...previous, adBusy: true }));
+    setState(previous => ({ ...previous, adBusy: true, adUnavailable: false }));
     let finished = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const subscriptions: (() => void)[] = [];
@@ -53,13 +54,13 @@ export function useSharedPlayback(slug: string, viewerId: string | undefined,
       if (cancelAd.current === cancel) cancelAd.current = null;
     };
     const cancel = () => { finished = true; cleanup(); };
-    const finish = () => {
+    const finish = (open: boolean) => {
       if (finished) return;
       finished = true;
       cleanup();
       if (!valid()) return;
       busy.current = false;
-      setState(previous => ({ ...previous, adBusy: false, open: true }));
+      setState(previous => ({ ...previous, adBusy: false, open, adUnavailable: !open }));
     };
     cancelAd.current = cancel;
     try {
@@ -68,11 +69,16 @@ export function useSharedPlayback(slug: string, viewerId: string | undefined,
         if (finished || !valid()) return;
         // The timeout is for no-fill/loading only, never for an already shown ad.
         if (timer !== undefined) clearTimeout(timer);
-        try { void ad.show().catch(finish); } catch { finish(); }
-      }), ad.subscribe("closed", finish), ad.subscribe("error", finish));
-      timer = setTimeout(finish, 8000);
+        try { void ad.show().catch(() => finish(false)); } catch { finish(false); }
+      }), ad.subscribe("closed", () => finish(true)), ad.subscribe("error", error => finish(isAdNoFill(error))));
+      timer = setTimeout(() => finish(false), 8000);
       ad.load();
-    } catch { finish(); }
+    } catch { finish(false); }
+  }
+
+  function continueWithoutAd() {
+    if (currentKey.current !== key || busy.current || visible.file.kind !== "ok" || !visible.adUnavailable) return;
+    setState(previous => ({ ...previous, open: true, adUnavailable: false }));
   }
 
   function countView() {
@@ -80,5 +86,5 @@ export function useSharedPlayback(slug: string, viewerId: string | undefined,
     counted.current = true;
     recordView(slug);
   }
-  return { st: visible.file, open: visible.open, adBusy: visible.adBusy, showAdThenOpen, countView };
+  return { st: visible.file, open: visible.open, adBusy: visible.adBusy, adUnavailable: visible.adUnavailable, showAdThenOpen, continueWithoutAd, countView };
 }
