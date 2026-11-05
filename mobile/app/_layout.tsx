@@ -24,6 +24,8 @@ export const useSession = () => useContext(SessionContext);
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setSplashDone(true), 1800); return () => clearTimeout(t); }, []);
   const segments = useSegments();
   const pathname = usePathname();
   const [pendingFile, setPendingFile] = useState<`/s/${string}` | null>(null);
@@ -73,11 +75,11 @@ export default function RootLayout() {
     }
   }, [ready, session, segments, pathname, pendingFile]);
 
-  if (!ready) {
+  if (!ready || !splashDone) {
     return (
       <View style={styles.splash}>
-        <Image source={require("../assets/icon.png")} style={styles.logo} />
-        <ActivityIndicator color={theme.primary} style={{ marginTop: 24 }} />
+        <StatusBar style="dark" />
+        <Image source={require("../assets/splash-screen.png")} style={styles.splashArt} resizeMode="cover" />
       </View>
     );
   }
@@ -91,6 +93,6 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
-  splash: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.card },
-  logo: { width: 96, height: 96, borderRadius: 24 },
+  splash: { flex: 1, backgroundColor: "#FFFFFF" },
+  splashArt: { width: "100%", height: "100%" },
 });
