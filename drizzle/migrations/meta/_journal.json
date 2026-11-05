@@ -113,6 +113,13 @@
       "when": 1792057564292,
       "tag": "0015_earn_views_and_referrals",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1793861666219,
+      "tag": "0016_avatars_bucket_policies",
+      "breakpoints": true
     }
   ]
 }
