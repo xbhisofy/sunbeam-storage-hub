@@ -13,6 +13,9 @@ export const theme = {
   placeholder: "#94A3B8",
   overlay: "rgba(15,23,42,0.4)",
   primaryTrack: "#D7E5FF",
+  previewGlass: "rgba(255,255,255,0.62)",
+  previewReport: "rgba(100,116,139,0.18)",
+  openGradient: ["#06B6D4", "#4338CA"] as const,
   radius: 8,
   cat: {
     pdf: { fg: "#DC2626", bg: "#FEE9E9" },

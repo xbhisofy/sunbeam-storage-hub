@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, BackHandler, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { WebView } from "react-native-webview";
 import { router } from "expo-router";
 import { AdEventType, InterstitialAd, RewardedAd, RewardedAdEventType } from "react-native-google-mobile-ads";
@@ -81,25 +82,32 @@ export function PlayerScreen({ slug }: { slug: string }) {
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
         {st.kind === "ok" && !open && (
-          <Motion><View style={{ gap: 20 }}>
+          <Motion><View style={{ gap: 12 }}>
             <View style={[pv.stage, { backgroundColor: tint.bg }]}>
-              <Ionicons name={tintIcon} size={72} color={tint.fg} />
+              {st.file_type === "image" ? (
+                <Image source={{ uri: st.url }} blurRadius={18} resizeMode="cover" style={StyleSheet.absoluteFillObject} />
+              ) : (
+                <View pointerEvents="none" style={pv.fileGlance}>
+                  <Ionicons name={tintIcon} size={100} color={tint.fg} />
+                  <Text style={[pv.glanceName, { color: tint.fg }]} numberOfLines={2}>{st.name}</Text>
+                </View>
+              )}
+              <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, pv.glass]} />
+              <Pressable accessibilityRole="button" accessibilityLabel="Open file" disabled={adBusy} onPress={showAdThenOpen} style={({ pressed }) => [pv.open, pressed && pv.openPressed, adBusy && pv.openDisabled]}>
+                <LinearGradient colors={theme.openGradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={pv.openFill}>
+                  {adBusy ? <ActivityIndicator color={theme.onPrimary} /> : <Text style={pv.openText}>{adUnavailable ? "Try again" : "Open"}</Text>}
+                </LinearGradient>
+              </Pressable>
+              <Pressable accessibilityRole="button" accessibilityLabel="Report this file" onPress={() => setReport(true)} style={pv.reportLink}>
+                <Text style={pv.reportText}>Report</Text>
+              </Pressable>
             </View>
-            <View style={{ gap: 6, alignItems: "center", paddingHorizontal: 8 }}>
+            <View style={{ gap: 6 }}>
               <Text style={pv.name} numberOfLines={2}>{st.name}</Text>
-              <Text style={pv.sub}>Shared with you</Text>
               <Text style={pv.size}>{formatSize(st.size)}</Text>
             </View>
-            <Pressable accessibilityRole="button" disabled={adBusy} onPress={showAdThenOpen} style={({ pressed }) => [pv.open, pressed && pv.openPressed, adBusy && pv.openDisabled]}>
-              {adBusy ? <ActivityIndicator color={theme.onPrimary} /> : <Ionicons name="play" size={17} color={theme.onPrimary} />}
-              <Text style={pv.openText}>{adUnavailable ? "Try again" : "Open file"}</Text>
-            </Pressable>
             {adUnavailable && <Text accessibilityRole="alert" style={pv.notice}>The ad could not load. Check your connection and allow ads for Tanyora, then try again.</Text>}
             {adUnavailable && <Button label="Continue" icon="play" variant="outline" onPress={continueWithoutAd} style={{ alignSelf: "stretch" }} />}
-            <Pressable accessibilityRole="button" onPress={() => setReport(true)} style={pv.reportLink}>
-              <Ionicons name="flag-outline" size={15} color={theme.muted} />
-              <Text style={pv.reportText}>Report this file</Text>
-            </Pressable>
           </View></Motion>
         )}
         {st.kind === "ok" && open && <Viewer file={st} onShown={countView} onFullscreenChange={setFullscreen} />}
@@ -154,15 +162,18 @@ function ReportSheet({ visible, onClose, onSend }: { visible: boolean; onClose: 
 }
 
 const pv = StyleSheet.create({
-  stage: { alignSelf: "center", width: 200, height: 200, borderRadius: 28, alignItems: "center", justifyContent: "center" },
-  name: { fontSize: 18, fontWeight: "700", color: theme.text, textAlign: "center" },
-  sub: { fontSize: 14, color: theme.muted, textAlign: "center" },
-  size: { fontSize: 12, color: theme.placeholder, textAlign: "center" },
-  open: { alignSelf: "stretch", height: 54, borderRadius: 27, backgroundColor: theme.primary, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
+  stage: { width: "100%", aspectRatio: 1.55, borderRadius: 20, borderWidth: 1, borderColor: theme.border, overflow: "hidden", alignItems: "center", justifyContent: "center" },
+  fileGlance: { ...StyleSheet.absoluteFillObject, opacity: 0.28, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
+  glanceName: { fontSize: 18, fontWeight: "600", textAlign: "center" },
+  glass: { backgroundColor: theme.previewGlass },
+  name: { fontSize: 18, fontWeight: "700", color: theme.text },
+  size: { fontSize: 14, color: theme.placeholder },
+  open: { width: 112, height: 54, borderRadius: 12, overflow: "hidden" },
+  openFill: { flex: 1, alignItems: "center", justifyContent: "center" },
   openPressed: { opacity: 0.88 },
   openDisabled: { opacity: 0.6 },
   openText: { color: theme.onPrimary, fontSize: 16, fontWeight: "700" },
   notice: { color: theme.muted, textAlign: "center", lineHeight: 21, fontSize: 13 },
-  reportLink: { flexDirection: "row", alignSelf: "center", alignItems: "center", gap: 6, padding: 8 },
-  reportText: { color: theme.muted, fontSize: 14 },
+  reportLink: { position: "absolute", right: 12, bottom: 12, minWidth: 82, minHeight: 44, borderRadius: 12, backgroundColor: theme.previewReport, alignItems: "center", justifyContent: "center" },
+  reportText: { color: theme.muted, fontSize: 13 },
 });

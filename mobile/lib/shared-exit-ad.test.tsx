@@ -57,6 +57,7 @@ vi.mock("../node_modules/react-native-google-mobile-ads/lib/commonjs/index.js", 
   RewardedAd: {}, RewardedAdEventType: {},
 }));
 vi.mock("../components/ui", () => ({ Screen: ({ children }: any) => createElement("main", null, children), Card: ({ children }: any) => createElement("div", null, children), Button: ({ label }: any) => createElement("button", null, label) }));
+vi.mock("expo-linear-gradient", () => ({ LinearGradient: ({ children }: any) => createElement("div", null, children) }));
 vi.mock("./files", () => ({ formatSize: () => "1 KB", iconFor: () => "film-outline" }));
 vi.mock("../components/Motion", () => ({ Motion: ({ children }: any) => createElement("div", null, children) }));
 vi.mock("../components/SharedDisplayAd", () => ({ SharedDisplayAd: () => createElement("div", { "data-testid": "ad" }) }));
@@ -80,14 +81,14 @@ describe("Shared viewer exit ad", () => {
   it("plays an ad and keeps the viewer on the file when leaving", () => {
     render(<PlayerScreen slug="shared" />);
     expect(state.backHandler).toBeTruthy();
-    expect(state.backHandler!()).toBe(true);
+    expect(state.backHandler?.()).toBe(true);
     expect(state.adsShown).toBe(1);
     expect(state.routerBack).not.toHaveBeenCalled();
   });
 
   it("leaves only after the ad closes", () => {
     render(<PlayerScreen slug="shared" />);
-    state.backHandler!();
+    state.backHandler?.();
     (state.listeners.closed ?? []).forEach(f => f());
     expect(state.routerBack).toHaveBeenCalledTimes(1);
   });
