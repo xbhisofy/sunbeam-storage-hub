@@ -12,6 +12,7 @@ import { useFiles } from "../../lib/useFiles";
 import { formatSize } from "../../lib/files";
 import { Motion } from "../../components/Motion";
 import { useProfile } from "../../lib/useProfile";
+import { useAvatarUrl } from "../../lib/avatar";
 import { currentPlan } from "../../lib/account-rules";
 
 
@@ -24,8 +25,7 @@ export default function ProfileScreen() {
   const email = session?.user.email || p?.email || "";
   const plan = currentPlan(p);
   const { files, loading: filesLoading, error: filesError, reload: reloadFiles } = useFiles();
-  const avatar = session?.user.user_metadata?.avatar_url;
-  const avatarUrl = typeof avatar === "string" && avatar.startsWith("https://") ? avatar : null;
+  const avatarUrl = useAvatarUrl(session?.user);
 
   function logout() {
     Alert.alert("Log out?", "You can sign in again any time.", [

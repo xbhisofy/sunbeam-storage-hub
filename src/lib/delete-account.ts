@@ -34,6 +34,14 @@ export async function deleteAccountData(
   }
   const { error: fileError } = await supabaseAdmin.from("files").delete().eq("owner_id", uid);
   if (fileError) throw new Error("Unable to delete file records. Please retry.");
+  // Remove the profile photo from the private avatars bucket.
+  const { data: avatarObjects, error: avatarListError } = await supabaseAdmin.storage.from("avatars").list(uid, { limit: 100 });
+  if (avatarListError) throw new Error("Unable to list profile photo. Please retry.");
+  const avatarPaths = (avatarObjects ?? []).filter(o => o.name && !o.name.endsWith("/")).map(o => `${uid}/${o.name}`);
+  if (avatarPaths.length) {
+    const { error: avatarError } = await supabaseAdmin.storage.from("avatars").remove(avatarPaths);
+    if (avatarError) throw new Error("Unable to delete profile photo. Please retry.");
+  }
   // profiles.id uses ON DELETE CASCADE; deleting auth also removes the profile.
   const { error } = await supabaseAdmin.auth.admin.deleteUser(uid);
   if (error) throw new Error(error.message);
