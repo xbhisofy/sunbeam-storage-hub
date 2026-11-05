@@ -33,16 +33,16 @@ import { PlayerScreen } from "../components/Player";
 
 describe("Shared viewer bottom ad integration", () => {
   beforeEach(() => { state.open = false; state.width = 390; state.height = 844; state.kind = "ok"; state.type = "video"; });
-  it("shows one display ad beneath the unopened shared file", () => {
+  it("shows a top and a bottom display ad around the unopened shared file", () => {
     render(<PlayerScreen slug="shared" />);
-    expect(screen.getAllByTestId("ad")).toHaveLength(1);
+    expect(screen.getAllByTestId("ad")).toHaveLength(2);
   });
-  it.each(["video", "image", "document"])("keeps an ad below an opened portrait %s", type => {
+  it.each(["video", "image", "document"])("keeps both ads around an opened portrait %s", type => {
     state.open = true; state.type = type;
     render(<PlayerScreen slug="shared" />);
-    expect(screen.getAllByTestId("ad")).toHaveLength(1);
+    expect(screen.getAllByTestId("ad")).toHaveLength(2);
   });
-  it("removes the bottom ad when video enters fullscreen", () => {
+  it("removes both ads when video enters fullscreen", () => {
     state.open = true;
     render(<PlayerScreen slug="shared" />);
     fireEvent.click(screen.getByRole("button", { name: "Rotate video" }));

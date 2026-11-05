@@ -26,7 +26,7 @@ export function SharedDisplayAd({ compact = false }: { compact?: boolean } = {})
   if (!muted || !focused || !foreground || failed) return null;
   return <View style={[styles.placement, compact && styles.compact]}>
     <Text style={styles.label}>Advertisement</Text>
-    <View style={compact ? styles.banner : styles.creative}>
+    <View style={styles.creative}>
       <BannerAd unitId={__DEV__ ? TestIds.BANNER : ADS.banner} size={BannerAdSize.MEDIUM_RECTANGLE} onAdFailedToLoad={() => setFailed(true)} />
     </View>
   </View>;
@@ -34,7 +34,7 @@ export function SharedDisplayAd({ compact = false }: { compact?: boolean } = {})
 
 const styles = StyleSheet.create({
   placement: { alignSelf: "center", alignItems: "center", gap: 8, marginTop: 24, marginBottom: 16, maxWidth: "100%" },
-  compact: { marginTop: 0, marginBottom: 8 }, banner: { width: 320, height: 50, overflow: "hidden" },
+  compact: { marginTop: 0, marginBottom: 8 },
   label: { fontSize: 11, color: theme.muted, textAlign: "center" },
   creative: { width: DISPLAY_AD_WIDTH, height: DISPLAY_AD_HEIGHT, backgroundColor: theme.bg, overflow: "hidden" },
 });
