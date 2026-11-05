@@ -4,7 +4,7 @@ export function currentPlan(profile: AccountProfile | null, now = Date.now()) {
   const tier = profile?.premium_tier;
   const active = !!profile?.premium_until && new Date(profile.premium_until).getTime() > now;
   if (active && (tier === "plus" || tier === "pro")) return { tier, name: tier === "plus" ? "Plus" : "Pro", storage: (tier === "plus" ? 100 : 1024) * 1024 ** 3 };
-  return { tier: "free", name: "Free", storage: 1024 ** 3 };
+  return { tier: "free", name: "Free", storage: 1024 ** 4 };
 }
 
 export function validateProfile(name: string, email: string) {
