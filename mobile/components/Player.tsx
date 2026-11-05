@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
+import { router } from "expo-router";
 import { AdEventType, InterstitialAd } from "react-native-google-mobile-ads";
 import { Screen, Button, Card } from "./ui";
 import { FileIcon } from "./FileCard";
@@ -26,7 +27,7 @@ const REASONS = ["Copyright infringement", "Sexual or adult content", "Child saf
 
 export function PlayerScreen({ slug }: { slug: string }) {
   const session = useSession();
-  const { st, open, adBusy, showAdThenOpen, countView } = useSharedPlayback(slug, session?.user.id, loadSharedFile, createPlaybackAd, recordPlaybackView);
+  const { st, open, adBusy, adUnavailable, showAdThenOpen, continueWithoutAd, countView } = useSharedPlayback(slug, session?.user.id, loadSharedFile, createPlaybackAd, recordPlaybackView);
   const [report, setReport] = useState(false);
   useEffect(() => setReport(false), [slug, session?.user.id]);
 
@@ -48,7 +49,12 @@ export function PlayerScreen({ slug }: { slug: string }) {
             <FileIcon type={st.file_type} size={64} />
             <Text style={{ fontSize: 17, fontWeight: "700", color: theme.text, textAlign: "center" }} numberOfLines={2}>{st.name}</Text>
             <Text style={{ color: theme.muted, fontSize: 13 }}>Shared with you</Text>
-            <Button label="Open file" icon="play" busy={adBusy} onPress={showAdThenOpen} style={{ alignSelf: "stretch" }} />
+            {adUnavailable && <Text accessibilityRole="alert" style={{ color: theme.muted, textAlign: "center", lineHeight: 21 }}>The ad could not load. Check your connection and allow ads for Tanyora, then try again.</Text>}
+            <Button label={adUnavailable ? "Retry" : "Open file"} icon={adUnavailable ? "refresh" : "play"} busy={adBusy} onPress={showAdThenOpen} style={{ alignSelf: "stretch" }} />
+            {adUnavailable && <>
+              <Button label="Continue" icon="play" variant="outline" onPress={continueWithoutAd} style={{ alignSelf: "stretch" }} />
+              <Button label="Back" icon="arrow-back" variant="outline" onPress={() => router.back()} style={{ alignSelf: "stretch" }} />
+            </>}
           </View></Motion>
         )}
         {st.kind === "ok" && open && <Viewer file={st} onShown={countView} />}
