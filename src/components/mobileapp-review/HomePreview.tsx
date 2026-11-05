@@ -7,6 +7,7 @@ import { reviewPlan } from './plan-display';
 import cloudArt from './assets/home-cloud.png';
 import logo from './assets/icon.png';
 import { type ReviewScreen } from './data';
+import ref from './ReferenceScreens.module.css';
 import s from './mobileapp-review.module.css';
 import { ReviewNotice } from './ReviewNotice';
 import { ReviewFileRow } from './ReviewFileRow';
@@ -51,5 +52,6 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
       {!signedIn && !known ? <div className={s.message}><Cloud aria-hidden="true" /><h2>Sign in to view your files</h2><p>Reopen this page after signing in.</p><Button asChild className={s.secondary} variant="outline"><Link to="/auth">Sign in</Link></Button></div> : loading ? <div className={s.message} role="status">Loading your files…</div> : error ? <div className={s.message} role="alert"><p>Could not load your account and files.</p><Button onClick={refresh} variant="outline" className={s.secondary}>Try again</Button></div> : files.length ? <div className={s.fileList}>{files.slice(0, 3).map(file => <ReviewFileRow key={file.id} file={file} compact />)}</div> : <div className={s.message}><CloudUpload aria-hidden="true" /><h2>No files yet</h2>{destination('upload', 'Upload a file', s.secondary, <>Upload a file</>)}</div>}
       {signedIn && known && <Button onClick={refresh} disabled={loading} variant="ghost" className={s.textLink}>Refresh</Button>}
     </section>
+    <div className={ref.adSlot}><span className={ref.adBadge}>Ad</span><span>Advertisement</span></div>
   </>;
 }
