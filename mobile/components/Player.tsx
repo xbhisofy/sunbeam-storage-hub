@@ -81,28 +81,25 @@ export function PlayerScreen({ slug }: { slug: string }) {
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
         {st.kind === "ok" && !open && (
-          <Motion><View style={{ gap: 14 }}>
-            <View style={pv.card}>
-              {st.file_type === "image"
-                ? <Image source={{ uri: st.url }} blurRadius={25} resizeMode="cover" style={StyleSheet.absoluteFill} />
-                : <LinearGradient colors={["#E0E7FF", "#F1F5F9", "#DBEAFE"]} style={StyleSheet.absoluteFill}><View style={pv.ghost}><FileIcon type={st.file_type} size={72} /></View></LinearGradient>}
-              <View style={pv.veil} />
-              <Pressable accessibilityRole="button" disabled={adBusy} onPress={showAdThenOpen} style={pv.openWrap}>
-                <LinearGradient colors={["#0EA5E9", "#4F46E5"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={pv.open}>
-                  {adBusy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={pv.openText}>{adUnavailable ? "Retry" : "Open"}</Text>}
-                </LinearGradient>
-              </Pressable>
-              <Pressable accessibilityRole="button" onPress={() => setReport(true)} style={pv.report}><Text style={pv.reportText}>Report</Text></Pressable>
+          <Motion><View style={{ gap: 20 }}>
+            <View style={[pv.stage, { backgroundColor: tint.bg }]}>
+              <Ionicons name={tintIcon} size={72} color={tint.fg} />
             </View>
-            <View style={{ gap: 4, paddingHorizontal: 4 }}>
-              <Text style={{ fontSize: 18, fontWeight: "700", color: theme.text }} numberOfLines={2}>{st.name}</Text>
-              <Text style={{ color: theme.muted, fontSize: 14 }}>{formatSize(st.size)}</Text>
+            <View style={{ gap: 6, alignItems: "center", paddingHorizontal: 8 }}>
+              <Text style={pv.name} numberOfLines={2}>{st.name}</Text>
+              <Text style={pv.sub}>Shared with you</Text>
+              <Text style={pv.size}>{formatSize(st.size)}</Text>
             </View>
-            {adUnavailable && <Text accessibilityRole="alert" style={{ color: theme.muted, textAlign: "center", lineHeight: 21 }}>The ad could not load. Check your connection and allow ads for Tanyora, then try again.</Text>}
-            {adUnavailable && <>
-              <Button label="Continue" icon="play" variant="outline" onPress={continueWithoutAd} style={{ alignSelf: "stretch" }} />
-              <Button label="Back" icon="arrow-back" variant="outline" onPress={() => router.back()} style={{ alignSelf: "stretch" }} />
-            </>}
+            <Pressable accessibilityRole="button" disabled={adBusy} onPress={showAdThenOpen} style={({ pressed }) => [pv.open, pressed && pv.openPressed, adBusy && pv.openDisabled]}>
+              {adBusy ? <ActivityIndicator color={theme.onPrimary} /> : <Ionicons name="play" size={17} color={theme.onPrimary} />}
+              <Text style={pv.openText}>{adUnavailable ? "Try again" : "Open file"}</Text>
+            </Pressable>
+            {adUnavailable && <Text accessibilityRole="alert" style={pv.notice}>The ad could not load. Check your connection and allow ads for Tanyora, then try again.</Text>}
+            {adUnavailable && <Button label="Continue" icon="play" variant="outline" onPress={continueWithoutAd} style={{ alignSelf: "stretch" }} />}
+            <Pressable accessibilityRole="button" onPress={() => setReport(true)} style={pv.reportLink}>
+              <Ionicons name="flag-outline" size={15} color={theme.muted} />
+              <Text style={pv.reportText}>Report this file</Text>
+            </Pressable>
           </View></Motion>
         )}
         {st.kind === "ok" && open && <Viewer file={st} onShown={countView} onFullscreenChange={setFullscreen} />}
