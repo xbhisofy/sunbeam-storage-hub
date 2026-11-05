@@ -38,7 +38,7 @@ export default function Shared() {
         {error && <View style={s.error}><Text style={s.subtitle}>{error}</Text><Button label="Try again" onPress={reload} variant="outline" /></View>}
       </View>}
       renderItem={({ item }) => <FileCard file={item} onChange={reload} presentation="shared" />}
-      ListFooterComponent={<View style={{ alignItems: "center", paddingTop: 16 }}><BannerAd unitId={ADS.banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} /></View>}
+      ListFooterComponent={<View style={{ alignItems: "center", paddingTop: 16 }}><BannerAd unitId={ADS.banner} size={BannerAdSize.MEDIUM_RECTANGLE} /></View>}
       ItemSeparatorComponent={() => <View style={s.separator} />}
       ListEmptyComponent={loading ? <Text style={s.emptyText}>Loading…</Text> : error ? null : files.length === 0 ? <View style={s.empty}><Image source={sharedFolders} resizeMode="contain" accessible={false} style={s.emptyArt} /><Text style={s.emptyTitle}>No shared links yet</Text><Text style={s.emptyText}>When you share a file, it will appear here.</Text><Button label="Share a File" icon="share-social-outline" onPress={() => router.push("/content")} /></View> : <View style={s.empty}><Ionicons name="search-outline" size={32} color={t.muted} /><Text style={s.emptyTitle}>No matching shared files</Text><Pressable accessibilityRole="button" onPress={() => { setQuery(""); setKind("all"); }} style={s.reset}><Text style={s.blue}>Clear filters</Text></Pressable></View>}
     />

@@ -29,7 +29,7 @@ export default function Home() {
     categories={CATEGORIES.map(c => ({ ...c, count: files.filter(f => f.file_type === c.kind).length }))}
     loading={loading} refreshing={refreshing} error={error} hasFiles={files.length > 0}
     recentFiles={files.slice(0, 3).map(f => <FileCard key={f.id} file={f} onChange={reload} presentation="home" />)}
-    ad={<BannerAd unitId={ADS.banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />}
+    ad={<BannerAd unitId={ADS.banner} size={BannerAdSize.MEDIUM_RECTANGLE} />}
     onUpload={() => router.push("/uploader")} onFiles={() => router.push("/content")}
     onProfile={() => router.push("/profile")} onCategory={kind => router.push({ pathname: "/content", params: { kind } })} onRefresh={reload}
   /></View></Screen>;
