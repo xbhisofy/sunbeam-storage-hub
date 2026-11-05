@@ -5,6 +5,7 @@ describe("native account rules", () => {
   const now = Date.parse("2026-10-15T12:00:00Z");
   it("shows Free without an active subscription", () => {
     expect(currentPlan(null, now).name).toBe("Free");
+    expect(currentPlan(null, now).storage).toBe(1024 ** 4);
     expect(currentPlan({ display_name: null, email: null, premium_tier: "plus", premium_until: "2026-10-14" }, now).tier).toBe("free");
   });
   it("reflects website Plus upgrades with 100 GB", () => {
