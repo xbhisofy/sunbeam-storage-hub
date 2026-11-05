@@ -46,6 +46,7 @@ export function PlayerScreen({ slug }: { slug: string }) {
   return (
     <Screen title={st.kind === "ok" ? st.name : "Shared file"} back>
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
+        {displayAd && <SharedDisplayAd compact key={`top:${slug}:${session?.user.id ?? ""}`} />}
         {st.kind === "loading" && <ActivityIndicator color={theme.primary} style={{ marginTop: 60 }} />}
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
