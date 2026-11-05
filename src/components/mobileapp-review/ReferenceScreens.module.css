@@ -69,13 +69,8 @@
 .formats { grid-column: 2 / 4; display: flex; flex-wrap: wrap; gap: 4px; }
 .formats span { display: inline-flex; gap: 3px; align-items: center; padding: 5px 6px; background: var(--review-start); border-radius: 16px; font-size: 9px; color: var(--review-muted); }
 .formats svg { width: 12px; height: 12px; color: var(--review-primary); }
-.divider { text-align: center; color: var(--review-muted); font-size: 10px; margin: 18px 0 12px; }
-.sources { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
-.sources .source { display: flex; flex-direction: column; gap: 6px; width: 100%; min-height: 112px; height: auto; border-radius: 20px; padding: 12px 4px; color: var(--review-text); background: var(--review-surface); }
-.source > svg { color: var(--review-primary); width: 28px; height: 28px; }
-.source strong { font-size: 12px; }
-.source small { font-size: 10px; color: var(--review-muted); font-weight: 400; }
-.sources .source:disabled { opacity: .6; }
+.adSlot { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 108px; margin-top: 18px; border-radius: 20px; background: var(--review-surface); color: var(--review-muted); font-size: 12px; font-weight: 600; }
+.adBadge { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 8px; background: color-mix(in srgb, var(--review-muted) 18%, transparent); color: var(--review-muted); font-size: 11px; font-weight: 800; letter-spacing: .02em; }
 .privacy { display: flex; gap: 12px; align-items: center; padding: 16px 12px; margin-top: 18px; border-radius: 16px; border: 1px solid var(--review-surface); color: var(--review-muted); font-size: 12px; }
 .privacy svg { color: var(--review-primary); width: 30px; height: 30px; }
 @media (max-width: 350px) { .uploadHero h2 { font-size: 20px; } .row { gap: 8px; } .chips { grid-template-columns: repeat(3,minmax(0,1fr)); } .chips .chip { padding: 6px; } }
