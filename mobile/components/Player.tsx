@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
 import { router } from "expo-router";
@@ -14,6 +14,8 @@ import { Motion } from "./Motion";
 import { loadSharedFile } from "../lib/shared-file";
 import { MediaPlayer } from "./MediaPlayer";
 import { useSharedPlayback, type PlaybackAd } from "../lib/use-shared-playback";
+import { SharedDisplayAd } from "./SharedDisplayAd";
+import { canShowSharedDisplayAd } from "../lib/display-ad";
 
 type Shared = { name: string; file_type: string; mime: string | null; source: string; url: string };
 function createPlaybackAd(): PlaybackAd {
@@ -29,7 +31,10 @@ export function PlayerScreen({ slug }: { slug: string }) {
   const session = useSession();
   const { st, open, adBusy, adUnavailable, showAdThenOpen, continueWithoutAd, countView } = useSharedPlayback(slug, session?.user.id, loadSharedFile, createPlaybackAd, recordPlaybackView);
   const [report, setReport] = useState(false);
-  useEffect(() => setReport(false), [slug, session?.user.id]);
+  const [fullscreen, setFullscreen] = useState(false);
+  const { width, height } = useWindowDimensions();
+  useEffect(() => { setReport(false); setFullscreen(false); }, [slug, session?.user.id]);
+  const displayAd = canShowSharedDisplayAd({ ready: st.kind === "ok", width, height, fullscreen, adBusy, reportOpen: report });
 
   async function sendReport(reason: string, details: string) {
     const { error } = await supabase.from("reports").insert({ file_slug: slug, file_name: st.kind === "ok" ? st.name : null, reason, details: details || null, email: session?.user.email ?? null, reporter_id: session?.user.id ?? null });
@@ -57,13 +62,14 @@ export function PlayerScreen({ slug }: { slug: string }) {
             </>}
           </View></Motion>
         )}
-        {st.kind === "ok" && open && <Viewer file={st} onShown={countView} />}
+        {st.kind === "ok" && open && <Viewer file={st} onShown={countView} onFullscreenChange={setFullscreen} />}
         {st.kind === "ok" && (
           <Pressable onPress={() => setReport(true)} style={{ flexDirection: "row", alignSelf: "center", alignItems: "center", gap: 6, padding: 8 }}>
             <Ionicons name="flag-outline" size={15} color={theme.muted} />
             <Text style={{ color: theme.muted }}>Report this file</Text>
           </Pressable>
         )}
+        {displayAd && <SharedDisplayAd key={`${slug}:${session?.user.id ?? ""}`} />}
       </ScrollView>
       <ReportSheet visible={report} onClose={() => setReport(false)} onSend={sendReport} />
     </Screen>
@@ -80,9 +86,9 @@ function Notice({ icon, title, text }: { icon: keyof typeof Ionicons.glyphMap; t
   );
 }
 
-function Viewer({ file, onShown }: { file: Shared; onShown: () => void }) {
+function Viewer({ file, onShown, onFullscreenChange }: { file: Shared; onShown: () => void; onFullscreenChange: (fullscreen: boolean) => void }) {
   if (file.file_type === "image") return <Image source={{ uri: file.url }} onLoad={onShown} resizeMode="contain" style={{ width: "100%", aspectRatio: 1, borderRadius: 16, backgroundColor: "#000" }} />;
-  if (file.file_type === "video" || file.file_type === "audio") return <MediaPlayer url={file.url} title={file.name} audio={file.file_type === "audio"} onPlaying={onShown} />;
+  if (file.file_type === "video" || file.file_type === "audio") return <MediaPlayer url={file.url} title={file.name} audio={file.file_type === "audio"} onPlaying={onShown} onFullscreenChange={onFullscreenChange} />;
   return <View style={{ height: 520, borderRadius: 16, overflow: "hidden" }}><WebView source={{ uri: `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(file.url)}` }} onLoadEnd={onShown} /></View>;
 }
 

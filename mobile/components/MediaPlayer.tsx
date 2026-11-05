@@ -11,7 +11,7 @@ import { seekTime, timelineTime } from "../lib/playback";
 
 const speeds = [0.5, 1, 1.25, 1.5, 2, 3];
 const clock = (value: number) => `${Math.floor(Math.max(0, value) / 60)}:${String(Math.floor(Math.max(0, value) % 60)).padStart(2, "0")}`;
-export function MediaPlayer({ url, title, audio, onPlaying }: { url: string; title: string; audio: boolean; onPlaying: () => void }) {
+export function MediaPlayer({ url, title, audio, onPlaying, onFullscreenChange }: { url: string; title: string; audio: boolean; onPlaying: () => void; onFullscreenChange?: (fullscreen: boolean) => void }) {
   const player = useVideoPlayer(url, p => { p.timeUpdateEventInterval = 0.25; p.play(); });
   const { isPlaying } = useEvent(player, "playingChange", { isPlaying: player.playing });
   const { currentTime } = useEvent(player, "timeUpdate", { currentTime: 0, currentLiveTimestamp: null, currentOffsetFromLive: null, bufferedPosition: 0 });
@@ -30,6 +30,10 @@ export function MediaPlayer({ url, title, audio, onPlaying }: { url: string; tit
   const win = useWindowDimensions();
   const [frameW, setFrameW] = useState(win.width);
   const duration = player.duration || 0;
+  useEffect(() => {
+    onFullscreenChange?.(fullscreen);
+    return () => onFullscreenChange?.(false);
+  }, [fullscreen, onFullscreenChange]);
   useEffect(() => { if (isPlaying) onPlaying(); }, [isPlaying, onPlaying]);
   useEffect(() => () => { rotation.current++; Orientation.lockAsync(Orientation.OrientationLock.PORTRAIT_UP).catch(() => {}); }, []);
   useEffect(() => {
