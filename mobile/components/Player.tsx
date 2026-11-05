@@ -4,10 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
 import { router } from "expo-router";
 import { AdEventType, InterstitialAd, RewardedAd, RewardedAdEventType } from "react-native-google-mobile-ads";
-import { LinearGradient } from "expo-linear-gradient";
-import { formatSize } from "../lib/files";
+import { formatSize, iconFor } from "../lib/files";
 import { Screen, Button, Card } from "./ui";
-import { FileIcon } from "./FileCard";
 import { supabase } from "../lib/supabase";
 import { ADS } from "../lib/config";
 import { theme } from "../lib/theme";
@@ -64,6 +62,9 @@ export function PlayerScreen({ slug }: { slug: string }) {
     return () => sub.remove();
   }, [open, fullscreen]);
   const displayAd = canShowSharedDisplayAd({ ready: st.kind === "ok", width, height, fullscreen, adBusy, reportOpen: report });
+  const fileType = st.kind === "ok" ? st.file_type : "other";
+  const tint = theme.cat[fileType] ?? theme.cat.other;
+  const tintIcon = iconFor(fileType) as keyof typeof Ionicons.glyphMap;
 
   async function sendReport(reason: string, details: string) {
     const { error } = await supabase.from("reports").insert({ file_slug: slug, file_name: st.kind === "ok" ? st.name : null, reason, details: details || null, email: session?.user.email ?? null, reporter_id: session?.user.id ?? null });
@@ -80,28 +81,25 @@ export function PlayerScreen({ slug }: { slug: string }) {
         {st.kind === "missing" && <Notice icon="alert-circle-outline" title="File not found" text="This link was removed or never existed." />}
         {st.kind === "expired" && <Notice icon="time-outline" title="Link expired" text="Ask the owner for a new link." />}
         {st.kind === "ok" && !open && (
-          <Motion><View style={{ gap: 14 }}>
-            <View style={pv.card}>
-              {st.file_type === "image"
-                ? <Image source={{ uri: st.url }} blurRadius={25} resizeMode="cover" style={StyleSheet.absoluteFill} />
-                : <LinearGradient colors={["#E0E7FF", "#F1F5F9", "#DBEAFE"]} style={StyleSheet.absoluteFill}><View style={pv.ghost}><FileIcon type={st.file_type} size={72} /></View></LinearGradient>}
-              <View style={pv.veil} />
-              <Pressable accessibilityRole="button" disabled={adBusy} onPress={showAdThenOpen} style={pv.openWrap}>
-                <LinearGradient colors={["#0EA5E9", "#4F46E5"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={pv.open}>
-                  {adBusy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={pv.openText}>{adUnavailable ? "Retry" : "Open"}</Text>}
-                </LinearGradient>
-              </Pressable>
-              <Pressable accessibilityRole="button" onPress={() => setReport(true)} style={pv.report}><Text style={pv.reportText}>Report</Text></Pressable>
+          <Motion><View style={{ gap: 20 }}>
+            <View style={[pv.stage, { backgroundColor: tint.bg }]}>
+              <Ionicons name={tintIcon} size={72} color={tint.fg} />
             </View>
-            <View style={{ gap: 4, paddingHorizontal: 4 }}>
-              <Text style={{ fontSize: 18, fontWeight: "700", color: theme.text }} numberOfLines={2}>{st.name}</Text>
-              <Text style={{ color: theme.muted, fontSize: 14 }}>{formatSize(st.size)}</Text>
+            <View style={{ gap: 6, alignItems: "center", paddingHorizontal: 8 }}>
+              <Text style={pv.name} numberOfLines={2}>{st.name}</Text>
+              <Text style={pv.sub}>Shared with you</Text>
+              <Text style={pv.size}>{formatSize(st.size)}</Text>
             </View>
-            {adUnavailable && <Text accessibilityRole="alert" style={{ color: theme.muted, textAlign: "center", lineHeight: 21 }}>The ad could not load. Check your connection and allow ads for Tanyora, then try again.</Text>}
-            {adUnavailable && <>
-              <Button label="Continue" icon="play" variant="outline" onPress={continueWithoutAd} style={{ alignSelf: "stretch" }} />
-              <Button label="Back" icon="arrow-back" variant="outline" onPress={() => router.back()} style={{ alignSelf: "stretch" }} />
-            </>}
+            <Pressable accessibilityRole="button" disabled={adBusy} onPress={showAdThenOpen} style={({ pressed }) => [pv.open, pressed && pv.openPressed, adBusy && pv.openDisabled]}>
+              {adBusy ? <ActivityIndicator color={theme.onPrimary} /> : <Ionicons name="play" size={17} color={theme.onPrimary} />}
+              <Text style={pv.openText}>{adUnavailable ? "Try again" : "Open file"}</Text>
+            </Pressable>
+            {adUnavailable && <Text accessibilityRole="alert" style={pv.notice}>The ad could not load. Check your connection and allow ads for Tanyora, then try again.</Text>}
+            {adUnavailable && <Button label="Continue" icon="play" variant="outline" onPress={continueWithoutAd} style={{ alignSelf: "stretch" }} />}
+            <Pressable accessibilityRole="button" onPress={() => setReport(true)} style={pv.reportLink}>
+              <Ionicons name="flag-outline" size={15} color={theme.muted} />
+              <Text style={pv.reportText}>Report this file</Text>
+            </Pressable>
           </View></Motion>
         )}
         {st.kind === "ok" && open && <Viewer file={st} onShown={countView} onFullscreenChange={setFullscreen} />}
@@ -156,12 +154,15 @@ function ReportSheet({ visible, onClose, onSend }: { visible: boolean; onClose: 
 }
 
 const pv = StyleSheet.create({
-  card: { height: 320, borderRadius: 20, overflow: "hidden", borderWidth: 1, borderColor: theme.border, backgroundColor: "#F1F5F9" },
-  ghost: { flex: 1, alignItems: "center", justifyContent: "center", opacity: 0.35 },
-  veil: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(255,255,255,0.35)" },
-  openWrap: { position: "absolute", top: "50%", left: "50%", transform: [{ translateX: -62 }, { translateY: -28 }], borderRadius: 14, overflow: "hidden", elevation: 6 },
-  open: { width: 124, height: 56, alignItems: "center", justifyContent: "center" },
-  openText: { color: "#FFFFFF", fontSize: 18, fontWeight: "700" },
-  report: { position: "absolute", right: 16, bottom: 16, backgroundColor: "rgba(148,163,184,0.55)", paddingHorizontal: 22, paddingVertical: 12, borderRadius: 12 },
-  reportText: { color: "#DC2626", fontSize: 15, fontWeight: "600" },
+  stage: { alignSelf: "center", width: 200, height: 200, borderRadius: 28, alignItems: "center", justifyContent: "center" },
+  name: { fontSize: 18, fontWeight: "700", color: theme.text, textAlign: "center" },
+  sub: { fontSize: 14, color: theme.muted, textAlign: "center" },
+  size: { fontSize: 12, color: theme.placeholder, textAlign: "center" },
+  open: { alignSelf: "stretch", height: 54, borderRadius: 27, backgroundColor: theme.primary, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
+  openPressed: { opacity: 0.88 },
+  openDisabled: { opacity: 0.6 },
+  openText: { color: theme.onPrimary, fontSize: 16, fontWeight: "700" },
+  notice: { color: theme.muted, textAlign: "center", lineHeight: 21, fontSize: 13 },
+  reportLink: { flexDirection: "row", alignSelf: "center", alignItems: "center", gap: 6, padding: 8 },
+  reportText: { color: theme.muted, fontSize: 14 },
 });

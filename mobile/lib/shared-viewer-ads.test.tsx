@@ -22,7 +22,7 @@ vi.mock("../node_modules/react-native-google-mobile-ads/lib/module/index.js", ()
 vi.mock("../node_modules/react-native-google-mobile-ads/lib/commonjs/index.js", () => ({ AdEventType: {}, InterstitialAd: { createForAdRequest: () => ({ addAdEventListener: () => () => {}, load: () => {}, show: () => {} }) }, RewardedAd: {}, RewardedAdEventType: {} }));
 vi.mock("../components/ui", () => ({ Screen: ({ children }: any) => createElement("main", null, children), Card: ({ children }: any) => createElement("div", null, children), Button: ({ label }: any) => createElement("button", null, label) }));
 vi.mock("expo-linear-gradient", () => ({ LinearGradient: ({ children }: any) => createElement("div", null, children) }));
-vi.mock("./files", () => ({ formatSize: () => "1 KB" }));
+vi.mock("./files", () => ({ formatSize: () => "1 KB", iconFor: () => "film-outline" }));
 vi.mock("../components/FileCard", () => ({ FileIcon: () => null }));
 vi.mock("../components/Motion", () => ({ Motion: ({ children }: any) => createElement("div", null, children) }));
 vi.mock("../components/SharedDisplayAd", () => ({ SharedDisplayAd: () => createElement("div", { "data-testid": "ad" }) }));
@@ -49,6 +49,13 @@ describe("Shared viewer bottom ad integration", () => {
     render(<PlayerScreen slug="shared" />);
     fireEvent.click(screen.getByRole("button", { name: "Rotate video" }));
     expect(screen.queryByTestId("ad")).toBeNull();
+  });
+  it("shows the clean open-file card with a full-width Open file button", () => {
+    render(<PlayerScreen slug="shared" />);
+    expect(screen.getByText("Open file")).toBeTruthy();
+    expect(screen.getByText("Shared with you")).toBeTruthy();
+    expect(screen.getByText("1 KB")).toBeTruthy();
+    expect(screen.getByText("Report this file")).toBeTruthy();
   });
   it("does not show ads on expired shared files", () => {
     state.kind = "expired";
