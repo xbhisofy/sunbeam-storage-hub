@@ -50,9 +50,8 @@
 .progressRow progress::-webkit-progress-bar { background: var(--review-track); }
 .progressRow progress::-webkit-progress-value { background: var(--review-primary); }
 .progressRow progress::-moz-progress-bar { background: var(--review-primary); }
-.actions { display: grid; grid-template-columns: minmax(0,1fr) 48px 48px; gap: 8px; }
+.actions { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; }
 .review .upload { min-width: 0; min-height: 42px; height: auto; padding: 6px; border-radius: 21px; background: linear-gradient(135deg, var(--review-light), var(--review-primary), var(--review-deep)); color: var(--review-on-primary); font-size: 12px; box-shadow: var(--review-shadow); }
-.review .utility { min-height: 42px; height: auto; padding: 4px 2px; gap: 2px; flex-direction: column; color: var(--review-disabled); background: var(--review-start); border-radius: 12px; opacity: .65; font-size: 8px; }
 .categories { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 12px 0; }
 .review .category { background: var(--review-surface); border-radius: 16px; padding: 10px 6px; height: auto; display: flex; flex-direction: column; align-items: stretch; gap: 6px; color: var(--review-text); font-size: 11px; text-align: left; }
 .categoryIcon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; }
@@ -132,7 +131,7 @@
 .review .active svg { fill: none; stroke-width: 2.1; }
 .review a:active, .review button:active { opacity: .7; transition: opacity 120ms; }
 @media (max-width: 369px) { .phone { padding-inline: 16px; } .navWrap { padding-inline: 16px; } .brand strong { font-size: 16px; } .brand img { width: 30px; height: 30px; } .category { font-size: 10px; } }
-@media (min-width: 700px) { .phone, .navWrap { max-width: 720px; width: 100%; } .phone { padding-inline: 32px; } .categories { gap: 16px; } .review .category { padding: 16px; font-size: 14px; } .categoryBottom { font-size: 12px; } .intro { min-height: 140px; } .intro img { width: 140px; height: 140px; right: 16px; } .intro h1 { max-width: 430px; font-size: 30px; } .intro p { max-width: 360px; font-size: 14px; } .storage { padding: 20px; } .storageHeader h2 { font-size: 20px; } .review .utility { font-size: 10px; } .actions { grid-template-columns: minmax(0,1fr) 70px 70px; } }
+@media (min-width: 700px) { .phone, .navWrap { max-width: 720px; width: 100%; } .phone { padding-inline: 32px; } .categories { gap: 16px; } .review .category { padding: 16px; font-size: 14px; } .categoryBottom { font-size: 12px; } .intro { min-height: 140px; } .intro img { width: 140px; height: 140px; right: 16px; } .intro h1 { max-width: 430px; font-size: 30px; } .intro p { max-width: 360px; font-size: 14px; } .storage { padding: 20px; } .storageHeader h2 { font-size: 20px; } .actions { grid-template-columns: minmax(0,1fr); } }
 @media (max-width: 359px) { .brand img { display: none; } .storageHeader { grid-template-columns: 1fr; } .plan { justify-self: start; } .categories { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media (max-height: 450px) { .phone { padding-top: 12px; } .navWrap { padding-top: 6px; padding-bottom: 6px; } .nav, .review .navItem { min-height: 52px; } .review .uploadNav { height: 52px; } .halo { height: 52px; } }
 @media (prefers-reduced-motion: reduce) { .review *, .review *::before { transition: none !important; animation: none !important; } }
