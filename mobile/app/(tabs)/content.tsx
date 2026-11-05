@@ -63,7 +63,7 @@ export default function Files() {
         {error && <View style={s.error}><Text style={s.errorText}>{error}</Text><Button label="Try again" onPress={reload} variant="outline" /></View>}
       </View>}
       renderItem={({ item }) => <FileCard file={item} onChange={reload} presentation="library" selectionMode={selectionMode} selected={selected.includes(item.id)} onToggleSelection={() => setSelected(ids => toggleSelected(ids, item.id))} onStartSelection={() => { setSelectionMode(true); setSelected(ids => ids.includes(item.id) ? ids : [...ids, item.id]); }} />}
-      ListFooterComponent={<View style={{ alignItems: "center", paddingTop: 16 }}><BannerAd unitId={ADS.banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} /></View>}
+      ListFooterComponent={<View style={{ alignItems: "center", paddingTop: 16 }}><BannerAd unitId={ADS.banner} size={BannerAdSize.MEDIUM_RECTANGLE} /></View>}
       ItemSeparatorComponent={() => <View style={s.separator} />}
       ListEmptyComponent={<Empty icon="folder-open-outline" title={loading ? "Loading…" : "No files found"} />}
     />

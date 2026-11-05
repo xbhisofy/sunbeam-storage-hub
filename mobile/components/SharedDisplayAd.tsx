@@ -27,7 +27,7 @@ export function SharedDisplayAd({ compact = false }: { compact?: boolean } = {})
   return <View style={[styles.placement, compact && styles.compact]}>
     <Text style={styles.label}>Advertisement</Text>
     <View style={compact ? styles.banner : styles.creative}>
-      <BannerAd unitId={__DEV__ ? TestIds.BANNER : ADS.banner} size={compact ? BannerAdSize.BANNER : BannerAdSize.MEDIUM_RECTANGLE} onAdFailedToLoad={() => setFailed(true)} />
+      <BannerAd unitId={__DEV__ ? TestIds.BANNER : ADS.banner} size={BannerAdSize.MEDIUM_RECTANGLE} onAdFailedToLoad={() => setFailed(true)} />
     </View>
   </View>;
 }
