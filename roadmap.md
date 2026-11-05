@@ -1,5 +1,6 @@
 # Roadmap
-- [ ] Audit native ad bypass and propose proportional protection for owner approval; preserve legitimate ad-load failures and owner/premium access. APK/device and production enforcement need separately verified rollout.
+- [x] Audit native ad fallback: errors/show failures/eight-second timeout currently unlock shared content; prepared staged retry protection plan without installed-app/VPN blocking or payout changes. No app/VPS/APK changes.
+- [ ] Implement approved native ad retry protection (blocked: owner review of changed failure behavior); native tests currently cannot collect because expo/tsconfig.base is missing, and real Android/APK rollout remains unverified.
 - [x] Add all three owner-supplied Play SHA-256 fingerprints to Android assetlinks, preserving the existing Expo certificate; regression tests cover each fingerprint and package.
 - [x] Publish updated assetlinks with owner approval on 2026-11-05: backed up source/live files at /var/backups/tanyora/assetlinks-20261105T063229Z, updated only those two files, and verified tanyora.com, www.tanyora.com and app.tanyora.com return HTTPS 200 JSON without redirects containing all four fingerprints. No service/configuration/backend/APK changes.
 - [ ] Confirm Play Console deep-link recheck and installed Android share-link opening (blocked: owner Console/device check); this warning is not evidence of the actual rejection reason.
