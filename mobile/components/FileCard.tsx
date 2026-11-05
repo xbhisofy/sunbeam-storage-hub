@@ -75,7 +75,7 @@ export function FileCard({ file, onChange, showExpiry, presentation = "default",
     } catch (e) { setShareError(e instanceof Error ? e.message : 'Unable to create link. Please try again.'); } finally { setBusy(false); }
   }
   async function shareVia() {
-    try { await Share.share({ message: `${file.name}\n${shareLink(file.slug)}` }); }
+    try { await Share.share({ message: shareLink(file.slug) }); }
     catch { setShareError('Unable to open sharing. Please try again.'); }
   }
   function openExpiry() {
