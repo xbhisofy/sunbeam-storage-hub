@@ -88,7 +88,7 @@ export function PlayerScreen({ slug }: { slug: string }) {
                 <Image source={{ uri: st.url }} blurRadius={18} resizeMode="cover" style={StyleSheet.absoluteFillObject} />
               ) : (
                 <View pointerEvents="none" style={pv.fileGlance}>
-                  <Ionicons name={tintIcon} size={100} color={tint.fg} />
+                  <Ionicons name={tintIcon} size={180} color={tint.fg} />
                 </View>
               )}
               <View pointerEvents="none" style={[StyleSheet.absoluteFillObject, pv.glass]} />
