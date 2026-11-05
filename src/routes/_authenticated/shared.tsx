@@ -8,6 +8,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { currentUserId } from "@/lib/session";
 import { pageHead, site } from "@/lib/site";
 import { formatSize, formatFileDate } from "@/lib/format";
+import { ownedFilesOptions } from "@/lib/owned-files";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/shared")({
   head: () => pageHead("Shared files", "Files and links you have shared.", undefined, true),
@@ -29,14 +31,8 @@ type Row = { id: string; name: string; file_type: string; size: number; created_
 function Shared() {
   const qc = useQueryClient();
   const [active, setActive] = useState<Row | null>(null);
-  const { data: files = [], isPending } = useQuery({
-    queryKey: ["files"],
-    queryFn: async () => {
-      const uid = await currentUserId();
-      if (!uid) return [];
-      return (await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false })).data ?? [];
-    },
-  });
+  const { userId } = Route.useRouteContext();
+  const { data: files = [], isPending, isError, refetch } = useQuery(ownedFilesOptions(userId));
   const link = (slug: string) => `${site.shareUrl}/s/${slug}`;
 
   async function shareAgain(f: Row) {
@@ -68,7 +64,7 @@ function Shared() {
 
   return <div className="mx-auto w-full max-w-3xl">
     <h1 className="hidden text-2xl font-bold tracking-tight lg:block">Shared Files</h1>
-    {files.length === 0 ? <div className="mt-1 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
+    {isError ? <div role="alert" className="py-8 text-center"><p>Could not load your shared files.</p><Button variant="outline" className="mt-3" onClick={() => void refetch()}>Try again</Button></div> : files.length === 0 ? <div className="mt-1 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
       <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><Share2 className="h-8 w-8 text-primary" /></span>
       <p className="mt-5 text-[15px] font-semibold">{isPending ? "Loading…" : "Nothing shared yet"}</p>
     </div> : <div className="mt-1 space-y-2.5">

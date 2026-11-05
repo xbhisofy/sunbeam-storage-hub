@@ -13,7 +13,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: async () => { if (!(await currentUserId())) throw redirect({ to: "/auth" }); },
+  beforeLoad: async () => {
+    const userId = await currentUserId();
+    if (!userId) throw redirect({ to: "/auth" });
+    return { userId };
+  },
   component: Shell,
 });
 const nav = [
@@ -34,10 +38,10 @@ const appNav = [
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 export function useProfile() {
-  return useQuery({ queryKey: ["profile"], queryFn: async () => {
-    const uid = await currentUserId();
-    if (!uid) return null;
-    const { data } = await supabase.from("profiles").select("*").eq("id", uid).single();
+  const { userId } = Route.useRouteContext();
+  return useQuery({ queryKey: ["profile", userId], queryFn: async () => {
+    const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).single();
+    if (error) throw error;
     return data;
   } });
 }
