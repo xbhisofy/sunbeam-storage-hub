@@ -50,6 +50,13 @@ describe("Shared viewer bottom ad integration", () => {
     fireEvent.click(screen.getByRole("button", { name: "Rotate video" }));
     expect(screen.queryByTestId("ad")).toBeNull();
   });
+  it("shows the clean open-file card with a full-width Open file button", () => {
+    render(<PlayerScreen slug="shared" />);
+    expect(screen.getByText("Open file")).toBeTruthy();
+    expect(screen.getByText("Shared with you")).toBeTruthy();
+    expect(screen.getByText("1 KB")).toBeTruthy();
+    expect(screen.getByText("Report this file")).toBeTruthy();
+  });
   it("does not show ads on expired shared files", () => {
     state.kind = "expired";
     render(<PlayerScreen slug="shared" />);
