@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowLeft, CheckCircle2, Image, FileText, ChevronRight, Camera, Folder, HardDrive, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Image, FileText, ChevronRight, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import art from './assets/upload-cloud.png';
 import s from './ReferenceScreens.module.css';
