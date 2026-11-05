@@ -10,14 +10,14 @@ export function useAvatarUrl(user: AvatarUser) {
   const meta = (user?.user_metadata ?? {}) as { avatar_path?: unknown; avatar_url?: unknown };
   const path = typeof meta.avatar_path === "string" && meta.avatar_path ? meta.avatar_path : null;
   const direct = typeof meta.avatar_url === "string" && meta.avatar_url.startsWith("https://") ? meta.avatar_url : null;
-  const [signed, setSigned] = useState<string | null>(null);
+  const [signed, setSigned] = useState<{ path: string; url: string | null } | null>(null);
   useEffect(() => {
     let alive = true;
     if (!path) { setSigned(null); return; }
     void supabase.storage.from("avatars").createSignedUrl(path, 3600).then(({ data, error }) => {
-      if (alive) setSigned(error ? null : data?.signedUrl ?? null);
-    });
+      if (alive) setSigned({ path, url: error ? null : data?.signedUrl ?? null });
+    }).catch(() => { if (alive) setSigned({ path, url: null }); });
     return () => { alive = false; };
   }, [path]);
-  return path ? signed : direct;
+  return path ? (signed?.path === path ? signed.url : null) : direct;
 }
