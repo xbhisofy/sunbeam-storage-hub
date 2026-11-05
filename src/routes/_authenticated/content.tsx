@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { fileKind, formatSize, formatFileDate } from "@/lib/format";
 import { useInstalledApp } from "@/lib/app-mode";
 import { sharingAllowed, safetyLabel, UNSUPPORTED_UPLOAD } from "@/lib/content-safety";
+import { ownedFilesOptions } from "@/lib/owned-files";
 
 export const Route = createFileRoute("/_authenticated/content")({
   validateSearch: z.object({ kind: z.enum(["pdf", "video", "audio", "image", "link"]).optional(), upload: z.enum(["video", "audio", "image", "document"]).optional() }),
@@ -62,15 +63,8 @@ function Content() {
   const [query, setQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState<"all" | "original" | "converted">("all");
 
-  const { data: files = [] } = useQuery({
-    queryKey: ["files"],
-    queryFn: async () => {
-      const uid = await currentUserId();
-      if (!uid) return [] as FileRow[];
-      const { data } = await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false });
-      return (data ?? []) as FileRow[];
-    },
-  });
+  const { userId } = Route.useRouteContext();
+  const { data: files = [], isPending, isError, refetch } = useQuery(ownedFilesOptions(userId));
 
   async function onFiles(list: FileList | null) {
     if (!list) return;
@@ -228,7 +222,7 @@ function Content() {
       )}
 
       {/* File list — TeraBox-style cards */}
-      {shown.length === 0 ? (
+      {isError ? <div role="alert" className="py-8 text-center"><p>Could not load your files.</p><Button variant="outline" className="mt-3" onClick={() => void refetch()}>Try again</Button></div> : isPending ? <p role="status" className="py-8 text-center text-muted-foreground">Loading your files…</p> : shown.length === 0 ? (
         <div className="mt-1 rounded-2xl border bg-card px-6 py-14 text-center shadow-sm">
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-primary/10"><FolderOpen className="h-8 w-8 text-primary" /></span>
           <p className="mt-5 text-[15px] font-semibold">Your folder is empty</p>

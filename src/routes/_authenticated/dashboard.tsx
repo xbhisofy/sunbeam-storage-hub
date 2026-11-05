@@ -9,29 +9,35 @@ import { currentUserId } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { useProfile } from "./route";
 import { money, formatSize, fileMetadata } from "@/lib/format";
+import { ownedFilesOptions } from "@/lib/owned-files";
 export const Route = createFileRoute("/_authenticated/dashboard")({ head: () => pageHead("Home", "Your Tanyora files and storage.", undefined, true), component: Dashboard });
 function Dashboard() {
   const { data: p } = useProfile();
   const app = useInstalledApp();
-  const { data: files = [], isPending } = useQuery({ queryKey: ["files"], queryFn: async () => {
+  const { userId } = Route.useRouteContext();
+  const { data: files = [], isPending, isError: filesError, refetch: refetchFiles } = useQuery(ownedFilesOptions(userId));
+  const { data: watched = [] } = useQuery({ queryKey: ["recently-watched", userId], queryFn: async () => {
     const uid = await currentUserId(); if (!uid) return [];
-    return (await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false })).data ?? [];
-  } });
-  const { data: watched = [] } = useQuery({ queryKey: ["recently-watched"], queryFn: async () => {
-    const uid = await currentUserId(); if (!uid) return [];
-    const { data: events } = await supabase.from("view_events").select("file_slug, day").eq("viewer_id", uid).order("day", { ascending: false }).limit(10);
+    const { data: events, error } = await supabase.from("view_events").select("file_slug, day").eq("viewer_id", uid).order("day", { ascending: false }).limit(10);
+    if (error) throw error;
     const slugs = [...new Set((events ?? []).map(e => e.file_slug))].slice(0, 5);
     if (!slugs.length) return [];
-    return (await supabase.from("files").select("*").in("slug", slugs)).data ?? [];
+    const { data, error: fileError } = await supabase.from("files").select("id,name,file_type,size,views,created_at,slug").in("slug", slugs);
+    if (fileError) throw fileError;
+    return data ?? [];
   } });
-  const { data: wd = [] } = useQuery({ queryKey: ["withdrawals"], enabled: !app, queryFn: async () => {
+  const { data: wd = [] } = useQuery({ queryKey: ["withdrawals", userId], enabled: !app, queryFn: async () => {
     const uid = await currentUserId(); if (!uid) return [];
-    return (await supabase.from("withdrawals").select("amount, status").eq("user_id", uid)).data ?? [];
+    const { data, error } = await supabase.from("withdrawals").select("amount, status").eq("user_id", uid).in("status", ["pending", "approved"]);
+    if (error) throw error;
+    return data ?? [];
   } });
-  const { data: trend = [] } = useQuery({ queryKey: ["view-daily-14"], enabled: !app, staleTime: 60_000, queryFn: async () => {
+  const { data: trend = [] } = useQuery({ queryKey: ["view-daily-14", userId], enabled: !app, staleTime: 60_000, queryFn: async () => {
     const uid = await currentUserId(); if (!uid) return [];
     const since = new Date(Date.now() - 13 * 864e5).toISOString().slice(0, 10);
-    return (await supabase.from("view_daily").select("day, views").eq("owner_id", uid).gte("day", since)).data ?? [];
+    const { data, error } = await supabase.from("view_daily").select("day, views").eq("owner_id", uid).gte("day", since);
+    if (error) throw error;
+    return data ?? [];
   } });
   const used = files.reduce((s, f) => s + Number(f.size ?? 0), 0);
   const categories = [
@@ -40,7 +46,7 @@ function Dashboard() {
     { label: "Videos", kind: "video", icon: Film, tone: "category-video" },
     { label: "Music", kind: "audio", icon: Music, tone: "category-audio" },
   ] as const;
-  const recentSection = <section><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold">Recent files</h2><Button variant="link" asChild><Link to="/content">View all</Link></Button></div>{(() => {
+  const recentSection = <section><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold">Recent files</h2><Button variant="link" asChild><Link to="/content">View all</Link></Button></div>{filesError ? <div role="alert" className="py-6"><p>Could not load your files.</p><Button variant="outline" className="mt-3" onClick={() => void refetchFiles()}>Try again</Button></div> : (() => {
     const ownIds = new Set(files.map(f => f.id));
     const recent = [
       ...files.map(f => ({ ...f, kind: "yours" as const })),

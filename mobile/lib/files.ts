@@ -1,6 +1,7 @@
 import * as FS from "expo-file-system/legacy";
 import { decode } from "base64-arraybuffer";
 import { supabase } from "./supabase";
+import { dedupeReads } from "./request-cache";
 
 export type FileRow = {
   id: string; name: string; file_type: string; mime: string | null; size: number;
@@ -33,11 +34,19 @@ export function formatSize(b: number) {
 export const formatDate = (d: string) =>
   new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-export async function myFiles(uid: string): Promise<FileRow[]> {
-  const { data, error } = await supabase.from("files").select("*").eq("owner_id", uid).order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []) as FileRow[];
-}
+const FILE_COLUMNS = "id,name,file_type,mime,size,storage_path,slug,created_at,expires_at,source";
+const FILE_PAGE_SIZE = 200;
+export const myFiles = dedupeReads(async (uid: string): Promise<FileRow[]> => {
+  const files: FileRow[] = [];
+  for (let offset = 0; ; offset += FILE_PAGE_SIZE) {
+    const { data, error } = await supabase.from("files").select(FILE_COLUMNS).eq("owner_id", uid)
+      .order("created_at", { ascending: false }).order("id", { ascending: false }).range(offset, offset + FILE_PAGE_SIZE - 1);
+    if (error) throw error;
+    const page = (data ?? []) as FileRow[];
+    files.push(...page);
+    if (page.length < FILE_PAGE_SIZE) return files;
+  }
+});
 
 export async function uploadFile(uid: string, f: { uri: string; name: string; mimeType?: string | null; size?: number | null }) {
   const mime = f.mimeType || "application/octet-stream";

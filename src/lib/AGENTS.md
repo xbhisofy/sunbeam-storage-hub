@@ -1,0 +1,3 @@
+# Account data reads
+- Home, Content and Shared use the same user-scoped owned-file query with cancellation and stable backend paging; failed pages must reject rather than silently return empty or incomplete libraries.
+- Retain complete library totals until a separately tested backend aggregate and lazy-list design replaces full collection; bounded per-request paging is not a guarantee of constant total memory or production capacity.
