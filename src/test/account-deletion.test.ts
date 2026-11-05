@@ -13,7 +13,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
       select: () => ({ eq: mocks.list }),
       delete: () => ({ eq: mocks.deleteFiles }),
     }),
-    storage: { from: () => ({ remove: mocks.remove }) },
+    storage: { from: () => ({ remove: mocks.remove, list: async () => ({ data: [], error: null }) }) },
     auth: { admin: { deleteUser: mocks.deleteUser } },
   },
 }));
