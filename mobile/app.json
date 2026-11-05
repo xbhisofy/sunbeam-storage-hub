@@ -9,8 +9,8 @@
     "userInterfaceStyle": "light",
     "backgroundColor": "#FFFFFF",
     "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
+      "image": "./assets/splash-screen.png",
+      "resizeMode": "cover",
       "backgroundColor": "#FFFFFF"
     },
     "android": {
