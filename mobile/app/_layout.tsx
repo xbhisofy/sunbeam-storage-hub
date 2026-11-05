@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 
 // Cap system font scaling so large display/font settings do not blow up buttons and layouts.
