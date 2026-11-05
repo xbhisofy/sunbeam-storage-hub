@@ -1,3 +1,5 @@
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { ADS } from "../../lib/config";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BackHandler, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -61,6 +63,7 @@ export default function Files() {
         {error && <View style={s.error}><Text style={s.errorText}>{error}</Text><Button label="Try again" onPress={reload} variant="outline" /></View>}
       </View>}
       renderItem={({ item }) => <FileCard file={item} onChange={reload} presentation="library" selectionMode={selectionMode} selected={selected.includes(item.id)} onToggleSelection={() => setSelected(ids => toggleSelected(ids, item.id))} onStartSelection={() => { setSelectionMode(true); setSelected(ids => ids.includes(item.id) ? ids : [...ids, item.id]); }} />}
+      ListFooterComponent={<View style={{ alignItems: "center", paddingTop: 16 }}><BannerAd unitId={ADS.banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} /></View>}
       ItemSeparatorComponent={() => <View style={s.separator} />}
       ListEmptyComponent={<Empty icon="folder-open-outline" title={loading ? "Loading…" : "No files found"} />}
     />
