@@ -10,7 +10,7 @@ vi.mock("../node_modules/react-native/index.js", () => {
     Image: () => createElement("div", { "data-testid": "photo" }),
     Pressable: ({ children, onPress }: any) => createElement("button", { onClick: onPress }, children),
     Modal: () => null, TextInput: () => null, ActivityIndicator: () => null,
-    StyleSheet: { create: (styles: any) => styles }, Alert: { alert: vi.fn() },
+    StyleSheet: { create: (styles: any) => styles, absoluteFill: {}, absoluteFillObject: {} }, BackHandler: { addEventListener: () => ({ remove: () => {} }) }, Alert: { alert: vi.fn() },
     useWindowDimensions: () => ({ width: state.width, height: state.height }),
   };
 });
