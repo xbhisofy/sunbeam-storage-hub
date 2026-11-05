@@ -55,8 +55,6 @@ export function HomeDashboard(p: Props) {
       </View>
       <View style={s.storageActions}>
         <Pressable accessibilityRole="button" accessibilityLabel="Upload & Share" onPress={p.onUpload} style={({ pressed }) => [s.uploadWrap, pressed && s.pressed]}><LinearGradient colors={[t.primaryLight, t.primary, t.primaryDeep]} style={s.upload}><Ionicons accessible={false} name="cloud-upload-outline" size={24} color={t.onPrimary} /><Text style={s.uploadLabel}>Upload & Share</Text><Ionicons accessible={false} name="chevron-forward" size={18} color={t.onPrimary} /></LinearGradient></Pressable>
-        <Pressable disabled accessibilityRole="button" accessibilityLabel="New Folder unavailable" accessibilityState={{ disabled: true }} style={s.utility}><Ionicons name="folder-outline" size={23} color={t.disabled} /><Text style={s.utilityLabel}>New Folder</Text></Pressable>
-        <Pressable disabled accessibilityRole="button" accessibilityLabel="Scan unavailable" accessibilityState={{ disabled: true }} style={s.utility}><Ionicons name="scan-outline" size={23} color={t.disabled} /><Text style={s.utilityLabel}>Scan</Text></Pressable>
       </View>
     </LinearGradient>
 
@@ -111,8 +109,6 @@ const s = StyleSheet.create({
   uploadWrap: { flex: 1, minWidth: 140, borderRadius: 24, overflow: "hidden", shadowColor: t.primary, shadowOpacity: 0.2, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } },
   upload: { flex: 1, flexDirection: "row", gap: 6, justifyContent: "center", alignItems: "center", minHeight: 48, paddingHorizontal: 10, paddingVertical: 10, borderRadius: 24 },
   uploadLabel: { color: t.onPrimary, fontSize: 13, fontWeight: "600", flexShrink: 1 },
-  utility: { backgroundColor: t.storageStart, minWidth: 44, minHeight: 48, borderRadius: 14, padding: 5, alignItems: "center", justifyContent: "center", gap: 3 },
-  utilityLabel: { color: t.disabled, fontSize: 8 },
   categories: { flexDirection: "row", flexWrap: "wrap", gap: 8, justifyContent: "space-between" },
   category: { backgroundColor: t.surface, borderRadius: 16, paddingHorizontal: 6, paddingVertical: 10, gap: 6, flexGrow: 1 },
   categoryIcon: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center" },

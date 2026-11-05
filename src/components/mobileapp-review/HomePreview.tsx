@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { Bell, Search, Sun, Cloud, CloudUpload, Folder, ScanLine, ChevronRight, Award, FileText, Image as ImageIcon, Film, Music, MoreVertical } from 'lucide-react';
+import { Bell, Search, Sun, Cloud, CloudUpload, ChevronRight, Award, FileText, Image as ImageIcon, Film, Music, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatFileDate, formatSize } from '@/lib/format';
 import { reviewPlan } from './plan-display';
@@ -44,7 +44,7 @@ export function HomePreview({ account, signedIn, loading, error, refresh }: {
       <div className={s.storageHeader}><h2><Cloud aria-hidden="true" />Cloud Storage</h2>{destination('profile', 'View profile', s.plan, <><Award aria-hidden="true" />{known ? `${plan.name} Plan` : '—'}<ChevronRight aria-hidden="true" /></>)}</div>
       <p className={s.used}>{known ? formatSize(used) : '—'}</p><p className={s.capacity}>{known ? `of ${plan.storage >= 1024 ** 4 ? `${plan.storage / 1024 ** 4} TB` : `${plan.storage / 1024 ** 3} GB`} used` : 'Storage details unavailable'}</p>
       <div className={s.progressRow}><progress aria-label="Cloud storage used" max={100} value={known ? percent : 0} /><span>{known ? `${Math.round(percent)}%` : '—'}</span></div>
-      <div className={s.actions}>{destination('upload', 'Upload & Share', s.upload, <><CloudUpload aria-hidden="true" />Upload &amp; Share<ChevronRight aria-hidden="true" /></>)}<Button disabled title="New Folder unavailable" variant="ghost" className={s.utility}><Folder aria-hidden="true" />New Folder</Button><Button disabled title="Scan unavailable" variant="ghost" className={s.utility}><ScanLine aria-hidden="true" />Scan</Button></div>
+      <div className={s.actions}>{destination('upload', 'Upload & Share', s.upload, <><CloudUpload aria-hidden="true" />Upload &amp; Share<ChevronRight aria-hidden="true" /></>)}</div>
     </section>
     <section className={s.categories} aria-label="File categories">{categories.map(({ kind, label, icon: Icon }) => <Button asChild variant="ghost" className={s.category} key={kind}><Link to="/mobileapp" search={{ screen: 'files', kind: kind as 'pdf' | 'image' | 'video' | 'audio' }} aria-label={`${label}, ${known ? files.filter(f => f.file_type === kind).length : 'unavailable'} files`}><span className={`${s.categoryIcon} ${s[kind as 'pdf' | 'image' | 'video' | 'audio']}`}><Icon aria-hidden="true" /></span><strong>{label}</strong><span className={s.categoryBottom}>{known ? `${files.filter(f => f.file_type === kind).length} files` : '—'}<ChevronRight aria-hidden="true" /></span></Link></Button>)}</section>
     <section className={s.recent}><div className={s.recentHeader}><h2>Recent Files</h2>{destination('files', 'View all files', s.textLink, <>View all<ChevronRight aria-hidden="true" /></>)}</div>
