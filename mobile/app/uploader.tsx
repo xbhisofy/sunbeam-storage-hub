@@ -4,13 +4,14 @@ import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import { Button } from "../components/ui";
 import { Motion } from "../components/Motion";
 import { useSession } from "./_layout";
 import { formatSize, uploadFile } from "../lib/files";
 import { notify } from "../lib/notifications";
 import { acceptNotice, needsNotice, readNotice } from "../lib/consent";
-import { WEB_URL } from "../lib/config";
+import { WEB_URL, ADS } from "../lib/config";
 import { uploadTheme as theme } from "../lib/upload-theme";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import uploadCloud from "../assets/upload-cloud.png";
@@ -74,6 +75,7 @@ export default function Uploader() {
         <View style={s.benefits}>{["Secure Upload", "Access Anywhere", "Sync to Website"].map(label => <View key={label} style={s.benefit}><Ionicons name="checkmark-circle" size={16} color={theme.primary} /><Text style={s.benefitText}>{label}</Text></View>)}</View>
         <Motion delay={60}><Option icon="images" title="Photos & Videos" text="Choose from your gallery" types={["JPG", "PNG", "MP4", "MOV", "WEBM"]} on={startMedia} /></Motion>
         <Motion delay={100}><Option icon="document-text" title="Documents & Files" text="PDF, Office documents and music" types={["PDF", "DOCX", "XLSX", "PPTX", "MP3"]} on={pickDocuments} /></Motion>
+        <View style={s.ad} accessibilityLabel="Advertisement"><BannerAd unitId={ADS.banner} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} /></View>
         <View style={s.info}><View style={s.infoIcon}><Ionicons name="shield-checkmark" size={25} color={theme.primary} /></View><Text style={s.infoText}>Only the files you choose are uploaded. They appear on the website too.</Text><Ionicons name="cloud" size={42} color={theme.track} /></View>
         {current && <View style={s.status} accessibilityLiveRegion="polite"><ActivityIndicator color={theme.primary} /><View style={{ flex: 1 }}><Text style={s.statusTitle} numberOfLines={1}>Uploading {current.name}</Text><Text style={s.muted}>{formatSize(current.size)} {current.step && `· ${current.step}`}</Text></View></View>}
         {done > 0 && !current && <View style={s.status} accessibilityLiveRegion="polite"><Ionicons name="checkmark-circle" size={26} color={theme.success} /><Text style={[s.statusTitle, { flex: 1 }]}>{done} file{done > 1 ? "s" : ""} uploaded</Text><Pressable accessibilityRole="button" accessibilityLabel="View uploaded files" onPress={() => router.replace("/content")} style={s.back}><Text style={s.blue}>View</Text></Pressable></View>}
@@ -109,6 +111,7 @@ const s = StyleSheet.create({
   types: { flexDirection: "row", flexWrap: "wrap", gap: 5, paddingLeft: 66 }, type: { flexDirection: "row", alignItems: "center", gap: 3, paddingHorizontal: 5, paddingVertical: 5, borderRadius: 12, backgroundColor: theme.background }, typeText: { fontSize: 9, color: theme.muted },
   divider: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 2 }, line: { flex: 1, height: 1, backgroundColor: theme.track }, or: { fontSize: 10, fontWeight: "600", color: theme.muted },
   sources: { flexDirection: "row", gap: 8 }, source: { flex: 1, minWidth: 0, alignItems: "center", paddingHorizontal: 6, paddingVertical: 12, borderRadius: 18, backgroundColor: theme.surface, gap: 6 }, sourceIcon: { width: 48, height: 48, borderRadius: 17, backgroundColor: theme.background, alignItems: "center", justifyContent: "center" }, sourceTitle: { color: theme.text, fontSize: 12, fontWeight: "700", textAlign: "center" }, sourceText: { color: theme.muted, fontSize: 11, lineHeight: 16, textAlign: "center" },
+  ad: { alignItems: "center", paddingVertical: 6 },
   info: { flexDirection: "row", alignItems: "center", gap: 10, padding: 12, borderRadius: 16, backgroundColor: theme.storage, borderWidth: 1, borderColor: theme.surface }, infoIcon: { width: 36, height: 40, alignItems: "center", justifyContent: "center" }, infoText: { color: theme.muted, fontSize: 12, lineHeight: 18, flex: 1 },
   status: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: 16, backgroundColor: theme.surface }, statusTitle: { color: theme.text, fontSize: 14, fontWeight: "600" },
   pressed: { opacity: 0.7 }, disabled: { opacity: 0.55 }, overlay: { flex: 1, backgroundColor: theme.overlay, justifyContent: "flex-end" },
