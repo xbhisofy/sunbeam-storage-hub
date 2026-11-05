@@ -22,12 +22,12 @@ type Shared = { name: string; file_type: string; mime: string | null; size: numb
 function createPlaybackAd(): PlaybackAd {
   if (ADS.rewarded) {
     const rewarded = RewardedAd.createForAdRequest(ADS.rewarded);
-    const ev = { loaded: RewardedAdEventType.LOADED, closed: AdEventType.CLOSED, error: AdEventType.ERROR } as const;
-    return { subscribe: (event, callback) => rewarded.addAdEventListener(ev[event] as never, callback as never), load: () => rewarded.load(), show: () => rewarded.show() };
+    const ev = { loaded: RewardedAdEventType.LOADED, closed: AdEventType.CLOSED, error: AdEventType.ERROR, earned: RewardedAdEventType.EARNED_REWARD } as const;
+    return { requiresReward: true, subscribe: (event, callback) => rewarded.addAdEventListener(ev[event] as never, callback as never), load: () => rewarded.load(), show: () => rewarded.show() };
   }
   const ad = InterstitialAd.createForAdRequest(ADS.interstitial);
   const events = { loaded: AdEventType.LOADED, closed: AdEventType.CLOSED, error: AdEventType.ERROR };
-  return { subscribe: (event, callback) => ad.addAdEventListener(events[event], callback), load: () => ad.load(), show: () => ad.show() };
+  return { subscribe: (event, callback) => ad.addAdEventListener(events[event as keyof typeof events], callback), load: () => ad.load(), show: () => ad.show() };
 }
 function recordPlaybackView(slug: string) { void supabase.rpc("record_view", { _slug: slug }); }
 

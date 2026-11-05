@@ -21,7 +21,7 @@
 - Use Brand and LegalFooter for shared branding and legal navigation; legal claims must match shipped functionality.
 - Public landing visuals are scoped to .landing; use StoreBadges for centralized store destinations and WebsiteAppPreview for explicitly illustrative previews without affecting installed-app screens.
 - Generate leaf metadata through pageHead with noindex on personal/share pages; sitemap lists only public editorial pages.
-- Local `shared-file` loaders require guarded HTTPS storage and fail closed on query/signing/expiry errors without owner premium checks; browsers only offer installation. Native async/ad lifecycle stays in `use-shared-playback` to reject stale work.
+- Local `shared-file` loaders require guarded HTTPS storage and fail closed on query/signing/expiry errors without owner premium checks; browsers only offer installation. Native async/ad lifecycle stays in `use-shared-playback` to reject stale work; rewarded playback ads open the file only after the reward is earned, never on an early close.
 - Android is native Expo in `mobile/`, separate from `src/`, using the website backend; keep website payment logic external and never duplicate it.
 - The native app is cloud sharing only (Home, My Files, Upload, Shared, Profile); earnings, wallet, referrals, OC Bonus, plans and menu stay website-only for Play policy, and plan status is read from the profile so website upgrades reflect automatically.
 - Native local notifications go through `mobile/lib/notifications.ts` with one high-importance channel bound to the bundled sound; changing the sound requires a new channel id.
