@@ -19,11 +19,14 @@ function rewardedAd(listeners: Listeners, shown: { count: number }): PlaybackAd 
 }
 
 const okFile: SharedPlaybackState = { kind: "ok", name: "clip.mp4", file_type: "video", mime: null, source: "cloud", url: "https://storage.example/file" };
+// Stable references: a new loadFile per render would re-run the hook's effect forever.
+const loadFile = async () => okFile;
+const recordView = vi.fn();
 
 function probe(ad: PlaybackAd) {
   const value: { current?: ReturnType<typeof useSharedPlayback> } = {};
   function Probe() {
-    const hook = useSharedPlayback("slug", "viewer", async () => okFile, () => ad, vi.fn());
+    const hook = useSharedPlayback("slug", "viewer", loadFile, () => ad, recordView);
     useEffect(() => { value.current = hook; });
     return null;
   }
