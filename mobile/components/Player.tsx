@@ -163,7 +163,6 @@ function ReportSheet({ visible, onClose, onSend }: { visible: boolean; onClose: 
 const pv = StyleSheet.create({
   stage: { width: "100%", aspectRatio: 1.55, borderRadius: 20, borderWidth: 1, borderColor: theme.border, overflow: "hidden", alignItems: "center", justifyContent: "center" },
   fileGlance: { ...StyleSheet.absoluteFillObject, opacity: 0.62, alignItems: "center", justifyContent: "center", padding: 24 },
-  glanceName: { fontSize: 18, fontWeight: "600", textAlign: "center" },
   glass: { backgroundColor: theme.previewGlass },
   name: { fontSize: 18, fontWeight: "700", color: theme.text },
   size: { fontSize: 14, color: theme.placeholder },
