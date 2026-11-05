@@ -4,9 +4,11 @@ import { isAdNoFill } from "./ad-error";
 export type SharedPlaybackFile = { kind: "ok"; name: string; file_type: string; mime: string | null; source: string; url: string };
 export type SharedPlaybackState = { kind: "loading" } | { kind: "missing" } | { kind: "expired" } | SharedPlaybackFile;
 export type PlaybackAd = {
-  subscribe: (event: "loaded" | "closed" | "error", callback: (error?: unknown) => void) => () => void;
+  subscribe: (event: "loaded" | "closed" | "error" | "earned", callback: (error?: unknown) => void) => () => void;
   load: () => void;
   show: () => Promise<void>;
+  // Rewarded ads open the file only after the reward is earned, never on an early close.
+  requiresReward?: boolean;
 };
 
 // Owns per-file async work; neither stale resolutions nor late ads unlock a new file.
@@ -65,12 +67,26 @@ export function useSharedPlayback(slug: string, viewerId: string | undefined,
     cancelAd.current = cancel;
     try {
       const ad = createAd();
+      let earned = false;
+      if (ad.requiresReward) subscriptions.push(ad.subscribe("earned", () => { earned = true; }));
       subscriptions.push(ad.subscribe("loaded", () => {
         if (finished || !valid()) return;
         // The timeout is for no-fill/loading only, never for an already shown ad.
         if (timer !== undefined) clearTimeout(timer);
         try { void ad.show().catch(() => finish(false)); } catch { finish(false); }
-      }), ad.subscribe("closed", () => finish(true)), ad.subscribe("error", error => finish(isAdNoFill(error))));
+      }), ad.subscribe("closed", () => {
+        // A rewarded ad closed before the reward returns to the Open button without unlocking.
+        if (ad.requiresReward && !earned) {
+          if (finished) return;
+          finished = true;
+          cleanup();
+          if (!valid()) return;
+          busy.current = false;
+          setState(previous => ({ ...previous, adBusy: false }));
+          return;
+        }
+        finish(true);
+      }), ad.subscribe("error", error => finish(isAdNoFill(error))));
       timer = setTimeout(() => finish(false), 8000);
       ad.load();
     } catch { finish(false); }
