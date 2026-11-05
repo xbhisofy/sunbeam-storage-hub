@@ -4,10 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
 import { router } from "expo-router";
 import { AdEventType, InterstitialAd, RewardedAd, RewardedAdEventType } from "react-native-google-mobile-ads";
-import { LinearGradient } from "expo-linear-gradient";
-import { formatSize } from "../lib/files";
+import { formatSize, iconFor } from "../lib/files";
 import { Screen, Button, Card } from "./ui";
-import { FileIcon } from "./FileCard";
 import { supabase } from "../lib/supabase";
 import { ADS } from "../lib/config";
 import { theme } from "../lib/theme";
@@ -64,6 +62,9 @@ export function PlayerScreen({ slug }: { slug: string }) {
     return () => sub.remove();
   }, [open, fullscreen]);
   const displayAd = canShowSharedDisplayAd({ ready: st.kind === "ok", width, height, fullscreen, adBusy, reportOpen: report });
+  const fileType = st.kind === "ok" ? st.file_type : "other";
+  const tint = theme.cat[fileType] ?? theme.cat.other;
+  const tintIcon = iconFor(fileType) as keyof typeof Ionicons.glyphMap;
 
   async function sendReport(reason: string, details: string) {
     const { error } = await supabase.from("reports").insert({ file_slug: slug, file_name: st.kind === "ok" ? st.name : null, reason, details: details || null, email: session?.user.email ?? null, reporter_id: session?.user.id ?? null });
